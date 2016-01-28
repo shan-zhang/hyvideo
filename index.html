@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link href="css/index.css" rel="stylesheet" />
+        <script src="js/d3.min.js"></script>
+        <script src="js/canvas.js"></script>
+    </head>
+<body>
+    <div id="header">
+    <h1>HyVideo</h1>
+    </div>
+    <div id="section">
+        <div id="leftPanel">
+        <video width="930" controls>
+          <source src="video/example1.webm" type="video/webm">
+          <source src="video/example1.mp4" type="video/mp4">
+          <track src="video/example1.vtt" label="English subtitles" kind="subtitles" type="text/vtt"srclang='en' default></track>
+        Your browser does not support the video tag.
+        </video>
+
+        <div id='leftSub'>
+            <p>Interact with the video</p>
+            <button id="mybutton">Show tracks</button>
+        </div>
+        </div>
+
+        <div id="rightPanel">
+        </div>
+    </div>
+    <div id="footer">
+    Copyright @ NUS-HCI
+    </div>
+    <script>
+        window.addEventListener("load",function() {
+            var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
+            var myCues = myTrack.cues;   // get list of cues 
+            for (var i = 0; i < myCues.length; i++) {
+            myCues[i].onenter  = function(){ 
+                // console.log(this);
+                if(!this.show){
+                    document.getElementById("rightPanel").innerHTML += (this.getCueAsHTML().textContent + "<br/>");
+                }
+            };
+            myCues[i].onexit = function(){
+                this.show = true;
+            };
+            }
+        });
+        document.getElementById("mybutton").addEventListener("click", function () {
+        var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track 
+            console.log(myTrack);
+        }, false);
+    </script>
+</body>
+</html>
