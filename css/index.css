@@ -17,8 +17,8 @@
 }
 #leftSub {
     width:50%;
-    height: 50%;
-    margin: 0 auto;
+    height: 200px;
+/*    margin: 0 auto;*/
     border-style: dotted;
     border-width: 3px;
     padding-top: 10px;
@@ -28,7 +28,8 @@
     width:50%;
     height:800px;
     float:left;
-    background-color:darkgray;	 	 
+    background-color:darkgray;
+    -ms-overflow-style: none;	 	 
 }
 #footer {
     background-color:#336699;

@@ -1,0 +1,62 @@
+#conceptShow {
+    -ms-grid-column: 1;
+    width: auto;
+    height: 100%; 
+    margin-right: 20px; 
+    border: 1px solid darkgray;
+    border-right: 10px dashed darkgray;
+    background: #ccc;
+    overflow:hidden;
+}
+
+path.link {
+  fill: none;
+  stroke: #000;
+  stroke-opacity:0.3;
+  stroke-width: 3px;
+}
+
+path.link.selected {
+  stroke-dasharray: 5,5;
+}
+
+path.overlappingLink {
+  fill-opacity:0;
+  stroke-width: 20px;
+  stroke: red;
+  stroke-opacity:0;
+  cursor: pointer;
+}
+
+.circle {
+  cursor: move;
+  fill: #ccc;
+  stroke: #000;
+  stroke-width: 1px;
+  cursor: pointer;
+}
+
+.fixed .circle {
+    stroke-width: 2.5px;
+}
+
+.connecting .circle {
+    fill: darkgray;
+}
+
+text {
+  font: 24px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+.inputText {
+  visibility: hidden;
+  position:absolute;
+  max-width: 150px;
+  left: 0px;
+  top:  0px;
+}
+
+.highlight { background-color: yellow }
+
