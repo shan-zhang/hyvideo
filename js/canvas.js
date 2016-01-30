@@ -5,15 +5,16 @@ var selectedLink = null;
 var selectedLinkObj = null;
 var dragNodeObj = null;
 var radius = 30;   // base radius for circle
+var canvasLeft = 0;
+var canvasTop = 0;
 var clickOntoLinks = false;
 var translate = [0, 0];
 var scale = 1;
 var newAddedClickLink = false;
-var scaleMin = 1;
-var scaleMax = 10;
-var updateJsonData = function (jsonData) {
-    return JSON.parse(jsonData);  
-};
+var scaleMin = 0.5;
+var scaleMax = 4;
+var doubleClickNode = false;
+var doubleClickLink = false;
 
 var log2 = function (val)
 {
@@ -28,15 +29,16 @@ var updateSize = function (updatwWidth, updateheight) {
     .attr("height", height);
 
     force.size([width, height]);
-
     force.start();
 }
 
-var drawCanvas = function () {
+var drawCanvas = function (canvasWidth,canvasHeight,canvasPositionX,canvasPositionY) {
     console.log("D3-Canvas");
     cleanCache();
-    width = 943;
-    height = 800;
+    width = canvasWidth;
+    height = canvasHeight;
+    canvasLeft = canvasPositionX;
+    canvasTop = canvasPositionY;
     nodes = [];
     links = [];
 
@@ -63,8 +65,8 @@ var drawCanvas = function () {
         .attr("height", height)
         .call(zoom)
         .on("dblclick.zoom", null)
-        .on("click", clickSVG);
-        //.on("click", clickLink);
+        .on("click", clickSVG)
+        .on("dblclick", dblclickSVG);
        
     svg.append('svg:defs').append('svg:marker')
         .attr('id', 'end-arrow')
@@ -163,7 +165,7 @@ var drawCanvas = function () {
         if (selectedLinkObj)
         {
             $(".inputText").css({
-                "left": ((selectedLinkObj.source.x + selectedLinkObj.target.x) / 2 + translate[0]) / scale, "top": ((selectedLinkObj.source.y + selectedLinkObj.target.y) / 2 + translate[1]) / scale, "visibility": "visible"
+                "left": canvasLeft + (selectedLinkObj.source.x + selectedLinkObj.target.x) / 2 * scale + translate[0], "top": canvasTop + (selectedLinkObj.source.y + selectedLinkObj.target.y) / 2 * scale + translate[1], "visibility": "visible"
             });
             $(".inputText").focus();
         }
@@ -176,9 +178,10 @@ var drawCanvas = function () {
     .on('keyup', keyup);
 }
 function zoomed() {
+    console.log("fuckmebaby");
     $(".inputText").css({"visibility": "hidden" });
     translate = d3.event.translate;
-    //scale = d3.event.scale;
+    scale = d3.event.scale;
     container.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
     tick();
 }
@@ -258,6 +261,8 @@ function dblclick(d) {//double click node
         selectedNodeObj = null;
         selectedNode = null;
     }
+
+     doubleClickNode = true;
 }
 function oneclick(d) {//one click node
     if (d3.event.defaultPrevented) return;
@@ -267,7 +272,7 @@ function oneclick(d) {//one click node
             selectedNode = d3.select(this);
             selectedNodeObj = d;
             d3.select(this).classed("connecting", d.connecting = true);
-            hideSelectedLink1();
+            hideSelectedLink();
         }
         else {
             if (selectedNodeObj == d) return; //Self-connected is not allowed
@@ -320,6 +325,7 @@ function clickLink(d) // one click link
 {
     console.log("clickLink-1");
     clickOntoLinks = true;
+    doubleClickLink = true;
     //var coordinates = [0, 0];
     //coordinates = d3.mouse(this);
     //var cursorX = coordinates[0];
@@ -348,34 +354,61 @@ function clickSVG(d)
         clickOntoLinks = false;
     }
     else {
-        hideSelectedLink1();
+        hideSelectedLink();
     }
 
-    if (d3.event.ctrlKey) {
-        var scale = zoom.scale();
-        zoom.center([d3.event.x, d3.event.y]);
-        scale = scale + 0.5;
-        if (scale > scaleMax) {
-            scale = scaleMax;
-            return;
-        }
-        zoom.scale(scale);
-        zoom.event(svg.transition().duration(800));
-        //console.log("+" + zoom.scale());
+    // if (d3.event.ctrlKey) {
+    //     var scale = zoom.scale();
+    //     zoom.center([d3.event.x, d3.event.y]);
+    //     scale = scale + 0.5;
+    //     if (scale > scaleMax) {
+    //         scale = scaleMax;
+    //         return;
+    //     }
+    //     zoom.scale(scale);
+    //     zoom.event(svg.transition().duration(800));
+    //     //console.log("+" + zoom.scale());
+    // }
+    // else if (d3.event.altKey) {
+    //     var scale = zoom.scale();
+    //     zoom.center([d3.event.x, d3.event.y]);
+    //     scale = scale - 0.5;
+    //     if (scale < scaleMin) {
+    //         scale = scaleMin;
+    //         return;
+    //     }
+    //     zoom.scale(scale);
+    //     zoom.event(svg.transition().duration(800));
+    //     //console.log("-" + zoom.scale());
+    // }
+    // else { }
+}
+function dblclickSVG(d) {
+    //selectedNodeObj = null;
+    //if (selectedNode)
+    //{
+    //    selectedNode.classed("connecting", selectedNodeObj.connecting = false);
+    //    selectedNode = null;
+    //}
+    console.log("dblclickSVG-2");
+    if (doubleClickNode){
+        doubleClickNode = false;
+        return;
     }
-    else if (d3.event.altKey) {
-        var scale = zoom.scale();
-        zoom.center([d3.event.x, d3.event.y]);
-        scale = scale - 0.5;
-        if (scale < scaleMin) {
-            scale = scaleMin;
-            return;
-        }
-        zoom.scale(scale);
-        zoom.event(svg.transition().duration(800));
-        //console.log("-" + zoom.scale());
+    if (doubleClickLink) {
+        doubleClickLink = false;
+        return;
     }
-    else { }
+    var addNewNode = true;
+    nodes.forEach(function (nodeValue, nodeIndex) {
+        if (nodeValue.word == "")
+            addNewNode = false;
+    });
+    if (addNewNode)
+    {
+        nodes.push({ "word": "", "frequency": 1, "x": d3.event.x, "y": d3.event.y, "dx": d3.event.x, "dy": d3.event.y });
+        restartNodes();
+    }
 }
 //******************************************************************
 //Update the concept Name, links and labels of links
@@ -525,30 +558,17 @@ var analyseNodes = function(jsonData) { //Analyse the textarea/jsonData and upda
     console.log("graph:" + jsonData);
     //Add new nodes and update the frequency of words
     graph.nodes.forEach(function (graphValue, graphIndex) {
-        var sliceIndex = -1;
-        var sliceValue = null;
+        var isExist = false;
         nodes.forEach(function (nodesValue, nodesIndex) {
             if(nodesValue.word.toUpperCase() == graphValue.word.toUpperCase())
             {
-                if (nodesValue.frequency != graphValue.frequency) {
-                    nodesValue.frequency = graphValue.frequency;
-                    sliceIndex = nodesIndex;
-                    sliceValue = nodesValue;
-                }
-                else
-                    sliceIndex = null;
+                nodesValue.frequency += graphValue.frequency;
+                isExist = true;
             }
         });
-        if (sliceIndex != null)
+        if (!isExist)
         {
-            if (sliceIndex != -1) {
-                nodes.splice(sliceIndex, 1, sliceValue);
-            }
-            else
-            {
-                //graphValue.id = nodes.length;
-                nodes.push(graphValue);
-            }
+            nodes.push(graphValue);
         }
     });
 
@@ -577,7 +597,7 @@ var analyseNodes = function(jsonData) { //Analyse the textarea/jsonData and upda
 var updateLinkLabelName = function(inputText) //update label name for link
 {
     selectedLinkObj.linkName = inputText;
-    hideSelectedLink1();
+    hideSelectedLink();
     restartLabels();
     tick();
     //restartLinks();
@@ -601,6 +621,9 @@ var delLinkandLabel = function ()//delete selected link and its label
 }
 var delNodeWithLink = function ()//delete seleced node and its associated links
 {
+    $(".inputText").css({ "visibility": "hidden" });
+    $(".inputText").val("");
+
     nodes.forEach(function (nodeValue, nodeIndex) {
         if (nodeValue == selectedNodeObj)
         {
@@ -644,18 +667,16 @@ var linkstoNodes = function () {
             if (nodeValue.word == linkValue.source.word)
             {
                 linkValue.source = nodeValue;
-                //console.log("link source == node");
             }
             else if (nodeValue.word == linkValue.target.word) {
                 linkValue.target = nodeValue;
-                //console.log("link target == node");
             }
             else { }
         });
     });
 };
 
-var hideSelectedLink1 = function () {
+var hideSelectedLink = function () {
     $(".inputText").css({ "visibility": "hidden" });
     $(".inputText").val("");
     selectedLinkObj = null;
@@ -676,7 +697,7 @@ function keyup() {
         case 69: //Edit
             if (selectedNodeObj) {
                 $(".inputText").css({
-                    "left": selectedNodeObj.x + translate[0], "top": selectedNodeObj.y + translate[1], "visibility": "visible"
+                    "left": canvasLeft + selectedNodeObj.x * scale + translate[0], "top": canvasTop + selectedNodeObj.y * scale + translate[1], "visibility": "visible"
                 });
                 $(".inputText").focus();
             }
@@ -686,7 +707,6 @@ function keyup() {
 
 function keydown() {
     //d3.event.preventDefault(); //to stop the default keyboard event
-
     if (!selectedLinkObj && !selectedNodeObj) return;
     switch (d3.event.keyCode) {
         case 46: //delete
@@ -702,14 +722,14 @@ function keydown() {
     }
 }
 //************************************************************************
-var saveNoteToFile = function (textContent)
-{
-    var savedString = {};
-    savedString.text = textContent;
-    savedString.node = nodes;
-    savedString.link = links;
-    return JSON.stringify(savedString);
-}
+// var saveNoteToFile = function (textContent)
+// {
+//     var savedString = {};
+//     savedString.text = textContent;
+//     savedString.node = nodes;
+//     savedString.link = links;
+//     return JSON.stringify(savedString);
+// }
 var cleanCache = function () {
     svg = null;
     container = null;
@@ -723,35 +743,47 @@ var cleanCache = function () {
     translate = [0, 0];
     scale = 1;
 }
-var saveCurrentState = function () {
-    var textShow = document.getElementById("textShow");
-    var savedString = saveNoteToFile(textShow.innerText.trim());
-    var titleName = document.getElementById("title");
-    DataExample.currentNoteState.Title = titleName.innerText.trim();
-    DataExample.currentNoteState.Data = savedString;
-
-    //console.log("CurrentData" + DataExample.currentNoteState.Data);
-}
-var updateNoteNodeWord = function (inputText2)//Update Node word for Nodes
+// var saveCurrentState = function () {
+//     var textShow = document.getElementById("textShow");
+//     var savedString = saveNoteToFile(textShow.innerText.trim());
+//     var titleName = document.getElementById("title");
+//     DataExample.currentNoteState.Title = titleName.innerText.trim();
+//     DataExample.currentNoteState.Data = savedString;
+// }
+var updateNoteNodeWord = function (inputText)//Update Node word for Nodes
 {
     $(".inputText").css({ "visibility": "hidden" });
     $(".inputText").val("");
-
+    if(inputText == '') {
+        selectedNodeObj = null;
+        selectedNode = null;
+        restartNodes();
+        return;
+    };
     var selectedNodeIndex = nodes.indexOf(selectedNodeObj);
     nodes.splice(selectedNodeIndex, 1);
     var newAddNode = null;
     nodes.forEach(function (nodeValue, nodeIndex) {
-        if (nodeValue.word.toUpperCase() == inputText2.toUpperCase()) {
+        if (nodeValue.word.toUpperCase() == inputText.toUpperCase()) {
             newAddNode = nodeValue;
         }
     });
     if (!newAddNode) {
         newAddNode = JSON.parse(JSON.stringify(selectedNodeObj));
-        newAddNode.word = inputText2;
+        newAddNode.word = inputText;
         nodes.push(newAddNode);
     }
     else {
+        //need to delete the corresponding self - links
         newAddNode.frequency += selectedNodeObj.frequency;
+        for (var i = 0; i < links.length; i++)
+        {
+            if (links[i].source == selectedNodeObj && links[i].target == newAddNode)
+                links.splice(i--, 1);
+            else if(links[i].source == newAddNode && links[i].target == selectedNodeObj)
+                links.splice(i--, 1);
+            else{}
+        }
     }
 
     links.forEach(function (linkValue, linkIndex) {
@@ -774,4 +806,6 @@ var updateNoteNodeWord = function (inputText2)//Update Node word for Nodes
     selectedNodeObj = null;
     selectedNode = null;
     restartNodes();
+    restartLinks();
+    restartLabels();
 }

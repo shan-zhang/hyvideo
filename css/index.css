@@ -17,7 +17,7 @@
 }
 #leftSub {
     width:50%;
-    height: 200px;
+    height: auto;
 /*    margin: 0 auto;*/
     border-style: dotted;
     border-width: 3px;
@@ -26,9 +26,9 @@
 }
 #rightPanel {
     width:50%;
-    height:800px;
+    height:100%;
     float:left;
-    background-color:darkgray;
+    background-color:lightgray;
     -ms-overflow-style: none;	 	 
 }
 #footer {
@@ -37,4 +37,7 @@
     clear:both;
     text-align:center;
     padding:5px;	 	 
+}
+video{
+    width: 99%;
 }

@@ -1,5 +1,5 @@
 <?php
-    $file = file('data/test.txt',FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $file = file('data/Nouns.txt',FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     //echo sizeof($file);
     // foreach($file as $line){
     //     echo $line;
@@ -23,7 +23,7 @@
     </div>
     <div id="section">
         <div id="leftPanel">
-        <video width="930" controls>
+        <video controls>
           <source src="video/example1.webm" type="video/webm">
           <source src="video/example1.mp4" type="video/mp4">
           <track src="video/example1.vtt" label="English subtitles" kind="subtitles" type="text/vtt"srclang='en' default></track>
@@ -37,8 +37,8 @@
         </div>
         </div>
 
-        <div id="rightPanel">
-            <input type="text" class="inputText" id="inputText" />
+        <div id="rightPanel" tabindex="0">
+            <input type="text" class="inputText"/>
         </div>
     </div>
     <div id="footer">
@@ -46,7 +46,11 @@
     </div>
     <script>
         window.addEventListener("load",function() {
-            drawCanvas();//Draw the D3 layout to the page
+            var canvasWidth = document.getElementById('rightPanel').offsetWidth;
+            var canvasHeight = document.getElementById('rightPanel').offsetHeight;
+            var canvasPositionX = $('#rightPanel').offset().left;
+            var canvasPositionY = $('#rightPanel').offset().top;
+            drawCanvas(canvasWidth,canvasHeight,canvasPositionX,canvasPositionY);//Draw the D3 layout to the page
             greatNounList = <?php echo json_encode($file); ?>;
             console.log(greatNounList);
             var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
@@ -56,12 +60,27 @@
                 // console.log(this);
                 if(!this.show){
                     document.getElementById("leftSub").innerHTML += (this.getCueAsHTML().textContent + "<br/>");
+                    //Technique 1: use the great noun list to match proper noun
                     localTextParsing(this.getCueAsHTML().textContent);
                 }
             };
             myCues[i].onexit = function(){
                 this.show = true;
             };
+            }
+        });
+        $(".inputText").keyup(function (e) {
+            if (e.keyCode == 13) {
+                // Do something
+                var inputText = $(".inputText").val();
+                inputText = inputText.trim();
+                if (selectedLinkObj) {
+                    updateLinkLabelName(inputText);
+                }
+                else if (selectedNodeObj) {
+                    updateNoteNodeWord(inputText);
+                }
+                else { console.log("No update while type enter in inputText."); }
             }
         });
         document.getElementById("mybutton").addEventListener("click", function () {

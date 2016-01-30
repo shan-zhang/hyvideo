@@ -8,7 +8,6 @@ var localTextParsing = function(subtitle){
 	words.forEach(function (wordValue, wordIndex) {
 		var isExisted = false;
 		var tmp = wordValue.trim();
-		console.log(tmp);
 		localJson.forEach(function (JsonValue, JsonIndex) {
 			//Check this word has already been stored into localJson
 		    if (JsonValue.word.toUpperCase() == tmp.toUpperCase()) {

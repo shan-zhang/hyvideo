@@ -1,4 +1,4 @@
-#conceptShow {
+/*#conceptShow {
     -ms-grid-column: 1;
     width: auto;
     height: 100%; 
@@ -7,7 +7,7 @@
     border-right: 10px dashed darkgray;
     background: #ccc;
     overflow:hidden;
-}
+}*/
 
 path.link {
   fill: none;
@@ -30,7 +30,7 @@ path.overlappingLink {
 
 .circle {
   cursor: move;
-  fill: #ccc;
+  fill: lightgray;
   stroke: #000;
   stroke-width: 1px;
   cursor: pointer;
