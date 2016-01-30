@@ -707,6 +707,7 @@ canister
 canisters
 cannon
 cannons
+cans
 canvas
 canvases
 canyon
@@ -2824,6 +2825,8 @@ loops
 loran
 loss
 losses
+lot
+lots
 loudspeaker
 loudspeakers
 love

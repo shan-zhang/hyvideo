@@ -2,7 +2,7 @@ var greatNounList;
 var conceptList;
 var tmpCache = [];
 var sendCuestoConceptTagging = function(text){
-	console.log(text);
+	//console.log(text);
 	$.ajax({
 		type: 'post',
 		url: 'php/parser.php',

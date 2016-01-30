@@ -84,14 +84,15 @@
             }
         });
         function buttonClick(){
-            // var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track 
-            // var myCues = myTrack.cues; 
-            // var tmp = '';
-            // for(var i = 0; i < myCues.length; i++){
-            //     tmp += myCues[i].getCueAsHTML().textContent + ' ';
-            // }
+            var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track 
+            var myCues = myTrack.cues; 
+            var tmp = '';
+            for(var i = 0; i < myCues.length; i++){
+                tmp += myCues[i].getCueAsHTML().textContent + ' ';
+            }
+            //tmp = 'The European migrant crisis or European refugee crisis began in 2015, when a rising number of refugees and migrants made the journey to the European Union to seek asylum, travelling across the Mediterranean Sea, or through Southeast Europe.';
             //console.log(tmp);
-            sendCuestoConceptTagging('The European migrant crisis or European refugee crisis began in 2015, when a rising number of refugees and migrants made the journey to the European Union to seek asylum, travelling across the Mediterranean Sea, or through Southeast Europe.');
+            sendCuestoConceptTagging(tmp);
         }
     </script>
 </body>
