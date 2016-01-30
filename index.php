@@ -32,7 +32,7 @@
 
         <div id='leftSub'>
             <p>Interact with the video</p>
-            <button id="mybutton">Show tracks</button>
+            <button id="mybutton" onclick='buttonClick()'>Show tracks</button>
             <br />
         </div>
         </div>
@@ -52,21 +52,21 @@
             var canvasPositionY = $('#rightPanel').offset().top;
             drawCanvas(canvasWidth,canvasHeight,canvasPositionX,canvasPositionY);//Draw the D3 layout to the page
             greatNounList = <?php echo json_encode($file); ?>;
-            console.log(greatNounList);
+            //console.log(greatNounList);
             var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
             var myCues = myTrack.cues;   // get list of cues 
             for (var i = 0; i < myCues.length; i++) {
-            myCues[i].onenter  = function(){ 
-                // console.log(this);
-                if(!this.show){
-                    document.getElementById("leftSub").innerHTML += (this.getCueAsHTML().textContent + "<br/>");
-                    //Technique 1: use the great noun list to match proper noun
-                    localTextParsing(this.getCueAsHTML().textContent);
-                }
-            };
-            myCues[i].onexit = function(){
-                this.show = true;
-            };
+                myCues[i].onenter  = function(){ 
+                    // console.log(this);
+                    if(!this.show){
+                        document.getElementById("leftSub").innerHTML += ('<p>' + this.getCueAsHTML().textContent + '</p>');
+                        //Technique 1: use the great noun list to match proper noun
+                        localTextParsing(this.getCueAsHTML().textContent);
+                    }
+                };
+                myCues[i].onexit = function(){
+                    this.show = true;
+                };
             }
         });
         $(".inputText").keyup(function (e) {
@@ -83,10 +83,16 @@
                 else { console.log("No update while type enter in inputText."); }
             }
         });
-        document.getElementById("mybutton").addEventListener("click", function () {
-        var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track 
-            console.log(myTrack);
-        }, false);
+        function buttonClick(){
+            // var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track 
+            // var myCues = myTrack.cues; 
+            // var tmp = '';
+            // for(var i = 0; i < myCues.length; i++){
+            //     tmp += myCues[i].getCueAsHTML().textContent + ' ';
+            // }
+            //console.log(tmp);
+            sendCuestoConceptTagging('The European migrant crisis or European refugee crisis began in 2015, when a rising number of refugees and migrants made the journey to the European Union to seek asylum, travelling across the Mediterranean Sea, or through Southeast Europe.');
+        }
     </script>
 </body>
 </html>

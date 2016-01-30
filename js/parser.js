@@ -1,5 +1,22 @@
 var greatNounList;
+var conceptList;
 var tmpCache = [];
+var sendCuestoConceptTagging = function(text){
+	console.log(text);
+	$.ajax({
+		type: 'post',
+		url: 'php/parser.php',
+		data: {'name':'Concepts','text':text},
+		dataType: 'json',
+		success: function(response) {
+			conceptList = response;
+			console.log(conceptList);
+		},
+		error:function(error){
+			console.log(error);
+		}
+	});
+};
 var localTextParsing = function(subtitle){
 	var punctuationless = (subtitle.trim()).replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()@\+\?><\[\]\+]/g, '');
 	var cleanString = punctuationless.replace(/\s{2,}/g, " ");

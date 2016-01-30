@@ -178,7 +178,6 @@ var drawCanvas = function (canvasWidth,canvasHeight,canvasPositionX,canvasPositi
     .on('keyup', keyup);
 }
 function zoomed() {
-    console.log("fuckmebaby");
     $(".inputText").css({"visibility": "hidden" });
     translate = d3.event.translate;
     scale = d3.event.scale;
