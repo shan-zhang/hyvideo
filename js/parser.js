@@ -10,6 +10,9 @@ var sendCuestoConceptTagging = function(text){
 		dataType: 'json',
 		success: function(response) {
 			conceptList = response;
+			for(var i = 0; i < conceptList.length; i++){
+				document.getElementById("keyconcepts").innerHTML += ('<a target=\"_blank\" href=' + conceptList[i].url +'>'+ conceptList[i].concept +'</a>');
+			}
 			console.log(conceptList);
 		},
 		error:function(error){
