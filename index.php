@@ -31,7 +31,7 @@
         </video>
 
         <div id='leftSub'>
-            <p>Interact with the video</p>
+            <h3>Interact with the video</h3>
             <button id="mybutton" onclick='buttonClick()'>Show tracks</button>
             <br />
         </div>
@@ -59,7 +59,7 @@
                 myCues[i].onenter  = function(){ 
                     // console.log(this);
                     if(!this.show){
-                        document.getElementById("leftSub").innerHTML += ('<p>' + this.getCueAsHTML().textContent + '</p>');
+                        document.getElementById("leftSub").innerHTML += (this.getCueAsHTML().textContent + '<br />');
                         //Technique 1: use the great noun list to match proper noun
                         localTextParsing(this.getCueAsHTML().textContent);
                     }
