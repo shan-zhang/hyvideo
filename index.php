@@ -32,7 +32,8 @@
 
         <div id='leftSub'>
             <h3>Interact with the video</h3>
-            <button id="mybutton" onclick='buttonClick()'>Show tracks</button>
+            <div id="keyconcepts"></div>
+<!--             <button id="mybutton" onclick='buttonClick()'>Key-Points Summary</button> -->
             <br />
         </div>
         </div>
@@ -55,11 +56,17 @@
             //console.log(greatNounList);
             var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
             var myCues = myTrack.cues;   // get list of cues 
+            var tmp = '';
+            for(var i = 0; i < myCues.length; i++){
+                tmp += myCues[i].getCueAsHTML().textContent + ' ';
+            }
+            sendCuestoConceptTagging(tmp);
+
             for (var i = 0; i < myCues.length; i++) {
                 myCues[i].onenter  = function(){ 
                     // console.log(this);
                     if(!this.show){
-                        document.getElementById("leftSub").innerHTML += (this.getCueAsHTML().textContent + '<br />');
+                        document.getElementById("leftSub").innerHTML += ('<span>' + this.getCueAsHTML().textContent + '</span> <br/>');
                         //Technique 1: use the great noun list to match proper noun
                         localTextParsing(this.getCueAsHTML().textContent);
                     }
