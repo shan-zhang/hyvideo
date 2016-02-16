@@ -13,6 +13,7 @@
         <link href="css/d3canvas.css" rel="stylesheet" />
         <link href="css/jquery-ui.min.css" rel="stylesheet" />
         <script src="js/jquery-2.1.1.min.js"></script>
+        <script src="js/jquery.highlight-5.js"></script>
         <script src="js/d3.min.js"></script>
         <script src="js/canvas.js"></script>
         <script src="js/parser.js"></script>
@@ -29,7 +30,6 @@
           <track src="video/example1.vtt" label="English subtitles" kind="subtitles" type="text/vtt"srclang='en' default></track>
         Your browser does not support the video tag.
         </video>
-
         <div id='leftSub'>
             <h3>Interact with the video</h3>
             <div id="keyconcepts"></div>
@@ -39,6 +39,7 @@
         </div>
 
         <div id="rightPanel" tabindex="0">
+            <h4 id="clips"></h4>
             <input type="text" class="inputText"/>
         </div>
     </div>
@@ -60,7 +61,8 @@
             for(var i = 0; i < myCues.length; i++){
                 tmp += myCues[i].getCueAsHTML().textContent + ' ';
             }
-            sendCuestoConceptTagging(tmp);
+            //Uncomment the below code to call external API for concept tagging, and the maximum call limit per day is 1000.
+            // sendCuestoConceptTagging(tmp);
 
             for (var i = 0; i < myCues.length; i++) {
                 myCues[i].onenter  = function(){ 
@@ -68,7 +70,7 @@
                     if(!this.show){
                         document.getElementById("leftSub").innerHTML += ('<span>' + this.getCueAsHTML().textContent + '</span> <br/>');
                         //Technique 1: use the great noun list to match proper noun
-                        localTextParsing(this.getCueAsHTML().textContent);
+                        localTextParsing(this.getCueAsHTML().textContent, this.startTime, this.endTime);
                     }
                 };
                 myCues[i].onexit = function(){

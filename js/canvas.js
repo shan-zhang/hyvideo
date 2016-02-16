@@ -191,6 +191,10 @@ function dragstart(d) {//Start dragging node
     //d3.event.sourceEvent.stopPropagation();
     d3.event.sourceEvent.stopPropagation(); // silence other listeners
     console.log("dragstart");
+    $("#clips").text("Video clips timestamp:" + JSON.stringify(d.video));
+    $("#clips").css({"visibility": "visible"});
+    //console.log("Video clips timestamp:" + JSON.stringify(d.video));
+
     d3.select(this).classed("fixed", d.fixed = true);
     dragNodeObj = d3.select(this);
     clickOntoLinks = true;
@@ -202,9 +206,9 @@ function dragstart(d) {//Start dragging node
     //}
 //-------------------------------------
 //hightlight text
-    // var highlightText = d.word;
-    // $("#textShow").highlight(highlightText,"highlight");
-    // //console.log("highlightText:" + highlightText);
+    var highlightText = d.word;
+    $("#leftSub").highlight(highlightText,"highlight");
+    //console.log("highlightText:" + highlightText);
 }
 function dragging(d)//drag node
 {
@@ -245,7 +249,8 @@ function dragging(d)//drag node
 function dragend(d)//end dragging node
 {
     console.log("dragend");
-    //$("#textShow").removeHighlight();
+    $("#clips").css({"visibility": "hidden"});
+    $("#leftSub").removeHighlight();
     tick();
     force.resume();
 }
@@ -562,6 +567,7 @@ var analyseNodes = function(jsonData) { //Analyse the textarea/jsonData and upda
             if(nodesValue.word.toUpperCase() == graphValue.word.toUpperCase())
             {
                 nodesValue.frequency += graphValue.frequency;
+                nodesValue.video.push({"startTime": graphValue.video[0].startTime,"endTime":graphValue.video[0].endTime});
                 isExist = true;
             }
         });

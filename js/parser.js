@@ -20,11 +20,12 @@ var sendCuestoConceptTagging = function(text){
 		}
 	});
 };
-var localTextParsing = function(subtitle){
+var localTextParsing = function(subtitle, startTime, endTime){
 	var punctuationless = (subtitle.trim()).replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()@\+\?><\[\]\+]/g, '');
 	var cleanString = punctuationless.replace(/\s{2,}/g, " ");
 	var words = cleanString.split(" ");
 	var localJson = [];
+	console.log("starttime:" + startTime + "	endTime:"+endTime);
 	words.forEach(function (wordValue, wordIndex) {
 		var isExisted = false;
 		var tmp = wordValue.trim();
@@ -45,13 +46,13 @@ var localTextParsing = function(subtitle){
 		        }
 		    }
 		    if (isNoun) {
-		        localJson.push({ "word": tmp, "frequency": 1 });
+		        localJson.push({ "word": tmp, "frequency": 1, "video": [{"startTime": startTime,"endTime":endTime}]});
 		    }
 		    else {
 		        var isNewNoun = false;
 		        for (var i = 0; i < greatNounList.length; i++) {
 		            if (greatNounList[i].toUpperCase() == tmp.toUpperCase()) {
-		                localJson.push({ "word": tmp, "frequency": 1 });
+		                localJson.push({ "word": tmp, "frequency": 1, "video": [{"startTime": startTime,"endTime":endTime}]});
 		                tmpCache.push({ "word": tmp, "isNoun": true });
 		                isNewNoun = true;
 		                break;
