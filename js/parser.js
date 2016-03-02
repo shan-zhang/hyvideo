@@ -6,14 +6,22 @@ var sendCuestoConceptTagging = function(text){
 	$.ajax({
 		type: 'post',
 		url: 'php/parser.php',
-		data: {'name':'Concepts','text':text},
+		// The first parser's name: AYLIEN
+		//The second parser's name: AlchemyApi
+		data: {'name':'Concepts','text':text, 'API':'AlchemyApi'},
 		dataType: 'json',
 		success: function(response) {
-			conceptList = response;
+			conceptList = response.concepts;
+			//Below is for AYLIEN
+			// for(var i = 0; i < conceptList.length; i++){
+			// 	document.getElementById("keyconcepts").innerHTML += ('<a target=\"_blank\" href=' + conceptList[i].url +'>'+ conceptList[i].concept.string +'</a>');
+			// }
+			//----------------------------------------------------------------------
+			//Below is for AlchemyApi
 			for(var i = 0; i < conceptList.length; i++){
-				document.getElementById("keyconcepts").innerHTML += ('<a target=\"_blank\" href=' + conceptList[i].url +'>'+ conceptList[i].concept.string +'</a>');
+				document.getElementById("keyconcepts").innerHTML += ('<a target=\"_blank\" href=' + conceptList[i].dbpedia +'>'+ conceptList[i].text +'</a>');
 			}
-			console.log(conceptList);
+			console.log(response);
 		},
 		error:function(error){
 			console.log(error);
