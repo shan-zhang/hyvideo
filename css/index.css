@@ -39,7 +39,7 @@
     padding:5px;	 	 
 }
 #clips{
-    visibility: hidden;
+    visibility: visible;
 }
 video{
     width: 99%;

@@ -20,7 +20,7 @@
     </head>
 <body>
     <div id="header">
-    <h1>HyVideo</h1>
+    <h1 id="clips">HyVideo</h1>
     </div>
     <div id="section">
         <div id="leftPanel">
@@ -39,7 +39,6 @@
         </div>
 
         <div id="rightPanel" tabindex="0">
-            <h4 id="clips"></h4>
             <input type="text" class="inputText"/>
         </div>
     </div>

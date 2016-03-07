@@ -192,7 +192,7 @@ function dragstart(d) {//Start dragging node
     d3.event.sourceEvent.stopPropagation(); // silence other listeners
     console.log("dragstart");
     $("#clips").text("Video clips timestamp:" + JSON.stringify(d.video));
-    $("#clips").css({"visibility": "visible"});
+    //$("#clips").css({"visibility": "visible"});
     //console.log("Video clips timestamp:" + JSON.stringify(d.video));
 
     d3.select(this).classed("fixed", d.fixed = true);
@@ -249,7 +249,7 @@ function dragging(d)//drag node
 function dragend(d)//end dragging node
 {
     console.log("dragend");
-    $("#clips").css({"visibility": "hidden"});
+    $("#clips").text("HyVideo");
     $("#leftSub").removeHighlight();
     tick();
     force.resume();
@@ -277,6 +277,7 @@ function oneclick(d) {//one click node
             selectedNodeObj = d;
             d3.select(this).classed("connecting", d.connecting = true);
             hideSelectedLink();
+            startClips();
         }
         else {
             if (selectedNodeObj == d) return; //Self-connected is not allowed
@@ -598,6 +599,26 @@ var analyseNodes = function(jsonData) { //Analyse the textarea/jsonData and upda
 
     restartNodes();
 }
+var startClips = function(){
+    console.log('startClips');
+    if(selectedNodeObj){
+        var r = 20;
+        //var startTime = selectedNodeObj.video[0].startTime;
+        //var endTime = selectedNodeObj.video[0].endTime;
+        //console.log(clip);
+        selectedNodeObj.video.forEach(function(clipItem,clipIndex){
+            var clip = container.append("g").attr("class","clip");
+            clip.append("text")
+            .text("startTime: " + clipItem.startTime + ";" + " endTime: " + clipItem.endTime)
+            .style("font-size", 0)
+            .transition().duration(500)
+            .style("font-size", 10)
+            .attr("dy", ".35em")
+            .attr("x", 200)
+            .attr("y", 200);
+        });
+    }
+};
 //****************************************************************************
 var updateLinkLabelName = function(inputText) //update label name for link
 {
