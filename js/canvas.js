@@ -249,7 +249,7 @@ function dragging(d)//drag node
 function dragend(d)//end dragging node
 {
     console.log("dragend");
-    $("#clips").text("HyVideo");
+    $("#clips").text("");
     $("#leftSub").removeHighlight();
     tick();
     force.resume();
@@ -277,7 +277,7 @@ function oneclick(d) {//one click node
             selectedNodeObj = d;
             d3.select(this).classed("connecting", d.connecting = true);
             hideSelectedLink();
-            startClips();
+            //startClips();
         }
         else {
             if (selectedNodeObj == d) return; //Self-connected is not allowed
@@ -361,40 +361,8 @@ function clickSVG(d)
     else {
         hideSelectedLink();
     }
-
-    // if (d3.event.ctrlKey) {
-    //     var scale = zoom.scale();
-    //     zoom.center([d3.event.x, d3.event.y]);
-    //     scale = scale + 0.5;
-    //     if (scale > scaleMax) {
-    //         scale = scaleMax;
-    //         return;
-    //     }
-    //     zoom.scale(scale);
-    //     zoom.event(svg.transition().duration(800));
-    //     //console.log("+" + zoom.scale());
-    // }
-    // else if (d3.event.altKey) {
-    //     var scale = zoom.scale();
-    //     zoom.center([d3.event.x, d3.event.y]);
-    //     scale = scale - 0.5;
-    //     if (scale < scaleMin) {
-    //         scale = scaleMin;
-    //         return;
-    //     }
-    //     zoom.scale(scale);
-    //     zoom.event(svg.transition().duration(800));
-    //     //console.log("-" + zoom.scale());
-    // }
-    // else { }
 }
 function dblclickSVG(d) {
-    //selectedNodeObj = null;
-    //if (selectedNode)
-    //{
-    //    selectedNode.classed("connecting", selectedNodeObj.connecting = false);
-    //    selectedNode = null;
-    //}
     console.log("dblclickSVG-2");
     if (doubleClickNode){
         doubleClickNode = false;
@@ -577,48 +545,28 @@ var analyseNodes = function(jsonData) { //Analyse the textarea/jsonData and upda
             nodes.push(graphValue);
         }
     });
-
-    //Delete out-of-view nodes
-    // for (var i = 0; i < nodes.length; i++)
-    // {
-    //     if(nodes[i].fixed || nodes[i].connecting || nodes[i].connected) continue;
-
-    //     var delFlag = true;
-    //     graph.nodes.forEach(function (graphValue, graphIndex) {
-    //         if (graphValue.word.toUpperCase() == nodes[i].word.toUpperCase())
-    //         {
-    //             delFlag = false;
-    //         }
-    //     }); 
-
-    //     if (delFlag)
-    //     {
-    //         nodes.splice(i--, 1);
-    //     }
-    // }
-
     restartNodes();
 }
-var startClips = function(){
-    console.log('startClips');
-    if(selectedNodeObj){
-        var r = 20;
-        //var startTime = selectedNodeObj.video[0].startTime;
-        //var endTime = selectedNodeObj.video[0].endTime;
-        //console.log(clip);
-        selectedNodeObj.video.forEach(function(clipItem,clipIndex){
-            var clip = container.append("g").attr("class","clip");
-            clip.append("text")
-            .text("startTime: " + clipItem.startTime + ";" + " endTime: " + clipItem.endTime)
-            .style("font-size", 0)
-            .transition().duration(500)
-            .style("font-size", 10)
-            .attr("dy", ".35em")
-            .attr("x", 200)
-            .attr("y", 200);
-        });
-    }
-};
+// var startClips = function(){
+//     console.log('startClips');
+//     if(selectedNodeObj){
+//         var r = 20;
+//         //var startTime = selectedNodeObj.video[0].startTime;
+//         //var endTime = selectedNodeObj.video[0].endTime;
+//         //console.log(clip);
+//         selectedNodeObj.video.forEach(function(clipItem,clipIndex){
+//             var clip = container.append("g").attr("class","clip");
+//             clip.append("text")
+//             .text("startTime: " + clipItem.startTime + ";" + " endTime: " + clipItem.endTime)
+//             .style("font-size", 0)
+//             .transition().duration(500)
+//             .style("font-size", 10)
+//             .attr("dy", ".35em")
+//             .attr("x", 200)
+//             .attr("y", 200);
+//         });
+//     }
+// };
 //****************************************************************************
 var updateLinkLabelName = function(inputText) //update label name for link
 {
