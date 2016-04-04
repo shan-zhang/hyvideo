@@ -60,7 +60,7 @@
             for(var i = 0; i < myCues.length; i++){
                 tmp += myCues[i].getCueAsHTML().textContent + ' ';
             }
-            //Uncomment the below code to call external API for concept tagging, and the maximum call limit per day is 1000.
+            //The below code to call external API for concept tagging, and the maximum call limit per day is 1000.
             sendCuestoConceptTagging(tmp);
 
             for (var i = 0; i < myCues.length; i++) {
