@@ -32,11 +32,9 @@
         Your browser does not support the video tag.
         </video>
         <label>2-D Timeline</label>
-        <canvas id='leftSub'>
-        </canvas>
+        <canvas id='leftSub'></canvas>
+        <button id="clear" onclick="buttonClick()">Clear</button>
         <h3 id="clips"></h3>
-        <button onclick="buttonClick()">test</button>
-        <button onclick="buttonClick1()">test1</button>
         </div>
         <div id="rightPanel" tabindex="0">
             <input type="text" class="inputText"/>
@@ -102,16 +100,12 @@
             }
         });
         function buttonClick(){
-            console.log("call drawTimeline");
-            drawTimeline();
-        }
-        function buttonClick1(){
             if(paper.project.layers.length != 1){
                 paper.project.activeLayer.removeChildren();
                 paper.project.view.update();
             }
         }
-        function drawTimeline(timeline){
+        function drawTimeline(word, timeline){
             //console.log(paper.project);
             console.log("draw on the Timeline");
             console.log(timeline);
@@ -122,14 +116,39 @@
             var duration = document.getElementById("video").duration;
             var viewSize = paper.view.viewSize.width;
             console.log(duration);
+            var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
+            var myCues = myTrack.cues;   // get list of cues 
             timeline.forEach(function(timeStamp){
-                console.log(viewSize*timeStamp.startTime/duration);
                 var rect = new paper.Path.Rectangle(viewSize*timeStamp.startTime/duration,0,viewSize*(timeStamp.endTime - timeStamp.startTime)/duration,200);
                 rect.style = {
                     fillColor: 'red'
                 };
+                rect.startTime = timeStamp.startTime;
+                rect.word = word;
+                for (var i = 0; i < myCues.length; i++) {
+                    if(myCues[i].startTime == timeStamp.startTime && myCues[i].endTime == timeStamp.endTime){
+                        rect.showCue = myCues[i].getCueAsHTML().textContent;
+                        break;
+                    }
+                }
                 rect.onClick = function(event){
                     this.fillColor = 'green';
+                    console.log('startTime:' + this.startTime);
+                    document.getElementById("video").currentTime = this.startTime;
+                    document.getElementById("video").play();
+                };
+                rect.onMouseEnter = function(event){
+                    console.log(this.word);
+                    if(this.showCue){
+                        $("#clips").text(this.showCue);
+                        //hightlight text
+                        var highlightText = this.word;
+                        $("#clips").highlight(highlightText,"highlight");
+                    }
+                };
+                rect.onMouseLeave = function(event){
+                    $("#clips").text("");
+                    $("#clips").removeHighlight();
                 };
             });
             paper.project.view.update();

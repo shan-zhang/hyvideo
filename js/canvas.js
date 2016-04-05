@@ -192,7 +192,7 @@ function dragstart(d) {//Start dragging node
     d3.event.sourceEvent.stopPropagation(); // silence other listeners
     console.log("dragstart");
     $("#clips").text("Video clips timestamp:" + JSON.stringify(d.video));
-    drawTimeline(d.video);
+    drawTimeline(d.word, d.video);
     //$("#clips").css({"visibility": "visible"});
     //console.log("Video clips timestamp:" + JSON.stringify(d.video));
 
