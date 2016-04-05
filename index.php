@@ -25,7 +25,7 @@
     </div>
     <div id="section">
         <div id="leftPanel">
-        <video controls>
+        <video id="video" controls>
           <source src="video/example1.webm" type="video/webm">
           <source src="video/example1.mp4" type="video/mp4">
           <track src="video/example1.vtt" label="English subtitles" kind="subtitles" type="text/vtt" srclang='en' default></track>
@@ -108,20 +108,32 @@
         function buttonClick1(){
             if(paper.project.layers.length != 1){
                 paper.project.activeLayer.removeChildren();
+                paper.project.view.update();
             }
         }
-        function drawTimeline(){
+        function drawTimeline(timeline){
             //console.log(paper.project);
-            if(paper.project.layers.length == 1){
-                new paper.Layer();
+            console.log("draw on the Timeline");
+            console.log(timeline);
+            if(paper.project.layers.length != 1){
+                paper.project.activeLayer.removeChildren();
             }
-            var rect = new paper.Path.Rectangle(20,0,10,200);
-            rect.style = {
-                fillColor: 'red'
-            };
-            rect.onClick = function(event){
-                this.fillColor = 'green';
-            };
+            new paper.Layer();
+            var duration = document.getElementById("video").duration;
+            var viewSize = paper.view.viewSize.width;
+            console.log(duration);
+            timeline.forEach(function(timeStamp){
+                console.log(viewSize*timeStamp.startTime/duration);
+                var rect = new paper.Path.Rectangle(viewSize*timeStamp.startTime/duration,0,viewSize*(timeStamp.endTime - timeStamp.startTime)/duration,200);
+                rect.style = {
+                    fillColor: 'red'
+                };
+                rect.onClick = function(event){
+                    this.fillColor = 'green';
+                };
+            });
+            paper.project.view.update();
+            console.log("Drawing is over");
         }
     </script>
 </body>
