@@ -1,5 +1,5 @@
 <?php
-    $file = file('data/Nouns.txt',FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $file = file('data/PilotStudy.txt',FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     //echo sizeof($file);
     // foreach($file as $line){
     //     echo $line;

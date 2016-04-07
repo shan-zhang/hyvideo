@@ -37,9 +37,10 @@ var localTextParsing = function(subtitle, startTime, endTime){
 	words.forEach(function (wordValue, wordIndex) {
 		var isExisted = false;
 		var tmp = wordValue.trim();
+		tmp = tmp.toLowerCase();
 		localJson.forEach(function (JsonValue, JsonIndex) {
 			//Check this word has already been stored into localJson
-		    if (JsonValue.word.toUpperCase() == tmp.toUpperCase()) {
+		    if (JsonValue.word.toLowerCase() == tmp) {
 		        isExisted = true;
 		        JsonValue.frequency++;
 		    }
@@ -48,7 +49,7 @@ var localTextParsing = function(subtitle, startTime, endTime){
 		if (!isExisted) {
 		    var isNoun = false;//Check if this word has appeared in the tmp Cache: either is noun or not.
 		    for (var i = 0; i < tmpCache.length; i++) {
-		        if (tmp.toUpperCase() == tmpCache[i].word.toUpperCase()) {
+		        if (tmp == tmpCache[i].word){
 		            isNoun = tmpCache[i].isNoun;
 		            break;
 		        }
@@ -59,10 +60,27 @@ var localTextParsing = function(subtitle, startTime, endTime){
 		    else {
 		        var isNewNoun = false;
 		        for (var i = 0; i < greatNounList.length; i++) {
-		            if (greatNounList[i].toUpperCase() == tmp.toUpperCase()) {
-		                localJson.push({ "word": tmp, "frequency": 1, "video": [{"startTime": startTime,"endTime":endTime}]});
-		                tmpCache.push({ "word": tmp, "isNoun": true });
-		                isNewNoun = true;
+		        	if(greatNounList[i].length >= 2 && greatNounList[i].substring(0,2) == "//") continue;
+		        	//This is the one word per line checking:
+		            // if (greatNounList[i].toLowerCase() == tmp.toLowerCase()) {
+		            //     localJson.push({ "word": tmp, "frequency": 1, "video": [{"startTime": startTime,"endTime":endTime}]});
+		            //     tmpCache.push({ "word": tmp, "isNoun": true });
+		            //     isNewNoun = true;
+		            //     break;
+		            // }
+
+		            //********************************
+		            //This is the multiple words per line checking:
+		            var multiTerms = greatNounList[i].split(" ");
+		            multiTerms.forEach(function(multiTermsItem){
+						if(multiTermsItem.toLowerCase() == tmp)
+						{
+							isNewNoun = true;
+						}
+		            });
+		            if(isNewNoun){
+		      		    localJson.push({ "word": multiTerms[0].toLowerCase(), "frequency": 1, "video": [{"startTime": startTime,"endTime":endTime}]});
+		                tmpCache.push({ "word": multiTerms[0].toLowerCase(), "isNoun": true });
 		                break;
 		            }
 		        }

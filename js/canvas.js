@@ -18,7 +18,12 @@ var doubleClickLink = false;
 
 var log2 = function (val)
 {
-    return Math.log(val) / Math.LN2;
+    if(val <= 4){
+        return Math.log(val) / Math.log(2);
+    }
+    else{
+        return 2 + Math.log(val) / Math.log(10);
+    }
 };
 
 var updateSize = function (updatwWidth, updateheight) {
@@ -534,7 +539,7 @@ var analyseNodes = function(jsonData) { //Analyse the textarea/jsonData and upda
     graph.nodes.forEach(function (graphValue, graphIndex) {
         var isExist = false;
         nodes.forEach(function (nodesValue, nodesIndex) {
-            if(nodesValue.word.toUpperCase() == graphValue.word.toUpperCase())
+            if(nodesValue.word.toLowerCase() == graphValue.word.toLowerCase())
             {
                 nodesValue.frequency += graphValue.frequency;
                 nodesValue.video.push({"startTime": graphValue.video[0].startTime,"endTime":graphValue.video[0].endTime});
@@ -739,7 +744,7 @@ var updateNoteNodeWord = function (inputText)//Update Node word for Nodes
     nodes.splice(selectedNodeIndex, 1);
     var newAddNode = null;
     nodes.forEach(function (nodeValue, nodeIndex) {
-        if (nodeValue.word.toUpperCase() == inputText.toUpperCase()) {
+        if (nodeValue.word.toLowerCase() == inputText.toLowerCase()) {
             newAddNode = nodeValue;
         }
     });
