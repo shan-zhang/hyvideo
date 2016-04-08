@@ -196,7 +196,7 @@ function dragstart(d) {//Start dragging node
     //d3.event.sourceEvent.stopPropagation();
     d3.event.sourceEvent.stopPropagation(); // silence other listeners
     console.log("dragstart");
-    $("#clips").text("Video clips timestamp:" + JSON.stringify(d.video));
+    //$("#clips").text("Video clips timestamp:" + JSON.stringify(d.video));
     drawTimeline(d.word, d.video);
     //$("#clips").css({"visibility": "visible"});
     //console.log("Video clips timestamp:" + JSON.stringify(d.video));
@@ -255,7 +255,7 @@ function dragging(d)//drag node
 function dragend(d)//end dragging node
 {
     console.log("dragend");
-    $("#clips").text("");
+    //$("#clips").text("");
     $("#leftSub").removeHighlight();
     tick();
     force.resume();
@@ -788,4 +788,11 @@ var updateNoteNodeWord = function (inputText)//Update Node word for Nodes
     restartNodes();
     restartLinks();
     restartLabels();
+}
+//************************************************************************
+var saveNote = function () {
+    var savedString = {};
+    savedString.node = nodes;
+    savedString.link = links;
+    return JSON.stringify(savedString);
 }

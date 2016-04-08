@@ -35,6 +35,16 @@
         <canvas id='leftSub'></canvas>
         <button id="clear" onclick="buttonClick()">Clear</button>
         <h3 id="clips"></h3>
+        <div id='footerButton'>        
+            <form action='' method='POST' enctype='multipart/form-data'>
+                <label>Load Concept-Map:</label>
+                <input type='file' name='userFile'>
+                <input type='submit' name='upload_btn' value='upload'>
+            </form>
+            <br/>
+            <label>Download Concept-Map:</label>
+            <a href="" download>click</a>
+        </div>
         </div>
         <div id="rightPanel" tabindex="0">
             <input type="text" class="inputText"/>
@@ -80,7 +90,7 @@
                         localTextParsing(this.getCueAsHTML().textContent, this.startTime, this.endTime);
                     }
                 };
-                myCues[i].onexit = function(){
+                myCues[i].onexit = function(){  
                     this.show = true;
                 };
             }
@@ -153,6 +163,13 @@
             });
             paper.project.view.update();
             console.log("Drawing is over");
+        }
+        function readNoteFromFile(){
+
+        }
+
+        function saveNoteToFile (){
+
         }
     </script>
 </body>
