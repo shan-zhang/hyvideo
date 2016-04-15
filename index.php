@@ -36,14 +36,12 @@
         <button id="clear" onclick="buttonClick()">Clear</button>
         <h3 id="clips"></h3>
         <div id='footerButton'>        
-            <form action='' method='POST' enctype='multipart/form-data'>
-                <label>Load Concept-Map:</label>
-                <input type='file' name='userFile'>
-                <input type='submit' name='upload_btn' value='upload'>
-            </form>
+            <label>Load Concept-Map:</label>
+            <input type='file' id='file' name='userFile' accept="application/json">
+            <br/>
             <br/>
             <label>Download Concept-Map:</label>
-            <a href="" download>click</a>
+            <a id='click' href="#">click</a>
         </div>
         </div>
         <div id="rightPanel" tabindex="0">
@@ -60,6 +58,12 @@
         };
     </script>
     <script>
+        // Check for the various File API support.
+        if (window.File && window.FileReader && window.FileList && window.Blob) {
+          // Great success! All the File APIs are supported.
+        } else {
+          alert('The File APIs are not fully supported in this browser.');
+        }
         paper.install(window);
         paper.setup('leftSub');
         window.addEventListener("load",function() {
@@ -164,12 +168,53 @@
             paper.project.view.update();
             console.log("Drawing is over");
         }
+
+        $('#click').click(function(){ saveNoteToFile(); return false; });
+
         function readNoteFromFile(){
 
         }
+        function handleFileSelect(evt) {
+            var file = evt.target.files[0]; // FileList object
+            if(file){
+                var reader = new FileReader();
+                reader.readAsText(file);
 
+                reader.onload = function(e){
+                    var result = jQuery.parseJSON(reader.result);
+                    console.log(result);
+                }
+            }
+            // files is a FileList of File objects. List some properties.
+            // var output = [];
+            // for (var i = 0, f; f = files[i]; i++) {
+            //   output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
+            //               f.size, ' bytes, last modified: ',
+            //               f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
+            //               '</li>');
+            // }
+            // document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+        }
+        document.getElementById('file').addEventListener('change', handleFileSelect, false);
+        
         function saveNoteToFile (){
-
+            console.log('123');
+            var savedNote = saveNote();
+            $.ajax({
+                url : "php/SaveDataToCookies.php",
+                type: "POST",
+                data : {'name':'savedNote','data':savedNote},
+                success: function(data, textStatus, jqXHR)
+                {
+                    //data - response from server
+                    window.location.href = 'php/downloadSavedNote.php';
+                    console.log(data);
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    alert('err in sending requests');
+                }
+            });
         }
     </script>
 </body>
