@@ -15,5 +15,5 @@ else{
 	$_SESSION[$session_name] = $session_value;
 }
 
-echo 'test';
+echo 'save data to cookies';
 ?>

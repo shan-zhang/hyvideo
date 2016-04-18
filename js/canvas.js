@@ -553,26 +553,7 @@ var analyseNodes = function(jsonData) { //Analyse the textarea/jsonData and upda
     });
     restartNodes();
 }
-// var startClips = function(){
-//     console.log('startClips');
-//     if(selectedNodeObj){
-//         var r = 20;
-//         //var startTime = selectedNodeObj.video[0].startTime;
-//         //var endTime = selectedNodeObj.video[0].endTime;
-//         //console.log(clip);
-//         selectedNodeObj.video.forEach(function(clipItem,clipIndex){
-//             var clip = container.append("g").attr("class","clip");
-//             clip.append("text")
-//             .text("startTime: " + clipItem.startTime + ";" + " endTime: " + clipItem.endTime)
-//             .style("font-size", 0)
-//             .transition().duration(500)
-//             .style("font-size", 10)
-//             .attr("dy", ".35em")
-//             .attr("x", 200)
-//             .attr("y", 200);
-//         });
-//     }
-// };
+
 //****************************************************************************
 var updateLinkLabelName = function(inputText) //update label name for link
 {
@@ -583,6 +564,7 @@ var updateLinkLabelName = function(inputText) //update label name for link
     //restartLinks();
     //console.log(inputText);
 };
+
 var delLinkandLabel = function ()//delete selected link and its label
 {
     $(".inputText").css({ "visibility": "hidden" });
@@ -795,4 +777,34 @@ var saveNote = function () {
     savedString.node = nodes;
     savedString.link = links;
     return JSON.stringify(savedString);
+}
+
+var setNote = function(result){
+    selectedNode = null;
+    selectedNodeObj = null;
+    selectedLink = null;
+    selectedLinkObj = null;
+    dragNodeObj = null;
+    clickOntoLinks = false;
+    translate = [0, 0];
+    scale = 1;
+
+    nodes.splice(0, nodes.length);
+    links.splice(0, links.length);
+
+    if(result.node){
+        result.node.forEach(function(nodeItem){
+            nodes.push(nodeItem);
+        });
+    }
+
+    if(result.link){
+        result.link.forEach(function(linkItem){
+            links.push(linkItem);
+        });      
+    }
+
+    restartNodes();
+    restartLinks();
+    restartLabels();
 }

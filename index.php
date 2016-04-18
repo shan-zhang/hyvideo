@@ -37,7 +37,7 @@
         <h3 id="clips"></h3>
         <div id='footerButton'>        
             <label>Load Concept-Map:</label>
-            <input type='file' id='file' name='userFile' accept="application/json">
+            <input type='file' id='file' name='userFile' accept=".json">
             <br/>
             <br/>
             <label>Download Concept-Map:</label>
@@ -67,11 +67,7 @@
         paper.install(window);
         paper.setup('leftSub');
         window.addEventListener("load",function() {
-            var canvasWidth = document.getElementById('rightPanel').offsetWidth;
-            var canvasHeight = document.getElementById('rightPanel').offsetHeight;
-            var canvasPositionX = $('#rightPanel').offset().left;
-            var canvasPositionY = $('#rightPanel').offset().top;
-            drawCanvas(canvasWidth,canvasHeight,canvasPositionX,canvasPositionY);//Draw the D3 layout to the page
+            setCanvas();
             greatNounList = <?php echo json_encode($file); ?>;
             //console.log(greatNounList);
             var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
@@ -113,6 +109,13 @@
                 else { console.log("No update while type enter in inputText."); }
             }
         });
+        function setCanvas(){
+            var canvasWidth = document.getElementById('rightPanel').offsetWidth;
+            var canvasHeight = document.getElementById('rightPanel').offsetHeight;
+            var canvasPositionX = $('#rightPanel').offset().left;
+            var canvasPositionY = $('#rightPanel').offset().top;
+            drawCanvas(canvasWidth,canvasHeight,canvasPositionX,canvasPositionY);//Draw the D3 layout to the page
+        }
         function buttonClick(){
             if(paper.project.layers.length != 1){
                 paper.project.activeLayer.removeChildren();
@@ -171,10 +174,8 @@
 
         $('#click').click(function(){ saveNoteToFile(); return false; });
 
-        function readNoteFromFile(){
-
-        }
         function handleFileSelect(evt) {
+            console.log(evt);
             var file = evt.target.files[0]; // FileList object
             if(file){
                 var reader = new FileReader();
@@ -182,23 +183,20 @@
 
                 reader.onload = function(e){
                     var result = jQuery.parseJSON(reader.result);
+                    if(result.node){
+                        setNote(result);
+                        evt.srcElement.value = null;
+                    }
+                    else{
+                        alert('The input file format is incorrect!');
+                    }
                     console.log(result);
                 }
             }
-            // files is a FileList of File objects. List some properties.
-            // var output = [];
-            // for (var i = 0, f; f = files[i]; i++) {
-            //   output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
-            //               f.size, ' bytes, last modified: ',
-            //               f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
-            //               '</li>');
-            // }
-            // document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
         }
         document.getElementById('file').addEventListener('change', handleFileSelect, false);
-        
+
         function saveNoteToFile (){
-            console.log('123');
             var savedNote = saveNote();
             $.ajax({
                 url : "php/SaveDataToCookies.php",
