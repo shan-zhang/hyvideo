@@ -201,16 +201,16 @@ function dragstart(d) {//Start dragging node
     //$("#clips").css({"visibility": "visible"});
     //console.log("Video clips timestamp:" + JSON.stringify(d.video));
 
+    if(dragNodeObj && dragNodeObj.data()[0].word != d3.select(this).data()[0].word){
+        dragNodeObj.classed("dragged", dragNodeObj.data()[0].dragged = false);
+    }
+
     d3.select(this).classed("fixed", d.fixed = true);
+    d3.select(this).classed("dragged", d.dragged = true);
+
     dragNodeObj = d3.select(this);
     clickOntoLinks = true;
-    
-    //if (selectedNodeObj && selectedNodeObj != d) {
-    //    selectedNodeObj = null;
-    //    selectedNode.classed("connecting", d.connecting = false);
-    //    selectedNode = null;
-    //}
-//-------------------------------------
+
 //hightlight text
     var highlightText = d.word;
     $("#leftSub").highlight(highlightText,"highlight");
@@ -459,23 +459,27 @@ var restartLinks = function() {//redrawing Links
 var restartNodes = function () {//redrawing Nodes
     //Printf for debugging
     console.log("NodeNum:" + force.nodes().length);
-    console.log(JSON.stringify(nodes));
+    //console.log(JSON.stringify(nodes));
     node = node.data(force.nodes(), function (d) { return d.word; });
 
     //Data-Join : Update
-    node.attr("class", function (d) {
-        if (d.fixed) {
-            //if (d.connecting) return "node fixed connecting";
-            //else return "node fixed";
-            return "node fixed";
-        }
-        else if (d.connected) {
-            return "node connected";
-        }
-        else {
-            return "node";
-        }
-    });
+    // node.attr("class", function (d) {
+    //     if (d.fixed) {
+    //         // if (d.connecting) return "node fixed connecting";
+    //         //     else return "node fixed";
+
+    //         return "node fixed";
+    //     }
+    //     else if (d.connected) {
+    //         return "node connected";
+    //     }
+    //     else if(d.dragged){
+    //         return "node dragged";
+    //     }
+    //     else {
+    //         return "node";
+    //     }
+    // });
 
     node.select("circle")
         .transition().duration(500)
@@ -488,17 +492,20 @@ var restartNodes = function () {//redrawing Nodes
     //Data-Join: Enter
     var nodeEnter = node.enter().append("g")
         //.attr("class", "node")
-         .attr("class", function (d) {
-             if (d.fixed) {
-                 return "node fixed";
-             }
-             else if (d.connected) {
-                 return "node connected";
-             }
-             else {
-                 return "node";
-             }
-         })
+         // .attr("class", function (d) {
+         //     if (d.fixed) {
+         //         return "node fixed";
+         //     }
+         //     else if (d.connected) {
+         //         return "node connected";
+         //     }
+         //     else if(d.dragged){
+         //         return "node dragged";
+         //     }
+         //     else {
+         //         return "node";
+         //     }
+         // })
         //.attr("id", function (d) { return d.id; })
         .on("dblclick", dblclick)
         .on("click", oneclick)
@@ -804,6 +811,7 @@ var setNote = function(result){
         });      
     }
 
+    linkstoNodes();
     restartNodes();
     restartLinks();
     restartLabels();

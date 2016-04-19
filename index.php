@@ -34,6 +34,7 @@
         <label>2-D Timeline</label>
         <canvas id='leftSub'></canvas>
         <button id="clear" onclick="buttonClick()">Clear</button>
+        <button id="conceptsMapping" onclick="conceptsMapping()">Manual Concept-Map</button>
         <h3 id="clips"></h3>
         <div id='footerButton'>        
             <label>Load Concept-Map:</label>
@@ -70,6 +71,29 @@
             setCanvas();
             greatNounList = <?php echo json_encode($file); ?>;
             //console.log(greatNounList);
+        });
+        $(".inputText").keyup(function (e) {
+            if (e.keyCode == 13) {
+                // Do something
+                var inputText = $(".inputText").val();
+                inputText = inputText.trim();
+                if (selectedLinkObj) {
+                    updateLinkLabelName(inputText);
+                }
+                else if (selectedNodeObj) {
+                    updateNoteNodeWord(inputText);
+                }
+                else { console.log("No update while type enter in inputText."); }
+            }
+        });
+        function setCanvas(){
+            var canvasWidth = document.getElementById('rightPanel').offsetWidth;
+            var canvasHeight = document.getElementById('rightPanel').offsetHeight;
+            var canvasPositionX = $('#rightPanel').offset().left;
+            var canvasPositionY = $('#rightPanel').offset().top;
+            drawCanvas(canvasWidth,canvasHeight,canvasPositionX,canvasPositionY);//Draw the D3 layout to the page
+        }
+        function conceptsMapping(){
             var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
             var myCues = myTrack.cues;   // get list of cues 
             var tmp = '';
@@ -94,38 +118,21 @@
                     this.show = true;
                 };
             }
-        });
-        $(".inputText").keyup(function (e) {
-            if (e.keyCode == 13) {
-                // Do something
-                var inputText = $(".inputText").val();
-                inputText = inputText.trim();
-                if (selectedLinkObj) {
-                    updateLinkLabelName(inputText);
-                }
-                else if (selectedNodeObj) {
-                    updateNoteNodeWord(inputText);
-                }
-                else { console.log("No update while type enter in inputText."); }
-            }
-        });
-        function setCanvas(){
-            var canvasWidth = document.getElementById('rightPanel').offsetWidth;
-            var canvasHeight = document.getElementById('rightPanel').offsetHeight;
-            var canvasPositionX = $('#rightPanel').offset().left;
-            var canvasPositionY = $('#rightPanel').offset().top;
-            drawCanvas(canvasWidth,canvasHeight,canvasPositionX,canvasPositionY);//Draw the D3 layout to the page
         }
         function buttonClick(){
             if(paper.project.layers.length != 1){
                 paper.project.activeLayer.removeChildren();
                 paper.project.view.update();
             }
+            if(dragNodeObj){
+                dragNodeObj.classed("dragged", dragNodeObj.data()[0].dragged = false);
+                dragNodeObj = null;
+            }
         }
         function drawTimeline(word, timeline){
             //console.log(paper.project);
             console.log("draw on the Timeline");
-            console.log(timeline);
+            //console.log(timeline);
             if(paper.project.layers.length != 1){
                 paper.project.activeLayer.removeChildren();
             }

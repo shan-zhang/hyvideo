@@ -44,6 +44,11 @@ path.overlappingLink {
     fill: darkgray;
 }
 
+.dragged .circle{
+    stroke: #006600;
+    stroke-width: 2.5px;
+}
+
 text {
   font: 24px "Helvetica Neue", Helvetica, Arial, sans-serif;
   text-anchor: middle;
