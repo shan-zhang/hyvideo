@@ -196,25 +196,25 @@ function dragstart(d) {//Start dragging node
     //d3.event.sourceEvent.stopPropagation();
     d3.event.sourceEvent.stopPropagation(); // silence other listeners
     console.log("dragstart");
-    //$("#clips").text("Video clips timestamp:" + JSON.stringify(d.video));
-    drawTimeline(d.word, d.video);
-    //$("#clips").css({"visibility": "visible"});
-    //console.log("Video clips timestamp:" + JSON.stringify(d.video));
-
-    if(dragNodeObj && dragNodeObj.data()[0].word != d3.select(this).data()[0].word){
-        dragNodeObj.classed("dragged", dragNodeObj.data()[0].dragged = false);
-    }
-
-    d3.select(this).classed("fixed", d.fixed = true);
-    d3.select(this).classed("dragged", d.dragged = true);
-
-    dragNodeObj = d3.select(this);
     clickOntoLinks = true;
+    d3.select(this).classed("fixed", d.fixed = true);
+    
+    if(d.word && d.video){//This is an empty node
+        drawTimeline(d.word, d.video);
+        //$("#clips").text("Video clips timestamp:" + JSON.stringify(d.video));
+        //console.log("Video clips timestamp:" + JSON.stringify(d.video));
 
-//hightlight text
-    var highlightText = d.word;
-    $("#leftSub").highlight(highlightText,"highlight");
-    //console.log("highlightText:" + highlightText);
+        if(dragNodeObj && dragNodeObj.data()[0].word != d3.select(this).data()[0].word){
+            dragNodeObj.classed("dragged", dragNodeObj.data()[0].dragged = false);
+        }
+        d3.select(this).classed("dragged", d.dragged = true);
+        dragNodeObj = d3.select(this);
+
+        //hightlight text
+        var highlightText = d.word;
+        $("#leftSub").highlight(highlightText,"highlight");
+        //console.log("highlightText:" + highlightText);
+    }
 }
 function dragging(d)//drag node
 {
