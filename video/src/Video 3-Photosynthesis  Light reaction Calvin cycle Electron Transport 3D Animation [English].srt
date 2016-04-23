@@ -118,8 +118,8 @@ within eukaryotic photosynthetic
 organisms also known as 
 
 27
-00:01:29,689 --> 00:01:29,761
-photoautotropes
+00:01:29,000 --> 00:01:30,261
+photoautotrophs
 
 28
 00:01:30,409 --> 00:01:34,466
@@ -181,7 +181,7 @@ is initiated
 40
 00:02:11,819 --> 00:02:16,848
 in most photosynthetic organisms thylakoid
-contain pairs a photosystems
+contain pairs of photosystems
 
 41
 00:02:17,109 --> 00:02:20,114
@@ -189,20 +189,20 @@ called photosystem one and photosystem
 two
 
 42
-00:02:20,609 --> 00:02:23,700
+00:02:20,609 --> 00:02:24,588
 that work in tandem to produce the
-energy that will later be used in the
+energy that will later be used in the stroma
 
 43
-00:02:24,519 --> 00:02:24,588
-stroma
+
+
 
 44
 00:02:25,209 --> 00:02:28,810
 to manufacture sugars
 
 45
-00:02:28,081 --> 00:02:31,098
+00:02:28,815 --> 00:02:31,098
 the photosystems of the thylakoid
 consist of a network
 
@@ -227,7 +227,7 @@ excites electrons to a higher state
 photosystems will channel the
 
 50
-00:02:46,092 --> 00:02:47,131
+00:02:46,925 --> 00:02:48,000
 excitation energy
 
 51
@@ -245,7 +245,7 @@ series of proteins
 located on the final thylakoid membrane
 
 54
-00:02:59,094 --> 00:03:04,111
+00:02:59,945 --> 00:03:04,111
 photons of light strike photosystems
 1&2 simultaneously
 
@@ -259,7 +259,7 @@ photon striking photosystem
 two first
 
 57
-00:03:11,022 --> 00:03:15,119
+00:03:11,225 --> 00:03:15,119
 the energized electrons are passed from
 the reaction center of photosystem two
 
@@ -278,7 +278,7 @@ photolysis
 
 61
 00:03:25,349 --> 00:03:28,374
-which involves the oxidation a water
+which involves the oxidation of a water
 molecule
 
 62
@@ -286,7 +286,7 @@ molecule
 producing free electrons and oxygen gas
 
 63
-00:03:32,036 --> 00:03:35,102
+00:03:32,365 --> 00:03:35,102
 well this oxygen gas is a byproduct of
 photosynthesis
 
@@ -333,22 +333,21 @@ photosystem two
 are shuttled to photosystem one
 
 73
-00:04:12,089 --> 00:04:16,140
+00:04:12,089 --> 00:04:16,900
 within photosystem one low energy electrons
 are reenergized
 
 74
 00:04:17,004 --> 00:04:20,078
 and are passed through an electron
-transport chain where they are used to
+transport chain 
 
 75
-00:04:21,014 --> 00:04:22,092
-reduce the electron carrier
+00:04:21,014 --> 00:04:29,092
+where they are used to reduce the electron carrier NADP+ to NADPH
 
 76
-00:04:22,092 --> 00:04:29,092
-NADP+ to NADPH
+
 
 77
 00:04:39,033 --> 00:04:42,087
@@ -356,7 +355,7 @@ when the chloroplast is receiving a
 steady supply of photons
 
 78
-00:04:42,087 --> 00:04:45,128
+00:04:42,087 --> 00:04:45,020
 NADPH and ATP molecules
 
 79
@@ -365,7 +364,7 @@ are rapidly being provided to the
 metabolic pathways
 
 80
-00:04:49,054 --> 00:04:50,125
+00:04:49,054 --> 00:04:50,800
 in the stroma
 
 81
@@ -416,7 +415,7 @@ splits into two
 three carbon molecules
 
 91
-00:05:31,063 --> 00:05:34,144
+00:05:31,635 --> 00:05:34,144
 the second step is a sequence of
 reactions using electrons from
 
@@ -429,67 +428,67 @@ NADPH and some of the ATP
 to reduce carbon dioxide
 
 94
-00:05:45,064 --> 00:05:47,093
-in the final step ribulose 1,5-bisphosphate
+00:05:45,064 --> 00:05:50,093
+in the final step ribulose 1,5-bisphosphate is regenerated
 
 95
-00:05:47,093 --> 00:05:50,164
-is regenerated
+
+
 
 96
 00:05:51,064 --> 00:05:56,141
-for every three turns have the cycle 5
+for every three turns of the cycle, five
 molecules of glyceraldehyde-3-phosphate
 
 97
 00:05:57,041 --> 00:06:04,041
 are used to reform three molecules of
-ribulose 1,5-bisphosphate
+ribulose 1,5-bisphosphate.
 
 98
-00:06:06,094 --> 00:06:06,159
-the remaining
+
+
 
 99
-00:06:07,059 --> 00:06:10,136
-glyceraldehyde-3-phosphate is then used
+00:06:06,059 --> 00:06:11,036
+The remaining glyceraldehyde-3-phosphate is then used
 to make glucose
 
 100
 00:06:11,036 --> 00:06:16,090
-fatty acids or glycerol
+fatty acids or glycerol.
 
 101
 00:06:16,009 --> 00:06:19,084
-it takes two molecules of
+It takes two molecules of
 glyceraldehyde-3-phosphate
 
 102
 00:06:20,065 --> 00:06:23,091
 to make one molecule of glucose
-phosphate
+phosphate.
 
 103
-00:06:23,091 --> 00:06:27,144
-thus the Calvin cycle has to run six
-times to produce one molecule
+00:06:23,091 --> 00:06:29,144
+Thus, the Calvin cycle has to run six
+times to produce one molecule of glucose
 
 104
-00:06:28,044 --> 00:06:29,133
-of glucose
+
+
 
 105
-00:06:30,033 --> 00:06:34,051
-these molecules can remove their
-phosphate and add fructose to form
+00:06:30,033 --> 00:06:34,800
+These molecules can remove their
+phosphate and add fructose to form sucrose.
 
 106
-00:06:34,051 --> 00:06:34,138
-sucrose
+
+
 
 107
 00:06:35,038 --> 00:06:40,083
-the molecule plants used to transport
+The molecule plants used to transport
 carbohydrates throughout their system
 
 108
@@ -533,7 +532,7 @@ byproduct
 
 116
 00:07:14,002 --> 00:07:18,861
-and thus served as the foundation of life
+and thus served as the foundation of life,
 providing food and oxygen
 
 117
