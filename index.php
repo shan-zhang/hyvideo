@@ -28,7 +28,7 @@
         <video id="video" controls>
           <source src="video/example1.webm" type="video/webm">
           <source src="video/example1.mp4" type="video/mp4">
-          <track src="video/example1.vtt" label="English subtitles" kind="subtitles" type="text/vtt" srclang='en' default></track>
+          <track src="video/src/example1.vtt" label="English subtitles" kind="subtitles" type="text/vtt" srclang='en' default></track>
         Your browser does not support the video tag.
         </video>
         <label>2-D Timeline</label>
@@ -92,6 +92,14 @@
             var canvasPositionX = $('#rightPanel').offset().left;
             var canvasPositionY = $('#rightPanel').offset().top;
             drawCanvas(canvasWidth,canvasHeight,canvasPositionX,canvasPositionY);//Draw the D3 layout to the page
+        }
+        function getConceptsFromSubtitles(){
+            var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
+            var myCues = myTrack.cues;   // get list of cues 
+            var tmp = '';
+            for(var i = 0; i < myCues.length; i++){
+                localTextParsing(myCues[i].getCueAsHTML().textContent, myCues[i].startTime, myCues[i].endTime);
+            }
         }
         function conceptsMapping(){
             var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element

@@ -1,0 +1,546 @@
+1
+00:00:00,229 --> 00:00:04,330
+in order for plants to grow they need
+imports of carbon dioxide
+
+2
+00:00:04,033 --> 00:00:06,036
+water and energy
+
+3
+00:00:06,036 --> 00:00:10,120
+the chemical process by which plants use
+these resources to manufacture glucose
+
+4
+00:00:11,002 --> 00:00:14,099
+the building blocks of plants is called
+photosynthesis
+
+5
+00:00:15,017 --> 00:00:18,026
+in the process oxygen gases produced
+
+6
+00:00:18,026 --> 00:00:19,091
+as a byproduct
+
+7
+00:00:19,091 --> 00:00:22,700
+the energy for photosynthesis originates
+in the Sun
+
+8
+00:00:23,519 --> 00:00:26,360
+and arrives at the earth as sunlight
+
+9
+00:00:26,036 --> 00:00:30,038
+this light has both a wave and a
+particle nature
+
+10
+00:00:30,038 --> 00:00:34,039
+the particles or photons are the
+smallest units of light
+
+11
+00:00:34,039 --> 00:00:37,638
+photons oscillates along a path which is
+measured
+
+12
+00:00:37,989 --> 00:00:41,500
+as wavelengths
+
+13
+00:00:41,005 --> 00:00:45,016
+the light emitted from the Sun contains
+photons in a wide spectrum of
+
+14
+00:00:45,061 --> 00:00:46,063
+wavelengths
+
+15
+00:00:46,063 --> 00:00:49,130
+called the electromagnetic spectrum
+
+16
+00:00:50,003 --> 00:00:53,081
+photosynthetic organisms use only a
+small portion of the electromagnetic
+
+17
+00:00:54,008 --> 00:00:55,043
+spectrum
+
+18
+00:00:55,043 --> 00:00:58,051
+called visible light
+
+19
+00:00:58,051 --> 00:01:02,100
+photosynthetic organisms contain
+pigments that facilitate the capture of
+
+20
+00:01:03,000 --> 00:01:04,028
+wavelengths of light
+
+21
+00:01:04,028 --> 00:01:06,120
+in the visible light range
+
+22
+00:01:07,002 --> 00:01:11,028
+the color of a pigment comes from the
+wavelengths of light reflected
+
+23
+00:01:11,046 --> 00:01:16,049
+plants appear green because they reflect
+yellow and green wavelengths of light
+
+24
+00:01:16,076 --> 00:01:19,138
+red and blue wavelengths of light are
+absorbed by these pigments
+
+25
+00:01:20,038 --> 00:01:24,567
+and provide the energy that is used for
+photosynthesis
+
+26
+00:01:24,909 --> 00:01:28,987
+within eukaryotic photosynthetic
+organisms also known as 
+
+27
+00:01:29,689 --> 00:01:29,761
+photoautotropes
+
+28
+00:01:30,409 --> 00:01:34,466
+the chemical reactions of photosynthesis
+occur within plant cells
+
+29
+00:01:34,979 --> 00:01:38,068
+in specialized structures known as
+chloroplast
+
+30
+00:01:38,869 --> 00:01:42,700
+photosynthesis consists of two sets of
+reactions
+
+31
+00:01:42,007 --> 00:01:46,021
+the light dependent reactions and the
+Calvin cycle
+
+32
+00:01:46,084 --> 00:01:49,132
+within the chloroplast are small disc
+like structures
+
+33
+00:01:50,032 --> 00:01:54,060
+called thylakoids which are
+surrounded by a fluid-filled space
+
+34
+00:01:54,006 --> 00:01:55,079
+called the stroma
+
+35
+00:01:56,033 --> 00:01:59,115
+the reactions that synthesize glucose
+the Calvin cycle
+
+36
+00:02:00,015 --> 00:02:02,039
+occur in the stroma
+
+37
+00:02:02,039 --> 00:02:06,040
+the light dependent reactions occur in
+the thylakoid
+
+38
+00:02:06,004 --> 00:02:09,012
+it is here that conversion of light
+energy to chemical energy
+
+39
+00:02:10,002 --> 00:02:11,621
+is initiated
+
+40
+00:02:11,819 --> 00:02:16,848
+in most photosynthetic organisms thylakoid
+contain pairs a photosystems
+
+41
+00:02:17,109 --> 00:02:20,114
+called photosystem one and photosystem
+two
+
+42
+00:02:20,609 --> 00:02:23,700
+that work in tandem to produce the
+energy that will later be used in the
+
+43
+00:02:24,519 --> 00:02:24,588
+stroma
+
+44
+00:02:25,209 --> 00:02:28,810
+to manufacture sugars
+
+45
+00:02:28,081 --> 00:02:31,098
+the photosystems of the thylakoid
+consist of a network
+
+46
+00:02:31,098 --> 00:02:34,100
+of accessory pigment molecules and
+chlorophyll
+
+47
+00:02:35,000 --> 00:02:38,093
+the molecules that absorb the photons of
+light
+
+48
+00:02:38,093 --> 00:02:41,462
+within the pigment molecules the absorbed
+light energy
+
+49
+00:02:42,299 --> 00:02:46,920
+excites electrons to a higher state
+photosystems will channel the
+
+50
+00:02:46,092 --> 00:02:47,131
+excitation energy
+
+51
+00:02:48,031 --> 00:02:52,115
+gathered by the pigment molecules to a
+reaction center chlorophyll molecule
+
+52
+00:02:53,015 --> 00:02:56,634
+which will then pass the electrons to a
+series of proteins
+
+53
+00:02:56,769 --> 00:02:59,940
+located on the final thylakoid membrane
+
+54
+00:02:59,094 --> 00:03:04,111
+photons of light strike photosystems
+1&2 simultaneously
+
+55
+00:03:05,011 --> 00:03:08,560
+we will examine what happens with the
+photon striking photosystem
+
+56
+00:03:08,659 --> 00:03:11,220
+two first
+
+57
+00:03:11,022 --> 00:03:15,119
+the energized electrons are passed from
+the reaction center of photosystem two
+
+58
+00:03:16,019 --> 00:03:19,026
+to an electron transport chain
+
+59
+00:03:19,026 --> 00:03:22,065
+the electrons lost by photosystem two
+
+60
+00:03:22,299 --> 00:03:25,304
+are replaced by a process called
+photolysis
+
+61
+00:03:25,349 --> 00:03:28,374
+which involves the oxidation a water
+molecule
+
+62
+00:03:28,599 --> 00:03:32,360
+producing free electrons and oxygen gas
+
+63
+00:03:32,036 --> 00:03:35,102
+well this oxygen gas is a byproduct of
+photosynthesis
+
+64
+00:03:36,002 --> 00:03:43,002
+it is an important input to the
+cellular respiration pathways
+
+65
+00:03:43,063 --> 00:03:46,104
+as electrons passed through the electron
+transport chain
+
+66
+00:03:47,004 --> 00:03:51,102
+the energy from the electron is used to
+pump hydrogen ions from the stroma
+
+67
+00:03:52,002 --> 00:03:56,077
+to the thylakoid creating a
+concentration gradient
+
+68
+00:03:56,077 --> 00:04:00,115
+this gradient powers a protein called
+ATP synthases
+
+69
+00:04:01,015 --> 00:04:04,042
+which phosphorylate ADP to form
+
+70
+00:04:04,042 --> 00:04:05,108
+ATP
+
+71
+00:04:06,008 --> 00:04:09,024
+the low-energy electrons leaving
+photosystem two
+
+72
+00:04:09,024 --> 00:04:12,089
+are shuttled to photosystem one
+
+73
+00:04:12,089 --> 00:04:16,140
+within photosystem one low energy electrons
+are reenergized
+
+74
+00:04:17,004 --> 00:04:20,078
+and are passed through an electron
+transport chain where they are used to
+
+75
+00:04:21,014 --> 00:04:22,092
+reduce the electron carrier
+
+76
+00:04:22,092 --> 00:04:29,092
+NADP+ to NADPH
+
+77
+00:04:39,033 --> 00:04:42,087
+when the chloroplast is receiving a
+steady supply of photons
+
+78
+00:04:42,087 --> 00:04:45,128
+NADPH and ATP molecules
+
+79
+00:04:46,028 --> 00:04:49,054
+are rapidly being provided to the
+metabolic pathways
+
+80
+00:04:49,054 --> 00:04:50,125
+in the stroma
+
+81
+00:04:51,025 --> 00:04:56,083
+therefore the ATP and NADPH form during
+the light dependent reactions
+
+82
+00:04:56,083 --> 00:05:00,161
+are used in the stroma to fuel the
+Calvin cycle reactions
+
+83
+00:05:01,061 --> 00:05:04,270
+the Calvin cycle consists of a series of
+reactions
+
+84
+00:05:04,819 --> 00:05:07,824
+that reduce carbon dioxide to produce
+the carbohydrate
+
+85
+00:05:08,319 --> 00:05:11,270
+glyceraldehyde-3-phosphate
+
+86
+00:05:11,027 --> 00:05:14,065
+the cycle consists of three steps the
+first of which
+
+87
+00:05:14,065 --> 00:05:16,149
+is carbon fixation
+
+88
+00:05:17,049 --> 00:05:22,053
+in this step carbon dioxide is attached
+to ribulose 1,5-bisphosphate
+
+89
+00:05:22,053 --> 00:05:25,942
+resulting in a six carbon molecule that
+splits into two
+
+90
+00:05:26,419 --> 00:05:31,630
+three carbon molecules
+
+91
+00:05:31,063 --> 00:05:34,144
+the second step is a sequence of
+reactions using electrons from
+
+92
+00:05:35,044 --> 00:05:38,052
+NADPH and some of the ATP
+
+93
+00:05:38,052 --> 00:05:45,052
+to reduce carbon dioxide
+
+94
+00:05:45,064 --> 00:05:47,093
+in the final step ribulose 1,5-bisphosphate
+
+95
+00:05:47,093 --> 00:05:50,164
+is regenerated
+
+96
+00:05:51,064 --> 00:05:56,141
+for every three turns have the cycle 5
+molecules of glyceraldehyde-3-phosphate
+
+97
+00:05:57,041 --> 00:06:04,041
+are used to reform three molecules of
+ribulose 1,5-bisphosphate
+
+98
+00:06:06,094 --> 00:06:06,159
+the remaining
+
+99
+00:06:07,059 --> 00:06:10,136
+glyceraldehyde-3-phosphate is then used
+to make glucose
+
+100
+00:06:11,036 --> 00:06:16,090
+fatty acids or glycerol
+
+101
+00:06:16,009 --> 00:06:19,084
+it takes two molecules of
+glyceraldehyde-3-phosphate
+
+102
+00:06:20,065 --> 00:06:23,091
+to make one molecule of glucose
+phosphate
+
+103
+00:06:23,091 --> 00:06:27,144
+thus the Calvin cycle has to run six
+times to produce one molecule
+
+104
+00:06:28,044 --> 00:06:29,133
+of glucose
+
+105
+00:06:30,033 --> 00:06:34,051
+these molecules can remove their
+phosphate and add fructose to form
+
+106
+00:06:34,051 --> 00:06:34,138
+sucrose
+
+107
+00:06:35,038 --> 00:06:40,083
+the molecule plants used to transport
+carbohydrates throughout their system
+
+108
+00:06:40,083 --> 00:06:43,101
+glucose phosphate is also the starting
+molecule
+
+109
+00:06:44,001 --> 00:06:49,035
+for the synthesis of starch and
+cellulose
+
+110
+00:06:49,035 --> 00:06:52,054
+plants produce sugars to use as storage
+molecules
+
+111
+00:06:52,054 --> 00:06:56,062
+and structural components for their own
+benefit
+
+112
+00:06:56,062 --> 00:07:01,129
+by utilizing the energy of the Sun along
+with inputs of water and carbon dioxide
+
+113
+00:07:02,029 --> 00:07:05,082
+plants act as glucose factories
+
+114
+00:07:05,082 --> 00:07:10,151
+photosynthetic organisms are the primary
+producers on glucose on the planet
+
+115
+00:07:10,889 --> 00:07:14,020
+they also produce oxygen gas as a
+byproduct
+
+116
+00:07:14,002 --> 00:07:18,861
+and thus served as the foundation of life
+providing food and oxygen
+
+117
+00:07:18,879 --> 00:07:21,883
+for the complex food webs on both land
+
+118
+00:07:21,919 --> 00:07:22,975
+and in the oceans
+

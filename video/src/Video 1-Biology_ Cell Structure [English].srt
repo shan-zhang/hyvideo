@@ -1,0 +1,272 @@
+1
+00:00:08,082 --> 00:00:11,581
+Cells are the smallest living units of an organism.
+
+2
+00:00:13,088 --> 00:00:17,091
+All cells have three things in common, no matter what type of cell they are.
+
+3
+00:00:19,032 --> 00:00:24,076
+All cells have a cell membrane, which separates the inside of the cell from its environment,
+
+4
+00:00:26,008 --> 00:00:32,030
+cytoplasm, which is a jelly-like fluid, and DNA, which is the cell's genetic material.
+
+5
+00:00:35,008 --> 00:00:37,076
+There are two broad categories of cells.
+
+6
+00:00:39,046 --> 00:00:42,080
+The first category is eukaryotic cells.
+
+7
+00:00:43,002 --> 00:00:47,034
+They have organelles, which include the nucleus and other special parts.
+
+8
+00:00:49,024 --> 00:00:55,030
+Eukaryotic cells are more advanced, complex cells, such as those found in plants and animals.
+
+9
+00:00:57,003 --> 00:01:00,021
+The second category is prokaryotic cells.
+
+10
+00:01:01,012 --> 00:01:04,078
+They don't have a nucleus or membrane-enclosed organelles.
+
+11
+00:01:05,018 --> 00:01:09,024
+They do have genetic material, but it's not contained within a nucleus.
+
+12
+00:01:10,004 --> 00:01:16,040
+Prokaryotic cells are always one-celled, or unicellular, organisms, such as bacteria.
+
+13
+00:01:20,028 --> 00:01:21,035
+So, what are organelles?
+
+14
+00:01:22,084 --> 00:01:24,088
+Organelle means "little organ."
+
+15
+00:01:26,005 --> 00:01:31,023
+Organelles are the specialized parts of a cell that have unique jobs to perform.
+
+16
+00:01:32,092 --> 00:01:35,180
+Let's start with the nucleus, the control center of the cell.
+
+17
+00:01:38,067 --> 00:01:41,155
+The nucleus contains DNA, or genetic material.
+
+18
+00:01:43,028 --> 00:01:47,035
+DNA dictates what the cell is going to do, and how it's going to do it.
+
+19
+00:01:48,068 --> 00:01:53,116
+Chromatin is the tangled, spread out form of DNA found inside the nuclear membrane.
+
+20
+00:01:56,054 --> 00:02:02,068
+When a cell is ready to divide, DNA condenses into structures known as chromosomes.
+
+21
+00:02:06,009 --> 00:02:12,063
+The nucleus also contains a nucleolus, which is a structure where ribosomes are made.
+
+22
+00:02:16,034 --> 00:02:23,082
+After ribosomes leave the nucleus, they will have the important job of synthesizing, or making, proteins.
+
+23
+00:02:27,087 --> 00:02:32,151
+Outside the nucleus, the ribosomes and the rest of the organelles float around in cytoplasm,
+
+24
+00:02:34,006 --> 00:02:35,015
+which is the jelly-like substance.
+
+25
+00:02:38,028 --> 00:02:40,124
+Ribosomes may wander freely within the cytoplasm,
+
+26
+00:02:42,032 --> 00:02:47,086
+or attach to the endoplasmic reticulum, sometimes abbreviated as "ER".
+
+27
+00:02:48,038 --> 00:02:50,041
+There are two types of ER:
+
+28
+00:02:51,044 --> 00:02:53,051
+rough ER has ribosomes attached to it,
+
+29
+00:02:54,078 --> 00:02:57,106
+and smooth ER doesn't have ribosomes attached to it.
+
+30
+00:03:00,002 --> 00:03:06,004
+The endoplasmic reticulum is a membrane-enclosed passageway for transporting materials,
+
+31
+00:03:06,033 --> 00:03:09,054
+such as the proteins synthesized by ribosomes.
+
+32
+00:03:12,003 --> 00:03:18,004
+Proteins and other materials emerge from endoplasmic reticulum in small vesicles
+
+33
+00:03:20,015 --> 00:03:24,024
+where the Golgi apparatus, sometimes called the Golgi body, receives them.
+
+34
+00:03:26,959 --> 00:03:32,055
+As proteins move through the Golgi body, they are customized into forms that the cell can use.
+
+35
+00:03:35,088 --> 00:03:39,122
+The Golgi body does this by folding the proteins into usable shapes
+
+36
+00:03:41,006 --> 00:03:46,104
+or adding other materials onto them, such as lipids or carbohydrates.
+
+37
+00:03:50,042 --> 00:03:53,114
+Vacuoles are sac-like structures that store different materials.
+
+38
+00:03:54,094 --> 00:03:58,120
+Here in this plant cell, the central vacuole stores water.
+
+39
+00:04:03,016 --> 00:04:08,024
+Going back to the animal cell, you will see an organelle called a lysosome.
+
+40
+00:04:08,078 --> 00:04:13,126
+Lysosomes are the garbage collectors that take in damaged or worn out cell parts.
+
+41
+00:04:15,008 --> 00:04:19,043
+They are filled with enzymes that break down this cellular debris.
+
+42
+00:04:20,098 --> 00:04:25,105
+The mitochondrion is an organelle that is the powerhouse for both animal and plant cells.
+
+43
+00:04:28,024 --> 00:04:31,027
+During a process called cellular respiration,
+
+44
+00:04:31,068 --> 00:04:37,068
+the mitochondria make ATP molecules that provide the energy for all of the cell's activities.
+
+45
+00:04:40,002 --> 00:04:43,048
+Cells that need more energy have more mitochondria.
+
+46
+00:04:46,054 --> 00:04:50,061
+Meanwhile, the cell maintains its shape through a cytoskeleton.
+
+47
+00:04:52,026 --> 00:04:56,033
+The cytoskeleton includes the threadlike microfilaments,
+
+48
+00:04:58,056 --> 00:05:01,154
+which are made of protein, and microtubules, which are thin, hollow tubes.
+
+49
+00:05:05,024 --> 00:05:09,078
+Some organisms, such as plants, that are photoautotrophic
+
+50
+00:05:10,054 --> 00:05:12,122
+meaning they capture sunlight for energy
+
+51
+00:05:16,036 --> 00:05:18,134
+have cells with an organelle called a chloroplast.
+
+52
+00:05:20,003 --> 00:05:23,027
+The chloroplast is where photosynthesis happens.
+
+53
+00:05:24,004 --> 00:05:27,080
+It's green because it has a green pigment, called chlorophyll.
+
+54
+00:05:30,008 --> 00:05:37,040
+Plant cells also have a cell wall outside of their cell membranes that shape, support and protect the plant cell.
+
+55
+00:05:39,046 --> 00:05:41,051
+Animal cells never have a cell wall.
+
+56
+00:05:43,088 --> 00:05:48,184
+There are many other unique structures that only some cells have. Here are just a few.
+
+57
+00:05:50,046 --> 00:05:55,090
+In humans, for example, the respiratory tract is lined with cells that have cilia.
+
+58
+00:05:56,062 --> 00:06:00,128
+These are microscopic hair-like projections that can move in waves.
+
+59
+00:06:02,014 --> 00:06:07,080
+This feature helps trap inhaled particles in the air, and expels them when you cough.
+
+60
+00:06:12,000 --> 00:06:15,064
+Another unique feature in some cells is flagella.
+
+61
+00:06:16,002 --> 00:06:17,096
+Some bacteria have flagella.
+
+62
+00:06:18,044 --> 00:06:23,383
+A flagellum is like a little tail that can help a cell move, or propel, itself.
+
+63
+00:06:24,078 --> 00:06:28,114
+The only human cell that has a flagellum is a sperm cell.
+
+64
+00:06:31,549 --> 00:06:32,621
+In summary, remember:
+
+65
+00:06:34,034 --> 00:06:40,036
+eukaryotic cells are plant and animal cells with a nucleus and membrane-enclosed organelles,
+
+66
+00:06:42,068 --> 00:06:47,070
+while prokaryotic cells are unicellular organisms without these things.
+
+67
+00:06:49,056 --> 00:06:54,080
+All cells have a cell membrane, cytoplasm, and genetic material.
+
+68
+00:06:56,799 --> 00:07:02,871
+And, even though only plant cells have chloroplasts, both plant and animal cells have mitochondria.
+
