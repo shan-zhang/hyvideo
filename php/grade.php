@@ -1,6 +1,6 @@
 <?php
-    
-    $answer1 = $_POST['answer'];
+    $quiz = $_POST['quiz'];
+    $answer = $_POST['answer'];
     // $answer2 = $_POST['question-2-answers'];
     // $answer3 = $_POST['question-3-answers'];
     // $answer4 = $_POST['question-4-answers'];
@@ -15,5 +15,5 @@
     // if ($answer5) { $totalCorrect++; }
     
     // echo "<div id='results'>$totalCorrect / 5 correct</div>";
-    echo 'test';
+    echo $quiz;
 ?>

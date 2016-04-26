@@ -1,5 +1,6 @@
 <?php
     $file = file('data/PilotStudy.txt',FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $quizFile = file_get_contents('data/quiz.json', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     //echo sizeof($file);
     // foreach($file as $line){
     //     echo $line;
@@ -38,11 +39,11 @@
         <h3 id="clips"></h3>
         <button id="startQuiz" onclick="startQuiz()">Start Quiz!</button>
         <form action="php/grade.php" method="post" id="myForm" style="display:none">
-              <label id='quizLabel'>Quiz 1:</label><br>
-              <label id='quizContent'>This is the first Quiz.</label><br><br>
+              <label id='quizLabel'></label><br>
+              <label id='quizContent'></label><br><br>
               <input type="radio" value="true" name="answer">True<br>
               <input type="radio" value="false" name="answer">False<br><br>
-              <input type="submit" value="submit" onclick="">
+              <input type="submit" name="submit" value="submit">
         </form>
         <br/>
         <div id='footerButton'>  
@@ -77,11 +78,15 @@
         }
         paper.install(window);
         paper.setup('leftSub');
-        window.addEventListener("load",function() {
+        var quiz = null;
+        window.addEventListener("load", function() {
             setCanvas();
             greatNounList = <?php echo json_encode($file); ?>;
+            quiz = <?php echo $quizFile; ?>;
+            //console.log(quiz['video1']);
             //console.log(greatNounList);
         });
+
         $(".inputText").keyup(function (e) {
             if (e.keyCode == 13) {
                 // Do something
@@ -240,21 +245,43 @@
             });
         }
 
-        function startQuiz (){
+        var quizNum = 0;
+        var video = 'video1';
+
+        function startQuiz(){
             $("#footerButton").css("display","none");
             $("#startQuiz").css("display","none");
+            setForm();
             $("#myForm").css("display","inline");
         }
 
-        
+
+        function setForm() {
+            if(quizNum == quiz[video].length)
+                return false;
+            else{
+                $('#quizLabel').text(quiz[video][quizNum]['title']);
+                $('#quizContent').text(quiz[video][quizNum]['content']);
+                $("input:radio").removeAttr("checked");
+                return true;
+            }
+
+        }
+
         $('#myForm').submit(function(e){
             e.preventDefault();
+            var data = $("#myForm").serialize() + "&quiz=" + quizNum;
             $.ajax({
                 url:$("#myForm").attr("action"),
                 type:'post',
-                data:$("#myForm").serialize(),
+                data: data,
                 success:function(response){
+                    quizNum ++;
+                    if(!setForm()){
+                        $("#myForm").css("display","none");
+                    }
                     console.log(response);
+                    //console.log($("#myForm").serialize());
                     //whatever you wanna do after the form is successfully submitted
                 }
             });
