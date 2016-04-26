@@ -36,7 +36,17 @@
         <button id="clear" onclick="buttonClick()">Clear</button>
         <button id="conceptsMapping" onclick="conceptsMapping()">Manual Concept-Map</button>
         <h3 id="clips"></h3>
-        <div id='footerButton'>        
+        <button id="startQuiz" onclick="startQuiz()">Start Quiz!</button>
+        <form action="php/grade.php" method="post" id="myForm" style="display:none">
+              <label id='quizLabel'>Quiz 1:</label><br>
+              <label id='quizContent'>This is the first Quiz.</label><br><br>
+              <input type="radio" value="true" name="answer">True<br>
+              <input type="radio" value="false" name="answer">False<br><br>
+              <input type="submit" value="submit" onclick="">
+        </form>
+        <br/>
+        <div id='footerButton'>  
+            <br>      
             <label>Load Concept-Map:</label>
             <input type='file' id='file' name='userFile' accept=".json">
             <br/>
@@ -229,6 +239,26 @@
                 }
             });
         }
+
+        function startQuiz (){
+            $("#footerButton").css("display","none");
+            $("#startQuiz").css("display","none");
+            $("#myForm").css("display","inline");
+        }
+
+        
+        $('#myForm').submit(function(e){
+            e.preventDefault();
+            $.ajax({
+                url:$("#myForm").attr("action"),
+                type:'post',
+                data:$("#myForm").serialize(),
+                success:function(response){
+                    console.log(response);
+                    //whatever you wanna do after the form is successfully submitted
+                }
+            });
+        });
     </script>
 </body>
 </html>
