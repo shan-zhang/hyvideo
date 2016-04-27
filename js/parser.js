@@ -79,7 +79,7 @@ var localTextParsing = function(subtitle, startTime, endTime){
 						}
 		            });
 		            if(isNewNoun){
-		      		    localJson.push({ "word": multiTerms[0].toLowerCase(), "frequency": 1, "video": [{"startTime": startTime,"endTime":endTime}]});
+		      		    localJson.push({ "word": multiTerms[0], "frequency": 1, "video": [{"startTime": startTime,"endTime":endTime}]});
 		                tmpCache.push({ "word": multiTerms[0].toLowerCase(), "isNoun": true });
 		                break;
 		            }

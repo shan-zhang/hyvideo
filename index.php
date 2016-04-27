@@ -1,5 +1,5 @@
 <?php
-    $file = file('data/PilotStudy.txt',FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $file = file('data/PilotStudyVideo1-3.txt',FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     $quizFile = file_get_contents('data/quiz.json', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     //echo sizeof($file);
     // foreach($file as $line){
@@ -27,15 +27,17 @@
     <div id="section">
         <div id="leftPanel">
         <video id="video" controls>
-          <source src="video/example1.webm" type="video/webm">
-          <source src="video/example1.mp4" type="video/mp4">
-          <track src="video/src/example1.vtt" label="English subtitles" kind="subtitles" type="text/vtt" srclang='en' default></track>
+          <!-- <source src="video/example1.webm" type="video/webm"> -->
+          <!-- <source src="video/example1.mp4" type="video/mp4"> -->
+          <source src="video/Video1.mp4" type="video/mp4">
+          <track src="video/src/Video1.vtt" label="English subtitles" kind="subtitles" type="text/vtt" srclang='en' default></track>
+          <!-- <track src="video/src/example1.vtt" label="English subtitles" kind="subtitles" type="text/vtt" srclang='en' default></track> -->
         Your browser does not support the video tag.
         </video>
         <label>2-D Timeline</label>
         <canvas id='leftSub'></canvas>
         <button id="clear" onclick="buttonClick()">Clear</button>
-        <button id="conceptsMapping" onclick="conceptsMapping()">Manual Concept-Map</button>
+        <button id="conceptsMapping" onclick="conceptsMapping()">Concept-Map</button>
         <h3 id="clips"></h3>
         <button id="startQuiz" onclick="startQuiz(event)">Start Quiz!</button>
         <form action="php/grade.php" method="post" id="myForm" style="display:none">
@@ -123,25 +125,25 @@
             var tmp = '';
             for(var i = 0; i < myCues.length; i++){
                 tmp += myCues[i].getCueAsHTML().textContent + ' ';
-                //localTextParsing(myCues[i].getCueAsHTML().textContent, myCues[i].startTime, myCues[i].endTime);
+                localTextParsing(myCues[i].getCueAsHTML().textContent, myCues[i].startTime, myCues[i].endTime);
             }
             //The below code to call external API for concept tagging, and the maximum call limit per day is 1000.
             //sendCuestoConceptTagging(tmp);
 
             //The below code is to show each substitle in the video
-            for (var i = 0; i < myCues.length; i++) {
-                myCues[i].onenter  = function(){ 
-                    // console.log(this);
-                    if(!this.show){
-                        //document.getElementById("leftSub").innerHTML += ('<span>' + this.getCueAsHTML().textContent + '</span> <br/>');
-                        //Technique 1: use the great noun list to match proper noun
-                        localTextParsing(this.getCueAsHTML().textContent, this.startTime, this.endTime);
-                    }
-                };
-                myCues[i].onexit = function(){  
-                    this.show = true;
-                };
-            }
+            // for (var i = 0; i < myCues.length; i++) {
+            //     myCues[i].onenter  = function(){ 
+            //         // console.log(this);
+            //         if(!this.show){
+            //             //document.getElementById("leftSub").innerHTML += ('<span>' + this.getCueAsHTML().textContent + '</span> <br/>');
+            //             //Technique 1: use the great noun list to match proper noun
+            //             localTextParsing(this.getCueAsHTML().textContent, this.startTime, this.endTime);
+            //         }
+            //     };
+            //     myCues[i].onexit = function(){  
+            //         this.show = true;
+            //     };
+            // }
         }
         function buttonClick(){
             if(paper.project.layers.length != 1){
