@@ -1,19 +1,11 @@
 <?php
     $quiz = $_POST['quiz'];
     $answer = $_POST['answer'];
-    // $answer2 = $_POST['question-2-answers'];
-    // $answer3 = $_POST['question-3-answers'];
-    // $answer4 = $_POST['question-4-answers'];
-    // $answer5 = $_POST['question-5-answers'];
+    $time = $_POST['time'];
 
-    // $totalCorrect = 0;
-    
-    // if ($answer1 == "B") { $totalCorrect++; }
-    // if ($answer2 == "A") { $totalCorrect++; }
-    // if ($answer3 == "C") { $totalCorrect++; }
-    // if ($answer4 == "D") { $totalCorrect++; }
-    // if ($answer5) { $totalCorrect++; }
-    
-    // echo "<div id='results'>$totalCorrect / 5 correct</div>";
-    echo $quiz;
+    $cookie_name = "result";
+    $cookie_value = json_encode($_POST);
+    setcookie($cookie_name, $cookie_value, time() + (86400 * 5), "/"); // 86400 = 1 day
+
+    echo $cookie_value;
 ?>

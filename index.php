@@ -37,7 +37,7 @@
         <button id="clear" onclick="buttonClick()">Clear</button>
         <button id="conceptsMapping" onclick="conceptsMapping()">Manual Concept-Map</button>
         <h3 id="clips"></h3>
-        <button id="startQuiz" onclick="startQuiz()">Start Quiz!</button>
+        <button id="startQuiz" onclick="startQuiz(event)">Start Quiz!</button>
         <form action="php/grade.php" method="post" id="myForm" style="display:none">
               <label id='quizLabel'></label><br>
               <label id='quizContent'></label><br><br>
@@ -46,6 +46,7 @@
               <input type="submit" name="submit" value="submit">
         </form>
         <br/>
+        <h3 id="closingQuiz" style="display:none">The quiz is over. Thanks for participating.</h3>
         <div id='footerButton'>  
             <br>      
             <label>Load Concept-Map:</label>
@@ -247,13 +248,16 @@
 
         var quizNum = 0;
         var video = 'video1';
-
-        function startQuiz(){
+        var quizTime;
+        function startQuiz(e){
             $("#footerButton").css("display","none");
             $("#startQuiz").css("display","none");
             setForm();
             $("#myForm").css("display","inline");
+            quizTime = e.timeStamp;
         }
+
+
 
 
         function setForm() {
@@ -270,15 +274,18 @@
 
         $('#myForm').submit(function(e){
             e.preventDefault();
-            var data = $("#myForm").serialize() + "&quiz=" + quizNum;
+            var timePerQuiz = e.timeStamp - quizTime;
+            var data = $("#myForm").serialize() + "&quiz=" + quizNum + "&time=" + timePerQuiz;
             $.ajax({
                 url:$("#myForm").attr("action"),
                 type:'post',
                 data: data,
                 success:function(response){
                     quizNum ++;
+                    quizTime = e.timeStamp;
                     if(!setForm()){
                         $("#myForm").css("display","none");
+                        $("#closingQuiz").css("display","inline");
                     }
                     console.log(response);
                     //console.log($("#myForm").serialize());
