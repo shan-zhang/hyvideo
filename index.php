@@ -46,7 +46,7 @@
               <input type="submit" name="submit" value="submit">
         </form>
         <br/>
-        <h3 id="closingQuiz" style="display:none">The quiz is over. Thanks for participating.</h3>
+        <h3 id="closingQuiz" style="display:none">The quiz is over. Thanks for participating. <a href='download.php'>Download</a>the study result.</h3>
         <div id='footerButton'>  
             <br>      
             <label>Load Concept-Map:</label>
@@ -256,9 +256,6 @@
             $("#myForm").css("display","inline");
             quizTime = e.timeStamp;
         }
-
-
-
 
         function setForm() {
             if(quizNum == quiz[video].length)
