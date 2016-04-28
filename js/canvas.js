@@ -14,7 +14,7 @@ var newAddedClickLink = false;
 var scaleMin = 0.5;
 var scaleMax = 4;
 var doubleClickNode = false;
-var doubleClickLink = false;
+// var doubleClickLink = false;
 
 var log2 = function (val)
 {
@@ -336,27 +336,10 @@ function clickLink(d) // one click link
 {
     console.log("clickLink-1");
     clickOntoLinks = true;
-    doubleClickLink = true;
-    //var coordinates = [0, 0];
-    //coordinates = d3.mouse(this);
-    //var cursorX = coordinates[0];
-    //var cursorY = coordinates[1];
-
-    if (d.linkName && d.linkName != "")
-    {
-        $(".inputText").val(d.linkName);
-        d.linkName = "";
-        restartLabels();
-    }
-
-    $(".inputText").css({ "left": d3.event.x, "top": d3.event.y, "visibility": "visible" });
-    $(".inputText").focus();
+    // doubleClickLink = true;
     selectedLinkObj = d;
     selectedLink = d3.select(this);
     selectedLink.classed("selected", true);
-    //restartLinks();
-    //console.log("d3.mouse.x:" + cursorX + " d3.mouse.y:" + cursorY);
-    //console.log("d3.event.x:" + d3.event.x + " d3.event.y:"+d3.event.y);
 }
 function clickSVG(d)
 {
@@ -365,7 +348,12 @@ function clickSVG(d)
         clickOntoLinks = false;
     }
     else {
-        hideSelectedLink();
+        if($(".inputText").css("visibility")==='visible'){
+            selectedLinkObj.linkName = $(".inputText").val();
+            hideSelectedLink();
+            restartLabels();
+            tick();
+        }
     }
 }
 function dblclickSVG(d) {
@@ -374,10 +362,10 @@ function dblclickSVG(d) {
         doubleClickNode = false;
         return;
     }
-    if (doubleClickLink) {
-        doubleClickLink = false;
-        return;
-    }
+    // if (doubleClickLink) {
+    //     doubleClickLink = false;
+    //     return;
+    // }
     var addNewNode = true;
     nodes.forEach(function (nodeValue, nodeIndex) {
         if (nodeValue.word == "")
@@ -661,14 +649,29 @@ var hideSelectedLink = function () {
 //**************************************************************************
 //Keyboard event
 function keyup() {
-    if (selectedLinkObj || !selectedNodeObj) return;
+    if ($(".inputText").css("visibility")==='visible' || !selectedNodeObj) return;
+    console.log('edit the node name');
     switch (d3.event.keyCode) {
         case 69: //Edit
             if (selectedNodeObj) {
+                console.log('edit the node name');
                 $(".inputText").css({
                     "left": canvasLeft + selectedNodeObj.x * scale + translate[0], "top": canvasTop + selectedNodeObj.y * scale + translate[1], "visibility": "visible"
                 });
                 $(".inputText").focus();
+            }
+            else if(selectedLinkObj){   
+                if (selectedLinkObj.linkName && selectedLinkObj.linkName != "")
+                {
+                    $(".inputText").val(selectedLinkObj.linkName);
+                    selectedLinkObj.linkName = "";
+                    restartLabels();
+                }
+                $(".inputText").css({ "left": d3.event.x, "top": d3.event.y, "visibility": "visible" });
+                $(".inputText").focus();
+            }
+            else{
+
             }
             break;
     }
