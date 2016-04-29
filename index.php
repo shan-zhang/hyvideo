@@ -95,7 +95,7 @@
                 // Do something
                 var inputText = $(".inputText").val();
                 inputText = inputText.trim();
-                if (selectedLinkObj) {
+                if (selectedLinkObj && editLinkName) {
                     updateLinkLabelName(inputText);
                 }
                 else if (selectedNodeObj) {

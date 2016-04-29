@@ -283,7 +283,7 @@ function oneclick(d) {//one click node
             selectedNode = d3.select(this);
             selectedNodeObj = d;
             d3.select(this).classed("connecting", d.connecting = true);
-            hideSelectedLink();
+            hideEditedLink();
             //startClips();
         }
         else {
@@ -338,9 +338,15 @@ function clickLink(d) // one click link
     console.log("clickLink-1");
     clickOntoLinks = true;
     doubleClickLink = true;
-    selectedLinkObj = d;
-    selectedLink = d3.select(this);
+
+    if(selectedLink){
+        selectedLink.classed("selected", false);
+    }
+
+    var linkIndex = "#linkIndex" + d.linkIndex;
+    selectedLink = d3.select(linkIndex);
     selectedLink.classed("selected", true);
+    selectedLinkObj = d;
     restartLinks();
 }
 function clickSVG(d)
@@ -350,14 +356,12 @@ function clickSVG(d)
         clickOntoLinks = false;
     }
     else {
-        if($(".inputText").css("visibility")==='visible' && selectedLinkObj){
-            updateLinkLabelName($(".inputText").val());
+        if($(".inputText").css("visibility")==='visible'){
+            if(editLinkName){
+                updateLinkLabelName($(".inputText").val().trim());
+            }
+            hideEditedLink();
         }
-        else if($(".inputText").css("visibility")==='visible'){
-            $(".inputText").css({ "visibility": "hidden" });
-            $(".inputText").val("");
-        }
-        else{}
     }
 }
 function dblclickSVG(d) {
@@ -436,6 +440,10 @@ var restartLinks = function() {//redrawing Links
 
 
     if (newAddedClickLink) {
+        if(selectedLink){
+            selectedLink.classed("selected", false);
+        }
+
         editLinkName = true;
         selectedLink = enterLink;
         enterLink.attr("class", "link selected");
@@ -558,7 +566,7 @@ var analyseNodes = function(jsonData) { //Analyse the textarea/jsonData and upda
 var updateLinkLabelName = function(inputText) //update label name for link
 {
     selectedLinkObj.linkName = inputText;
-    hideSelectedLink();
+    hideEditedLink();
     restartLabels();
     tick();
     //restartLinks();
@@ -567,9 +575,7 @@ var updateLinkLabelName = function(inputText) //update label name for link
 
 var delLinkandLabel = function ()//delete selected link and its label
 {
-    $(".inputText").css({ "visibility": "hidden" });
-    $(".inputText").val("");
-
+    hideEditedLink();
     links.forEach(function (linkvalue, linkIndex) {
         if (linkvalue == selectedLinkObj) {
             links.splice(linkIndex, 1);
@@ -583,9 +589,7 @@ var delLinkandLabel = function ()//delete selected link and its label
 }
 var delNodeWithLink = function ()//delete seleced node and its associated links
 {
-    $(".inputText").css({ "visibility": "hidden" });
-    $(".inputText").val("");
-
+    hideEditedLink();
     nodes.forEach(function (nodeValue, nodeIndex) {
         if (nodeValue == selectedNodeObj)
         {
@@ -638,25 +642,15 @@ var linkstoNodes = function () {
     });
 };
 
-var hideSelectedLink = function () {
+var hideEditedLink = function () {
     $(".inputText").css({ "visibility": "hidden" });
     $(".inputText").val("");
-    selectedLinkObj = null;
-    if (selectedLink) {
-        selectedLink.classed("selected", false);
-        tick();
-    }
-    selectedLink = null;
     editLinkName = false;
-
-    // var undoButton = document.getElementById("undoNote");
-    // undoButton.style.visibility = "hidden";
 };
 //**************************************************************************
 //Keyboard event
 function keyup() {
-    if ($(".inputText").css("visibility")==='visible' || !selectedNodeObj) return;
-    console.log('edit the node name');
+    if ($(".inputText").css("visibility")==='visible') return;
     switch (d3.event.keyCode) {
         case 69: //Edit
             if (selectedNodeObj) {
