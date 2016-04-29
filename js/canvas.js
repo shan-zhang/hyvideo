@@ -14,7 +14,8 @@ var newAddedClickLink = false;
 var scaleMin = 0.5;
 var scaleMax = 4;
 var doubleClickNode = false;
-// var doubleClickLink = false;
+var doubleClickLink = false;
+var editLinkName = false;
 
 var log2 = function (val)
 {
@@ -167,7 +168,7 @@ var drawCanvas = function (canvasWidth,canvasHeight,canvasPositionX,canvasPositi
         //label.attr("x", function (d) { return (d.source.x + d.target.x) / 2; })
         //     .attr("y", function (d) { return (d.source.y + d.target.y) / 2; })
 
-        if (selectedLinkObj)
+        if (selectedLinkObj && editLinkName)
         {
             $(".inputText").css({
                 "left": canvasLeft + (selectedLinkObj.source.x + selectedLinkObj.target.x) / 2 * scale + translate[0], "top": canvasTop + (selectedLinkObj.source.y + selectedLinkObj.target.y) / 2 * scale + translate[1], "visibility": "visible"
@@ -336,10 +337,11 @@ function clickLink(d) // one click link
 {
     console.log("clickLink-1");
     clickOntoLinks = true;
-    // doubleClickLink = true;
+    doubleClickLink = true;
     selectedLinkObj = d;
     selectedLink = d3.select(this);
     selectedLink.classed("selected", true);
+    restartLinks();
 }
 function clickSVG(d)
 {
@@ -348,12 +350,14 @@ function clickSVG(d)
         clickOntoLinks = false;
     }
     else {
-        if($(".inputText").css("visibility")==='visible'){
-            selectedLinkObj.linkName = $(".inputText").val();
-            hideSelectedLink();
-            restartLabels();
-            tick();
+        if($(".inputText").css("visibility")==='visible' && selectedLinkObj){
+            updateLinkLabelName($(".inputText").val());
         }
+        else if($(".inputText").css("visibility")==='visible'){
+            $(".inputText").css({ "visibility": "hidden" });
+            $(".inputText").val("");
+        }
+        else{}
     }
 }
 function dblclickSVG(d) {
@@ -362,10 +366,10 @@ function dblclickSVG(d) {
         doubleClickNode = false;
         return;
     }
-    // if (doubleClickLink) {
-    //     doubleClickLink = false;
-    //     return;
-    // }
+    if (doubleClickLink) {
+        doubleClickLink = false;
+        return;
+    }
     var addNewNode = true;
     nodes.forEach(function (nodeValue, nodeIndex) {
         if (nodeValue.word == "")
@@ -432,6 +436,7 @@ var restartLinks = function() {//redrawing Links
 
 
     if (newAddedClickLink) {
+        editLinkName = true;
         selectedLink = enterLink;
         enterLink.attr("class", "link selected");
         newAddedClickLink = false;
@@ -642,6 +647,7 @@ var hideSelectedLink = function () {
         tick();
     }
     selectedLink = null;
+    editLinkName = false;
 
     // var undoButton = document.getElementById("undoNote");
     // undoButton.style.visibility = "hidden";
@@ -660,7 +666,8 @@ function keyup() {
                 });
                 $(".inputText").focus();
             }
-            else if(selectedLinkObj){   
+            else if(selectedLinkObj){
+                editLinkName = true;
                 if (selectedLinkObj.linkName && selectedLinkObj.linkName != "")
                 {
                     $(".inputText").val(selectedLinkObj.linkName);
