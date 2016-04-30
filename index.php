@@ -43,12 +43,15 @@
         <form action="php/grade.php" method="post" id="myForm" style="display:none">
               <label id='quizLabel'></label><br>
               <label id='quizContent'></label><br><br>
-              <input type="radio" value="true" name="answer">True<br>
-              <input type="radio" value="false" name="answer">False<br><br>
-              <input type="submit" name="submit" value="submit">
+              <div id='quizRadio' style="display:none">
+                  <input type="radio" value="true" name="answer">True<br>
+                  <input type="radio" value="false" name="answer">False<br><br>
+                  <input type="submit" name="submit" value="submit">
+              </div>
         </form>
+        <button id='radioOption' onclick="showRadio(event)" style="display:none">Ready!</button>
         <br/>
-        <h3 id="closingQuiz" style="display:none">The quiz is over. Thanks for participating. <a href='download.php'>Download</a>the study result.</h3>
+        <h3 id="closingQuiz" style="display:none">The quiz is over. Thanks for participating. <a href='download.php' onclick="downloadResult()">Download</a>the study result.</h3>
         <div id='footerButton'>  
             <br>      
             <label>Load Concept-Map:</label>
@@ -249,39 +252,57 @@
         }
 
         var quizNum = 0;
-        var video = 'video1';
+        var quizTask = {'pre': 'pre-practice','post':'post-practice'};
+        var quizType = 'pre';
         var quizTime;
         function startQuiz(e){
             $("#footerButton").css("display","none");
             $("#startQuiz").css("display","none");
             setForm();
             $("#myForm").css("display","inline");
-            quizTime = e.timeStamp;
+            $('#radioOption').css("display","inline");
         }
 
         function setForm() {
-            if(quizNum == quiz[video].length)
+            if(quizNum == quiz[quizTask[quizType]].length)
                 return false;
             else{
-                $('#quizLabel').text(quiz[video][quizNum]['title']);
-                $('#quizContent').text(quiz[video][quizNum]['content']);
-                $("input:radio").removeAttr("checked");
+                $('#quizLabel').text(quiz[quizTask[quizType]][quizNum]['title']);
+                $('#quizContent').text(quiz[quizTask[quizType]][quizNum]['content']);
+                $('#quizRadio').css("display","none");
+                $('#radioOption').css("display","inline");
                 return true;
             }
 
         }
 
+        function showRadio(e){
+            quizTime = e.timeStamp;
+            $('#radioOption').css("display","none");
+            $('#quizRadio').css("display","inline");
+        }
+
+        function downloadResult(){
+            console.log("Downloading results...");
+            if(quizType == 'pre'){
+                quizType = 'post';
+                quizNum = 0;
+                $("#closingQuiz").css("display","none");
+                $("#startQuiz").css("display","inline");
+            }
+        }
+
         $('#myForm').submit(function(e){
             e.preventDefault();
             var timePerQuiz = e.timeStamp - quizTime;
-            var data = $("#myForm").serialize() + "&quiz=" + quizNum + "&time=" + timePerQuiz;
+            var data = $("#myForm").serialize() + "&quiz=" + quizNum + "&time=" + timePerQuiz + "&quizType=" + quizType;
             $.ajax({
                 url:$("#myForm").attr("action"),
                 type:'post',
                 data: data,
                 success:function(response){
                     quizNum ++;
-                    quizTime = e.timeStamp;
+                    $("input:radio").removeAttr("checked");
                     if(!setForm()){
                         $("#myForm").css("display","none");
                         $("#closingQuiz").css("display","inline");
