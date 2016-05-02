@@ -155,6 +155,64 @@
                 dragNodeObj = null;
             }
         }
+        function drawLinkToTimeline(source, target){
+            console.log('Show link in the video');
+            if(paper.project.layers.length != 1){
+                paper.project.activeLayer.removeChildren();
+            }
+            new paper.Layer();
+            var duration = document.getElementById("video").duration;
+            var viewSize = paper.view.viewSize.width;
+            var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
+            var myCues = myTrack.cues;   // get list of cues
+            for (var i = 0; i < myCues.length; i++) {
+                var myCueItem = myCues[i];
+                var inSouceVideo = false;
+                var inTargetVideo = false;
+                source.video.forEach(function(videoSItem){
+                    if(videoSItem.startTime == myCueItem.startTime && videoSItem.endTime == myCueItem.endTime)
+                            inSouceVideo = true;
+                })
+                target.video.forEach(function(videoTItem){
+                    if(videoTItem.startTime == myCueItem.startTime && videoTItem.endTime == myCueItem.endTime)
+                            inTargetVideo = true;
+                })
+                if(inSouceVideo && inTargetVideo){
+                    var rect = new paper.Path.Rectangle(viewSize*myCueItem.startTime/duration,0,viewSize*(myCueItem.endTime - myCueItem.startTime)/duration,200);
+                    rect.style = {
+                        fillColor: 'blue'
+                    };
+                    rect.startTime = myCueItem.startTime;
+                    rect.sWord = source.word;
+                    rect.tWord = target.word;
+                    rect.showCue = myCueItem.getCueAsHTML().textContent;
+
+                    rect.onClick = function(event){
+                        this.fillColor = 'green';
+                        //console.log('startTime:' + this.startTime);
+                        document.getElementById("video").currentTime = this.startTime;
+                        document.getElementById("video").play();
+                    };
+                    rect.onMouseEnter = function(event){
+                        if(this.showCue){
+                            $("#clips").text(this.showCue);
+                            //hightlight text
+                            $("#clips").highlight(this.sWord,"highlight");
+                            $("#clips").highlight(this.tWord,"highlight");
+                        }
+                    };
+                    rect.onMouseLeave = function(event){
+                        $("#clips").text("");
+                        $("#clips").removeHighlight();
+                    };
+                }
+            }
+
+            paper.project.view.update();
+            console.log("Drawing Link in video is over");
+        }
+
+
         function drawTimeline(word, timeline){
             //console.log(paper.project);
             console.log("draw on the Timeline");
@@ -165,7 +223,6 @@
             new paper.Layer();
             var duration = document.getElementById("video").duration;
             var viewSize = paper.view.viewSize.width;
-            console.log(duration);
             var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
             var myCues = myTrack.cues;   // get list of cues 
             timeline.forEach(function(timeStamp){
@@ -188,7 +245,7 @@
                     document.getElementById("video").play();
                 };
                 rect.onMouseEnter = function(event){
-                    console.log(this.word);
+                    //console.log(this.word);
                     if(this.showCue){
                         $("#clips").text(this.showCue);
                         //hightlight text
@@ -202,7 +259,7 @@
                 };
             });
             paper.project.view.update();
-            console.log("Drawing is over");
+            console.log("Drawing concept in video is over");
         }
 
         $('#click').click(function(){ saveNoteToFile(); return false; });

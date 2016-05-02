@@ -16,6 +16,7 @@ var scaleMax = 4;
 var doubleClickNode = false;
 var doubleClickLink = false;
 var editLinkName = false;
+var isLinkEditable = true;
 
 var log2 = function (val)
 {
@@ -211,10 +212,6 @@ function dragstart(d) {//Start dragging node
         d3.select(this).classed("dragged", d.dragged = true);
         dragNodeObj = d3.select(this);
 
-        //hightlight text
-        var highlightText = d.word;
-        $("#leftSub").highlight(highlightText,"highlight");
-        //console.log("highlightText:" + highlightText);
     }
 }
 function dragging(d)//drag node
@@ -256,8 +253,6 @@ function dragging(d)//drag node
 function dragend(d)//end dragging node
 {
     console.log("dragend");
-    //$("#clips").text("");
-    $("#leftSub").removeHighlight();
     tick();
     force.resume();
 }
@@ -272,8 +267,7 @@ function dblclick(d) {//double click node
         selectedNodeObj = null;
         selectedNode = null;
     }
-
-     doubleClickNode = true;
+    doubleClickNode = true;
 }
 function oneclick(d) {//one click node
     if (d3.event.defaultPrevented) return;
@@ -288,6 +282,17 @@ function oneclick(d) {//one click node
         }
         else {
             if (selectedNodeObj == d) return; //Self-connected is not allowed
+
+            if(!isLinkEditable) {
+                //For the pilot study, adding link is not allowed.
+                selectedNode.classed("connecting", selectedNodeObj.connecting = false);
+                selectedNode.classed("fixed", selectedNodeObj.fixed = false);
+                
+                selectedNode = d3.select(this);
+                selectedNodeObj = d;
+                selectedNode.classed("connecting", d.connecting = true);
+                return;
+            }
             var depulicatedConnect = false;
             links.forEach(function (linkValue, linkIndex) { // Depulicated connect is not allowed
                 if (linkValue.source == selectedNodeObj && linkValue.target == d)
@@ -322,7 +327,7 @@ function oneclick(d) {//one click node
             restartLabels();
 
             selectedLinkObj = links[links.length - 1];
-
+            drawLink(selectedLinkObj);
             // var undoButton = document.getElementById("undoNote");
             // undoButton.style.visibility = "visible";
         }
@@ -331,6 +336,9 @@ function oneclick(d) {//one click node
         d3.select(this).classed("connecting", d.connecting = false);
         selectedNode = null;
         selectedNodeObj = null;
+    }
+    else{
+
     }
 }
 function clickLink(d) // one click link
@@ -348,7 +356,41 @@ function clickLink(d) // one click link
     selectedLink.classed("selected", true);
     selectedLinkObj = d;
     restartLinks();
+
+    drawLink(d);
 }
+
+function drawLink(d){
+    var videoS = d.source.video;
+    var videoT = d.target.video;
+    var showLink = false;
+    videoS.forEach(function(videoSItem){
+        videoT.forEach(function(videoTItem){
+            if(videoSItem.startTime == videoTItem.startTime && videoSItem.endTime == videoTItem.endTime){
+                showLink = true;
+            }
+        });
+    });
+    if(showLink){
+        drawLinkToTimeline(d.source,d.target);
+    }
+    else{
+        $("#clips").text("No such link in the video.");
+        if(paper.project.layers.length != 1){
+                paper.project.activeLayer.removeChildren();
+                paper.project.view.update();
+        }
+
+        if(dragNodeObj){
+            dragNodeObj.classed("dragged", dragNodeObj.data()[0].dragged = false);
+        }
+
+        setTimeout(function(){
+            $("#clips").text("");
+        }, 1500);
+    }
+}
+
 function clickSVG(d)
 {
     console.log("clickSVG-1");
