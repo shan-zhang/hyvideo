@@ -102,7 +102,7 @@
         paper.install(window);
         paper.setup('leftSub');
         var quiz = null;
-        var mappingAllSubstitles = false;
+        var mappingAllSubstitles = true;
         window.addEventListener("load", function() {
             setCanvas();
             greatNounList = <?php echo json_encode($file); ?>;
