@@ -29,10 +29,16 @@
         <video id="video" controls>
           <!-- <source src="video/example1.webm" type="video/webm"> -->
           <!-- <source src="video/example1.mp4" type="video/mp4"> -->
-          <source src="video/Video1.mp4" type="video/mp4">
-          <track src="video/src/Video1.vtt" label="English subtitles" kind="subtitles" type="text/vtt" srclang='en' default></track>
           <!-- <track src="video/src/example1.vtt" label="English subtitles" kind="subtitles" type="text/vtt" srclang='en' default></track> -->
-        Your browser does not support the video tag.
+
+<!--           <source src="video/Video1.mp4" type="video/mp4">
+          <track src="video/src/Video1.vtt" label="English subtitles" kind="subtitles" type="text/vtt" srclang='en' default>
+          </track> -->
+
+          <source src="video/Video3.mp4" type="video/mp4">
+          <track src="video/src/Video3.vtt" label="English subtitles" kind="subtitles" type="text/vtt" srclang='en' default>
+          </track>
+          Your browser does not support the video tag.
         </video>
         <label>2-D Timeline</label>
         <canvas id='leftSub'></canvas>
@@ -125,28 +131,29 @@
         function conceptsMapping(){
             var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
             var myCues = myTrack.cues;   // get list of cues 
-            var tmp = '';
-            for(var i = 0; i < myCues.length; i++){
-                tmp += myCues[i].getCueAsHTML().textContent + ' ';
-                localTextParsing(myCues[i].getCueAsHTML().textContent, myCues[i].startTime, myCues[i].endTime);
-            }
-            //The below code to call external API for concept tagging, and the maximum call limit per day is 1000.
+            //The below code is to show concepts of all substitles in the video
+            // var tmp = '';
+            // for(var i = 0; i < myCues.length; i++){
+            //     tmp += myCues[i].getCueAsHTML().textContent + ' ';
+            //     localTextParsing(myCues[i].getCueAsHTML().textContent, myCues[i].startTime, myCues[i].endTime);
+            // }
+            //The below code is to call external API for concept tagging, and the maximum call limit per day is 1000.
             //sendCuestoConceptTagging(tmp);
 
-            //The below code is to show each substitle in the video
-            // for (var i = 0; i < myCues.length; i++) {
-            //     myCues[i].onenter  = function(){ 
-            //         // console.log(this);
-            //         if(!this.show){
-            //             //document.getElementById("leftSub").innerHTML += ('<span>' + this.getCueAsHTML().textContent + '</span> <br/>');
-            //             //Technique 1: use the great noun list to match proper noun
-            //             localTextParsing(this.getCueAsHTML().textContent, this.startTime, this.endTime);
-            //         }
-            //     };
-            //     myCues[i].onexit = function(){  
-            //         this.show = true;
-            //     };
-            // }
+            //The below code is to show concepts of one-by-one substitle in the video
+            for (var i = 0; i < myCues.length; i++) {
+                myCues[i].onenter  = function(){ 
+                    // console.log(this);
+                    if(!this.show){
+                        //document.getElementById("leftSub").innerHTML += ('<span>' + this.getCueAsHTML().textContent + '</span> <br/>');
+                        //Technique 1: use the great noun list to match proper noun
+                        localTextParsing(this.getCueAsHTML().textContent, this.startTime, this.endTime);
+                    }
+                };
+                myCues[i].onexit = function(){  
+                    this.show = true;
+                };
+            }
         }
         function buttonClick(){
             if(paper.project.layers.length != 1){

@@ -1,16 +1,16 @@
 ADP
 animal animals
-apparatus apparatuses
+//apparatus apparatuses
 ATP
 bacteria bacterium
-body bodies
+//body bodies
 byproduct byproducts
 Calvin
 carbohydrate carbohydrates
 carbon-dioxide carbon
 category categories
 cell cells
-center centre
+//center centre
 chain
 chemical
 chlorophyll
@@ -18,13 +18,12 @@ chloroplast
 chromatin
 chromosome chromosomes
 collector collectors
-common
+//common
 concentration
 conversion
 cycle cycles
 cytoplasm
 cytoskeleton
-debris
 disc discs
 DNA
 earth
@@ -36,9 +35,8 @@ ER
 eukaryotic
 excitation
 fixation
-fluid
+//fluid
 form
-garbage garbages
 gas gases
 glucose
 Golgi 
@@ -47,12 +45,12 @@ hydrogen-Ions hydrogen
 input
 lipid lipids
 lysosome lysosomes
-material
+//material
 membrane membranes
 microfilament microfilaments
-microtubule microtubules
+//microtubule microtubules
 mitochondrion mitochondria
-molecule molecules
+//molecule molecules
 NADP+
 NADPH
 nature
@@ -66,22 +64,21 @@ organism organisms
 oxidation
 oxygen
 particle particles
-photoautotroph photoautotrophs
-photoautotrophic
+photoautotroph photoautotrophs 
 photolysis
 photon photons
-photosynthesis
+photosynthesis photoautotrophic
 photosystem
-pigment
+//igment
 plant plants
-powerhouse powerhouses
+//powerhouse powerhouses
 process processes
 product products
 prokaryotic
 protein proteins
 reaction reactions
-respiration
-reticulum 
+//respiration
+//eticulum 
 ribosome ribosomes
 rough
 shape shapes
@@ -89,12 +86,12 @@ smooth
 spectrum spectrums spectra
 stroma
 structure structures
-sunlight
+//sunlight
 supply supplies
 thylakoid thylakoids
-tube tubes
-two
-unit units
+//tube tubes
+//two
+//unit units
 vacuole vacuoles
 vesicle vesicles
 wall
@@ -114,3 +111,4 @@ foundation
 food
 land lands
 ocean oceans
+genetic

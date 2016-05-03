@@ -12,7 +12,7 @@ var translate = [0, 0];
 var scale = 1;
 var newAddedClickLink = false;
 var scaleMin = 0.5;
-var scaleMax = 4;
+var scaleMax = 1.5;
 var doubleClickNode = false;
 var doubleClickLink = false;
 var editLinkName = false;
@@ -350,14 +350,20 @@ function clickLink(d) // one click link
     if(selectedLink){
         selectedLink.classed("selected", false);
     }
-
-    var linkIndex = "#linkIndex" + d.linkIndex;
-    selectedLink = d3.select(linkIndex);
-    selectedLink.classed("selected", true);
-    selectedLinkObj = d;
+    console.log(selectedLinkObj);
+    console.log(d);
+    if(!selectedLinkObj || selectedLinkObj.linkIndex != d.linkIndex){
+        var linkIndex = "#linkIndex" + d.linkIndex;
+        selectedLink = d3.select(linkIndex);
+        selectedLink.classed("selected", true);
+        selectedLinkObj = d;
+        drawLink(d);
+    }
+    else{
+        selectedLink = null;
+        selectedLinkObj = null;
+    }
     restartLinks();
-
-    drawLink(d);
 }
 
 function drawLink(d){
@@ -447,7 +453,7 @@ var restartLabels = function () { //redrawing Labels
     //.attr("y", function (d) { return (d.source.y + d.target.y) / 2; })
     .attr("text-anchor", "middle")
     .attr("dy", -5)
-    .style("font-size", function (d) { return 10 * log2(d.source.frequency + 1) + "px" })
+    .style("font-size", function (d) { return 10 * log2((d.source.frequency + d.target.frequency)/2 + 1) + "px" })
     .append("textPath")
     .attr("xlink:href", function (d) { return "#linkIndex"+d.linkIndex; })
     .attr("startOffset", "50%")
