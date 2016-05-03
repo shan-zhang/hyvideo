@@ -5,6 +5,9 @@
     // foreach($file as $line){
     //     echo $line;
     // }
+    $showVideo1 = false;
+    $showVideo3 = true;
+    $showVideo = "practice";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,14 +33,22 @@
           <!-- <source src="video/example1.webm" type="video/webm"> -->
           <!-- <source src="video/example1.mp4" type="video/mp4"> -->
           <!-- <track src="video/src/example1.vtt" label="English subtitles" kind="subtitles" type="text/vtt" srclang='en' default></track> -->
-
-<!--           <source src="video/Video1.mp4" type="video/mp4">
-          <track src="video/src/Video1.vtt" label="English subtitles" kind="subtitles" type="text/vtt" srclang='en' default>
-          </track> -->
-
-          <source src="video/Video3.mp4" type="video/mp4">
-          <track src="video/src/Video3.vtt" label="English subtitles" kind="subtitles" type="text/vtt" srclang='en' default>
-          </track>
+          <?php if($showVideo1){
+           ?>
+              <source src="video/Video1.mp4" type="video/mp4">
+              <track src="video/src/Video1.vtt" label="English subtitles" kind="subtitles" type="text/vtt" srclang='en' default>
+              </track>
+          <?php  
+          }
+          ?>
+          <?php if($showVideo3){
+           ?>
+              <source src="video/Video3.mp4" type="video/mp4">
+              <track src="video/src/Video3.vtt" label="English subtitles" kind="subtitles" type="text/vtt" srclang='en' default>
+              </track>
+          <?php  
+          }
+          ?>
           Your browser does not support the video tag.
         </video>
         <label>2-D Timeline</label>
@@ -91,6 +102,7 @@
         paper.install(window);
         paper.setup('leftSub');
         var quiz = null;
+        var mappingAllSubstitles = false;
         window.addEventListener("load", function() {
             setCanvas();
             greatNounList = <?php echo json_encode($file); ?>;
@@ -131,28 +143,33 @@
         function conceptsMapping(){
             var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
             var myCues = myTrack.cues;   // get list of cues 
-            //The below code is to show concepts of all substitles in the video
-            // var tmp = '';
-            // for(var i = 0; i < myCues.length; i++){
-            //     tmp += myCues[i].getCueAsHTML().textContent + ' ';
-            //     localTextParsing(myCues[i].getCueAsHTML().textContent, myCues[i].startTime, myCues[i].endTime);
-            // }
-            //The below code is to call external API for concept tagging, and the maximum call limit per day is 1000.
-            //sendCuestoConceptTagging(tmp);
 
-            //The below code is to show concepts of one-by-one substitle in the video
-            for (var i = 0; i < myCues.length; i++) {
-                myCues[i].onenter  = function(){ 
-                    // console.log(this);
-                    if(!this.show){
-                        //document.getElementById("leftSub").innerHTML += ('<span>' + this.getCueAsHTML().textContent + '</span> <br/>');
-                        //Technique 1: use the great noun list to match proper noun
-                        localTextParsing(this.getCueAsHTML().textContent, this.startTime, this.endTime);
-                    }
-                };
-                myCues[i].onexit = function(){  
-                    this.show = true;
-                };
+            
+            if(mappingAllSubstitles){
+                //The below code is to show concepts of all substitles in the video
+                var tmp = '';
+                for(var i = 0; i < myCues.length; i++){
+                    tmp += myCues[i].getCueAsHTML().textContent + ' ';
+                    localTextParsing(myCues[i].getCueAsHTML().textContent, myCues[i].startTime, myCues[i].endTime);
+                }
+                //The below code is to call external API for concept tagging, and the maximum call limit per day is 1000.
+                //sendCuestoConceptTagging(tmp);
+            }
+            else{
+                //The below code is to show concepts of one-by-one substitle in the video
+                for (var i = 0; i < myCues.length; i++) {
+                    myCues[i].onenter  = function(){ 
+                        // console.log(this);
+                        if(!this.show){
+                            //document.getElementById("leftSub").innerHTML += ('<span>' + this.getCueAsHTML().textContent + '</span> <br/>');
+                            //Technique 1: use the great noun list to match proper noun
+                            localTextParsing(this.getCueAsHTML().textContent, this.startTime, this.endTime);
+                        }
+                    };
+                    myCues[i].onexit = function(){  
+                        this.show = true;
+                    };
+                }
             }
         }
         function buttonClick(){
@@ -314,9 +331,8 @@
                 }
             });
         }
-
         var quizNum = 0;
-        var quizTask = {'pre': 'pre-practice','post':'post-practice'};
+        var quizTask = {'pre': "<?php echo 'pre-'.$showVideo; ?>",'post': "<?php echo 'post-'.$showVideo; ?>" };
         var quizType = 'pre';
         var quizTime;
         function startQuiz(e){
