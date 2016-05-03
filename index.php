@@ -1,5 +1,5 @@
 <?php
-    $file = file('data/PilotStudyVideo1-3.txt',FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $file = file('data/PilotStudyVideo-3.txt',FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     $quizFile = file_get_contents('data/quiz.json', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     //echo sizeof($file);
     // foreach($file as $line){

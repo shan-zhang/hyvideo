@@ -443,7 +443,7 @@ var restartLabels = function () { //redrawing Labels
     //Data-join: Update
     label.select("textPath").transition().duration(500)
     .text(function (d) { return d.linkName })
-    .style("font-size", function (d) { return 10 * log2(d.source.frequency + 1) + "px" });
+    .style("font-size", function (d) { return 10 * log2((d.source.frequency + d.target.frequency)/2 + 1) + "px" });
 
     //Data-Join: Enter
     var enterLabel = label.enter().insert("text",".node")

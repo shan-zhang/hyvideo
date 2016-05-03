@@ -1,0 +1,115 @@
+//apparatus apparatuses
+//body bodies
+//center centre
+//collector collectors
+//common
+//eticulum 
+//fluid
+//form
+//genetic
+//igment
+//material
+microtubule microtubules
+molecule molecules
+particle particles
+pigment pigments
+//powerhouse powerhouses
+//process processes
+//respiration
+//shape shapes
+//structure structures
+//sunlight
+//tube tubes
+//two
+//unit units
+//1,5-bisphosphate
+//ADP
+animal animals
+ATP
+bacteria bacterium
+byproduct byproducts
+Calvin
+carbohydrate carbohydrates
+carbon-dioxide carbon
+category categories
+//cell cells
+//cellulose
+//chain
+//chemical
+chlorophyll
+chloroplast chloroplasts
+chromatin
+chromosome chromosomes
+concentration
+conversion
+cycle cycles
+cytoplasm
+cytoskeleton
+//disc discs
+DNA
+earth
+electromagnetic
+electron electrons
+energy energies
+enzyme enzymes
+ER
+//eukaryotic
+excitation
+fixation
+food
+foundation
+fructose
+//gas gases
+//glucose
+//glyceraldehyde-3-phosphate
+//Golgi 
+gradient
+hydrogen-Ions hydrogen
+lipid lipids
+lysosome lysosomes
+membrane membranes
+microfilament microfilaments
+mitochondrion mitochondria
+//NADP+
+NADPH
+//nature
+//network
+nucleolus
+nucleus nuclei
+ocean oceans
+organ organs
+organelle organelles
+organism organisms
+oxidation
+oxygen
+//phosphate
+photoautotroph photoautotrophs 
+photolysis
+photon photons
+photosynthesis photoautotrophic
+photosystem
+planet
+plant plants
+procedure procedures
+product products
+prokaryotic
+protein proteins
+reaction reactions
+ribosome ribosomes
+rough
+smooth
+spectrum spectrums spectra
+//starch
+//storage
+stroma
+sucrose
+sugar sugars
+supply supplies
+thylakoid thylakoids
+vacuole vacuoles
+vesicle vesicles
+wall
+water
+wave waves
+wavelength wavelengths
+light sunlight
