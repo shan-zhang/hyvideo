@@ -17,7 +17,10 @@ path.link {
 }
 
 path.link.selected {
-  stroke-dasharray: 5,5;
+  /*stroke-dasharray: 5,5;*/
+  stroke: #000099;
+  stroke-width: 3px;
+  stroke-opacity:1;
 }
 
 path.overlappingLink {
@@ -37,7 +40,7 @@ path.overlappingLink {
 }
 
 .fixed .circle {
-    stroke-width: 2.5px;
+    stroke-width: 3px;
 }
 
 .connecting .circle {
@@ -45,8 +48,8 @@ path.overlappingLink {
 }
 
 .dragged .circle{
-    stroke: #006600;
-    stroke-width: 2.5px;
+    stroke: red;
+    stroke-width: 3px;
 }
 
 text {

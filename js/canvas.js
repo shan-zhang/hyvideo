@@ -9,14 +9,18 @@ var canvasLeft = 0;
 var canvasTop = 0;
 var clickOntoLinks = false;
 var translate = [0, 0];
-var scale = 1;
 var newAddedClickLink = false;
-var scaleMin = 0.5;
+var scaleMin = 0.3;
 var scaleMax = 1.5;
+var scale = 1;
 var doubleClickNode = false;
 var doubleClickLink = false;
 var editLinkName = false;
-var isLinkEditable = true;
+
+//The below parameters are for the pilot study purpose
+var isLinkingable = false; //false: can not link two concepts
+var addNewConcept = false; //false: can not add new empty concept by double-clicking
+var isEditable = false; //false: can not edit concept/link name.
 
 var log2 = function (val)
 {
@@ -283,10 +287,10 @@ function oneclick(d) {//one click node
         else {
             if (selectedNodeObj == d) return; //Self-connected is not allowed
 
-            if(!isLinkEditable) {
+            if(!isLinkingable) {
                 //For the pilot study, adding link is not allowed.
                 selectedNode.classed("connecting", selectedNodeObj.connecting = false);
-                selectedNode.classed("fixed", selectedNodeObj.fixed = false);
+                //selectedNode.classed("fixed", selectedNodeObj.fixed = false);
                 
                 selectedNode = d3.select(this);
                 selectedNodeObj = d;
@@ -422,15 +426,17 @@ function dblclickSVG(d) {
         doubleClickLink = false;
         return;
     }
-    var addNewNode = true;
-    nodes.forEach(function (nodeValue, nodeIndex) {
-        if (nodeValue.word == "")
-            addNewNode = false;
-    });
-    if (addNewNode)
-    {
-        nodes.push({ "word": "", "frequency": 1, "x": d3.event.x, "y": d3.event.y, "dx": d3.event.x, "dy": d3.event.y });
-        restartNodes();
+    if(addNewConcept){
+        var addNewNode = true;
+        nodes.forEach(function (nodeValue, nodeIndex) {
+            if (nodeValue.word == "")
+                addNewNode = false;
+        });
+        if (addNewNode)
+        {
+            nodes.push({ "word": "", "frequency": 1, "x": d3.event.x, "y": d3.event.y, "dx": d3.event.x, "dy": d3.event.y });
+            restartNodes();
+        }
     }
 }
 //******************************************************************
@@ -698,6 +704,7 @@ var hideEditedLink = function () {
 //**************************************************************************
 //Keyboard event
 function keyup() {
+    if(!isEditable) return; // if the concept-map is not editable
     if ($(".inputText").css("visibility")==='visible') return;
     switch (d3.event.keyCode) {
         case 69: //Edit
@@ -728,6 +735,7 @@ function keyup() {
 
 function keydown() {
     //d3.event.preventDefault(); //to stop the default keyboard event
+    if(!isEditable) return; // if the concept-map is not editable
     if (!selectedLinkObj && !selectedNodeObj) return;
     switch (d3.event.keyCode) {
         case 46: //delete
