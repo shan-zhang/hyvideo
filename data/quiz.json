@@ -23,34 +23,113 @@
 			"answer":true
 		}
 	],
-	"video1":[
+	"pre-video1":[
 		{
 			"title": "quiz 1",
-			"content": "This is the first quiz for video 1.",
-			"answer":true
+			"content": "All cells have DNA, cytoplasm, cell membrane, and ribosomes.",
+			"answer":false
 		},
 		{
 			"title": "quiz 2",
-			"content": "This is the second quiz for video 1.",
-			"answer":true
-		}
-	],
-	"video2":[
-	],
-	"video3":[
-		{
-			"title": "quiz 1",
-			"content": "This is the first quiz for video 3.",
-			"answer":true
-		},
-		{
-			"title": "quiz 2",
-			"content": "This is the second quiz for video 3.",
+			"content": "Prokaryotic cells can only be one-celled, unicellular organisms.",
 			"answer":true
 		},
 		{
 			"title": "quiz 3",
-			"content": "This is the third quiz for video 3.",
+			"content": "Chromosomes are created when the cell is ready to produce protein.",
+			"answer":false
+		},
+		{
+			"title": "quiz 4",
+			"content": "Vacuole are sacs like structure that resides in animal cell.",
+			"answer":false
+		},
+		{
+			"title": "quiz 5",
+			"content": "Cells in plants have cell walls.",
+			"answer":true
+		}
+	],
+	"post-video1":[
+		{
+			"title": "quiz 1",
+			"content": "The body of the rat contains two main types of different cells, one with nucleus and one without.",
+			"answer":false
+		},
+		{
+			"title": "quiz 2",
+			"content": "Bacteria’s genetic materials can be found in its cytoplasm.",
+			"answer":true
+		},
+		{
+			"title": "quiz 3",
+			"content": "Ribosomes are made inside the nucleus before transporting out to the cytoplasm.",
+			"answer":true
+		},
+		{
+			"title": "quiz 4",
+			"content": "Golgi Apparatus can be seen as the factory for protein production.",
+			"answer":true
+		},
+		{
+			"title": "quiz 5",
+			"content": "Chloroplast is green because plants are green.",
+			"answer":false
+		}
+	],
+	"video2":[
+	],
+	"pre-video3":[
+		{
+			"title": "quiz 1",
+			"content": "Carbon dioxide, water, and energy is used to manufacture lactose and glucose.",
+			"answer":false
+		},
+		{
+			"title": "quiz 2",
+			"content": "Plants are green because they reflect yellow and green wavelengths of light.",
+			"answer":true
+		},
+		{
+			"title": "quiz 3",
+			"content": "Photosystem 1 and Photosystem 2 takes place in the stroma.",
+			"answer":false
+		},
+		{
+			"title": "quiz 4",
+			"content": "Carbon dioxide is an important input to the cellular respiratory pathway.",
+			"answer":false
+		},
+		{
+			"title": "quiz 5",
+			"content": "Calvin cycle has to run 6 times to produce one molecule of glucose.",
+			"answer":true
+		}
+	],
+	"post-video3":[
+		{
+			"title": "quiz 1",
+			"content": "Photons only exist in the visible light range of the electromagnetic spectrum.",
+			"answer":false
+		},
+		{
+			"title": "quiz 2",
+			"content": "The important reactions in photosynthesis take place in different places in the chloroplast.",
+			"answer":true
+		},
+		{
+			"title": "quiz 3",
+			"content": "Electrons are being excited by the photons in the photosystem and transported to other proteins to produce glucose.",
+			"answer":true
+		},
+		{
+			"title": "quiz 4",
+			"content": "The energy produced in the light production cycle is used to excite photosystem 1 to produce glucose.",
+			"answer":false
+		},
+		{
+			"title": "quiz 5",
+			"content": "Byproducts of the Calvin Cycle is involved in the production of the precursor molecule that produces important components in cellular transportation and plant structure.",
 			"answer":true
 		}
 	],

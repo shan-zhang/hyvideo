@@ -7,7 +7,10 @@
     // }
     $showVideo1 = false;
     $showVideo3 = true;
-    $showVideo = "practice";
+
+    //$showVideo = "practice";
+    //$showVideo = "video1";
+    $showVideo = "video3";
 ?>
 <!DOCTYPE html>
 <html lang="en">
