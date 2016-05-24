@@ -20,7 +20,7 @@ var editLinkName = false;
 //The below parameters are for the pilot study purpose
 var isLinkingable = false; //false: can not link two concepts
 var addNewConcept = false; //false: can not add new empty concept by double-clicking
-var isEditable = false; //false: can not edit concept/link name.
+var isEditable = true; //false: can not edit concept/link name.
 
 var log2 = function (val)
 {
@@ -447,8 +447,10 @@ var restartLabels = function () { //redrawing Labels
     console.log(JSON.stringify(links));
 
     //Data-join: Update
-    label.select("textPath").transition().duration(500)
-    .text(function (d) { return d.linkName })
+    label.select("textPath")
+    .attr("xlink:href",null)
+    .attr("xlink:href", function (d) { return "#linkIndex"+d.linkIndex; })
+    .text(function (d) {return d.linkName })
     .style("font-size", function (d) { return 10 * log2((d.source.frequency + d.target.frequency)/2 + 1) + "px" });
 
     //Data-Join: Enter
@@ -478,6 +480,7 @@ var restartLinks = function() {//redrawing Links
     overlappingLink = overlappingLink.data(links);
     //Data-join: Update
     //link.style('marker-end', 'url(#end-arrow)');
+    link.attr("id", function (d) { return "linkIndex" + d.linkIndex; });
 
     //Data-Join: Enter
     var enterLink = link.enter().insert("path", ".node")
@@ -638,8 +641,8 @@ var delLinkandLabel = function ()//delete selected link and its label
     });
     updateLinkType(selectedLinkObj,false);
     selectedLinkObj = null;
-    restartLabels();
     restartLinks();
+    restartLabels();
 }
 var delNodeWithLink = function ()//delete seleced node and its associated links
 {
@@ -704,6 +707,7 @@ var hideEditedLink = function () {
 //**************************************************************************
 //Keyboard event
 function keyup() {
+    console.log(selectedLinkObj);
     if(!isEditable) return; // if the concept-map is not editable
     if ($(".inputText").css("visibility")==='visible') return;
     switch (d3.event.keyCode) {
@@ -723,7 +727,10 @@ function keyup() {
                     selectedLinkObj.linkName = "";
                     restartLabels();
                 }
-                $(".inputText").css({ "left": d3.event.x, "top": d3.event.y, "visibility": "visible" });
+                $(".inputText").css({
+                    "left": canvasLeft + (selectedLinkObj.source.x + selectedLinkObj.target.x) / 2 * scale + translate[0], "top": canvasTop + (selectedLinkObj.source.y + selectedLinkObj.target.y) / 2 * scale + translate[1], "visibility": "visible"
+                });
+                //$(".inputText").css({ "left": d3.event.x, "top": d3.event.y, "visibility": "visible" });
                 $(".inputText").focus();
             }
             else{
