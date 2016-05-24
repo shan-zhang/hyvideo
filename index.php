@@ -57,7 +57,7 @@
         <label>2-D Timeline</label>
         <canvas id='leftSub'></canvas>
         <button id="clear" onclick="buttonClick()">Clear</button>
-        <button id="conceptsMapping" onclick="conceptsMapping()">Concept-Map</button>
+        <!-- <button id="conceptsMapping" onclick="conceptsMapping()">Concept-Map</button> -->
         <h3 id="clips"></h3>
         <button id="startQuiz" onclick="startQuiz(event)">Start Quiz!</button>
         <form action="php/grade.php" method="post" id="myForm" style="display:none">

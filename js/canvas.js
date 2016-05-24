@@ -20,7 +20,7 @@ var editLinkName = false;
 //The below parameters are for the pilot study purpose
 var isLinkingable = false; //false: can not link two concepts
 var addNewConcept = false; //false: can not add new empty concept by double-clicking
-var isEditable = true; //false: can not edit concept/link name.
+var isEditable = false; //false: can not edit concept/link name.
 
 var log2 = function (val)
 {
@@ -640,7 +640,10 @@ var delLinkandLabel = function ()//delete selected link and its label
         }
     });
     updateLinkType(selectedLinkObj,false);
+    selectedLink.classed("selected", false);
     selectedLinkObj = null;
+    selectedLink = null;
+
     restartLinks();
     restartLabels();
 }
@@ -658,7 +661,14 @@ var delNodeWithLink = function ()//delete seleced node and its associated links
     for (var i = 0; i < links.length; i++)
     {
         if (links[i].source == selectedNodeObj || links[i].target == selectedNodeObj)
+        {
+            if(links[i] == selectedLinkObj){
+                selectedLink.classed("selected", false);
+                selectedLinkObj = null;
+                selectedLink = null;
+            }
             links.splice(i--, 1);
+        }
     }
 
     selectedNode = null;
