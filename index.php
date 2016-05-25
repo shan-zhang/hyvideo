@@ -57,6 +57,7 @@
         <label>2-D Timeline</label>
         <canvas id='leftSub'></canvas>
         <button id="clear" onclick="buttonClick()">Clear</button>
+         <button id="hideVideo" onclick="hideVideo()">Hide Video</button>
         <!-- <button id="conceptsMapping" onclick="conceptsMapping()">Concept-Map</button> -->
         <h3 id="clips"></h3>
         <button id="startQuiz" onclick="startQuiz(event)">Start Quiz!</button>
@@ -141,6 +142,22 @@
             var tmp = '';
             for(var i = 0; i < myCues.length; i++){
                 localTextParsing(myCues[i].getCueAsHTML().textContent, myCues[i].startTime, myCues[i].endTime);
+            }
+        }
+        function hideVideo(){
+            var video = document.getElementById("video");
+            if(video.style.visibility == '' || video.style.visibility == 'visible'){
+                video.style.visibility = "hidden";
+                video.muted = true;
+            }
+            else{
+                var person = prompt("Please enter your password to show the video");
+                if (person != null) {
+                    if(person == 'hyvideo'){
+                        video.style.visibility = "visible";
+                        video.muted = false;
+                    }
+                }
             }
         }
         function conceptsMapping(){

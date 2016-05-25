@@ -35,6 +35,7 @@
 }
 video{
     width: 99%;
+    visibility: visible;
 }
 a{
     margin-right: 8px;
