@@ -5,12 +5,12 @@
     // foreach($file as $line){
     //     echo $line;
     // }
-    $showVideo1 = false;
-    $showVideo3 = true;
+    $showVideo1 = true;
+    $showVideo3 = false;
 
     //$showVideo = "practice";
     //$showVideo = "video1";
-    $showVideo = "video3";
+    $showVideo = "video1";
 ?>
 <!DOCTYPE html>
 <html lang="en">
