@@ -33,7 +33,7 @@
     </head>
 <body>
     <div id="header">
-    <h1>HyVideo</h1>
+    <h1>HyVideo - Authoring Tool</h1>
     </div>
     <div id="section">
         <div id="leftPanel">

@@ -1,1 +1,1 @@
-# hyvideo version 2.0
+# hyvideo version - authoring tool
