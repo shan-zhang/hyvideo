@@ -1,5 +1,5 @@
 <?php
-    $file = file('data/PilotStudyVideo-3.txt',FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $file = file('data/PilotStudyVideo-1.txt',FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     $quizFile = file_get_contents('data/quiz.json', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     //echo sizeof($file);
     // foreach($file as $line){
@@ -31,7 +31,7 @@
     </head>
 <body>
     <div id="header">
-    <h1>HyVideo</h1>
+    <h1>HyVideo - Authoring Mode</h1>
     </div>
     <div id="section">
         <div id="leftPanel">
@@ -109,13 +109,12 @@
         paper.install(window);
         paper.setup('leftSub');
         var quiz = null;
-        var mappingAllSubstitles = true;
+        var mappingAllSubstitles = false;
         window.addEventListener("load", function() {
             setCanvas();
             greatNounList = <?php echo json_encode($file); ?>;
             quiz = <?php echo $quizFile; ?>;
-            //console.log(quiz['video1']);
-            //console.log(greatNounList);
+            conceptsMapping();
         });
 
         $(".inputText").keyup(function (e) {
