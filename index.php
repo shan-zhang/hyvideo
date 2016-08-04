@@ -31,7 +31,7 @@
     </head>
 <body>
     <div id="header">
-    <h1>HyVideo - Authoring Mode</h1>
+    <h1>Authoring Mode</h1>
     </div>
     <div id="section">
         <div id="leftPanel">
@@ -60,10 +60,10 @@
         <label>2-D Timeline</label>
         <canvas id='leftSub'></canvas>
         <button id="clear" onclick="buttonClick()">Clear</button>
-         <button id="hideVideo" onclick="hideVideo()">Hide Video</button>
-        <!-- <button id="conceptsMapping" onclick="conceptsMapping()">Concept-Map</button> -->
+        <!-- <button id="hideVideo" onclick="hideVideo()">Hide Video</button> -->
+        <button id="conceptsMapping" onclick="conceptsMapping()">Concept-Map</button>
         <h3 id="clips"></h3>
-        <button id="startQuiz" onclick="startQuiz(event)">Start Quiz!</button>
+        <!-- <button id="startQuiz" onclick="startQuiz(event)">Start Quiz!</button> -->
         <form action="php/grade.php" method="post" id="myForm" style="display:none">
               <label id='quizLabel'></label><br>
               <label id='quizContent'></label><br><br>
@@ -114,7 +114,9 @@
             setCanvas();
             greatNounList = <?php echo json_encode($file); ?>;
             quiz = <?php echo $quizFile; ?>;
-            conceptsMapping();
+
+            //The code below is to automatically map concepts without clicking the 'Concept-Map' button
+            //conceptsMapping();
         });
 
         $(".inputText").keyup(function (e) {
@@ -325,6 +327,7 @@
                     if(result.node){
                         setNote(result);
                         evt.srcElement.value = null;
+                        document.getElementById('conceptsMapping').style.visibility = 'hidden';
                     }
                     else{
                         alert('The input file format is incorrect!');
