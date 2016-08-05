@@ -752,8 +752,19 @@ function keydown() {
     //d3.event.preventDefault(); //to stop the default keyboard event
     if(!isEditable) return; // if the concept-map is not editable
     if (!selectedLinkObj && !selectedNodeObj) return;
+
     switch (d3.event.keyCode) {
         case 46: //delete
+            if (selectedLinkObj)
+            {
+                delLinkandLabel();
+            }
+            if (selectedNodeObj)
+            {
+                delNodeWithLink();
+            }
+            break;
+        case 8: //backspace
             if (selectedLinkObj)
             {
                 delLinkandLabel();
