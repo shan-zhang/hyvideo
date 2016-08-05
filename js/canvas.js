@@ -18,9 +18,9 @@ var doubleClickLink = false;
 var editLinkName = false;
 
 //The below parameters are for the pilot study purpose
-var isLinkingable = false; //false: can not link two concepts
-var addNewConcept = false; //false: can not add new empty concept by double-clicking
-var isEditable = false; //false: can not edit concept/link name.
+var isLinkingable = true; //false: can not link two concepts
+var addNewConcept = true; //false: can not add new empty concept by double-clicking
+var isEditable = true; //false: can not edit concept/link name.
 
 var log2 = function (val)
 {
@@ -286,7 +286,6 @@ function oneclick(d) {//one click node
         }
         else {
             if (selectedNodeObj == d) return; //Self-connected is not allowed
-
             if(!isLinkingable) {
                 //For the pilot study, adding link is not allowed.
                 selectedNode.classed("connecting", selectedNodeObj.connecting = false);
@@ -310,7 +309,7 @@ function oneclick(d) {//one click node
             selectedNode.classed("connecting", selectedNodeObj.connecting = false);
             //saveCurrentState();
             clickOntoLinks = true;
-            selectedNode.classed("fixed", selectedNodeObj.fixed = false);
+            //selectedNode.classed("fixed", selectedNodeObj.fixed = false);
             
             selectedNode.classed("connected", selectedNodeObj.connected = true);
 
@@ -323,7 +322,7 @@ function oneclick(d) {//one click node
             updateLinkType(links[links.length - 1], true);
             selectedNode = null;
             selectedNodeObj = null;
-            d3.select(this).classed("fixed", d.fixed = false);
+            d3.select(this).classed("fixed", d.fixed = true);
             d3.select(this).classed("connecting", d.connecting = false);
             d3.select(this).classed("connected", d.connected = true);
 
@@ -451,7 +450,7 @@ var restartLabels = function () { //redrawing Labels
     .attr("xlink:href",null)
     .attr("xlink:href", function (d) { return "#linkIndex"+d.linkIndex; })
     .text(function (d) {return d.linkName })
-    .style("font-size", function (d) { return 10 * log2((d.source.frequency + d.target.frequency)/2 + 1) + "px" });
+    .style("font-size", function (d) { return 15 * log2((d.source.frequency + d.target.frequency)/2 + 1) + "px" });
 
     //Data-Join: Enter
     var enterLabel = label.enter().insert("text",".node")
@@ -461,7 +460,7 @@ var restartLabels = function () { //redrawing Labels
     //.attr("y", function (d) { return (d.source.y + d.target.y) / 2; })
     .attr("text-anchor", "middle")
     .attr("dy", -5)
-    .style("font-size", function (d) { return 10 * log2((d.source.frequency + d.target.frequency)/2 + 1) + "px" })
+    .style("font-size", function (d) { return 15 * log2((d.source.frequency + d.target.frequency)/2 + 1) + "px" })
     .append("textPath")
     .attr("xlink:href", function (d) { return "#linkIndex"+d.linkIndex; })
     .attr("startOffset", "50%")
@@ -717,7 +716,6 @@ var hideEditedLink = function () {
 //**************************************************************************
 //Keyboard event
 function keyup() {
-    console.log(selectedLinkObj);
     if(!isEditable) return; // if the concept-map is not editable
     if ($(".inputText").css("visibility")==='visible') return;
     switch (d3.event.keyCode) {
@@ -764,6 +762,7 @@ function keydown() {
             {
                 delNodeWithLink();
             }
+            d3.event.preventDefault();
             break;
     }
 }
