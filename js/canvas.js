@@ -763,17 +763,6 @@ function keydown() {
             {
                 delNodeWithLink();
             }
-            d3.event.preventDefault();
-            break;
-        case 8: //backspace
-            if (selectedLinkObj)
-            {
-                delLinkandLabel();
-            }
-            if (selectedNodeObj)
-            {
-                delNodeWithLink();
-            }
             break;
     }
 }
@@ -874,6 +863,7 @@ var saveNote = function () {
 }
 
 var setNote = function(result){
+    //Each time when you read a new *.json to the system; the existing concept map will be removed and load the new one.
     selectedNode = null;
     selectedNodeObj = null;
     selectedLink = null;

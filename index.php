@@ -1,5 +1,5 @@
 <?php
-    $file = file('data/PilotStudyVideo-1.txt',FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $file = file('data/PilotStudyVideo1&3.txt',FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     $quizFile = file_get_contents('data/quiz.json', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     //echo sizeof($file);
     // foreach($file as $line){
@@ -12,8 +12,8 @@
     $showVideo3 = false;
     //$showVideo3 = false;
 
-    //$showVideo = "practice";
-    $showVideo = "video1";
+    $showVideo = "practice";
+    //$showVideo = "video1";
     //$showVideo = "video3";
 
 ?>
@@ -120,8 +120,8 @@
             //The code below is to automatically map concepts without clicking the 'Concept-Map' button
             //conceptsMapping();
             $(document).on("keydown", function (e) {
-                if (e.which === 8 && !$(e.target).is("input, textarea")) {
-                e.preventDefault();
+                if (e.which === 8 && !$(e.target).is('input')) {
+                    e.preventDefault();
                 }
             });
         });
@@ -332,7 +332,7 @@
                 reader.onload = function(e){
                     var result = jQuery.parseJSON(reader.result);
                     if(result.node){
-                        setNote(result);
+                        (result);
                         evt.srcElement.value = null;
                         document.getElementById('conceptsMapping').style.visibility = 'hidden';
                     }
