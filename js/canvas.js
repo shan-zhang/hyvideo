@@ -893,3 +893,11 @@ var setNote = function(result){
     restartLinks();
     restartLabels();
 }
+
+var printAllConceptNames = function (){
+    console.log('-----------Print All Concept Names-------');
+    nodes.forEach(function(nodeItem){
+        console.log(nodeItem.word);
+    });   
+    console.log('-----------------------------------------'); 
+}

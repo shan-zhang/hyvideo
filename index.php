@@ -6,15 +6,12 @@
     //     echo $line;
     // }
 
-    //$showVideo1 = true;
-    $showVideo1 = true;
-
-    $showVideo3 = false;
-    //$showVideo3 = false;
-
     $showVideo = "practice";
     //$showVideo = "video1";
     //$showVideo = "video3";
+
+    $videoName = 'video/video1.mp4';
+    $videoSubtitle = 'video/src/video1.vtt';
 
 ?>
 <!DOCTYPE html>
@@ -41,23 +38,11 @@
           <!-- <source src="video/example1.webm" type="video/webm"> -->
           <!-- <source src="video/example1.mp4" type="video/mp4"> -->
           <!-- <track src="video/src/example1.vtt" label="English subtitles" kind="subtitles" type="text/vtt" srclang='en' default></track> -->
-          <?php if($showVideo1){
-           ?>
-              <source src="video/Video1.mp4" type="video/mp4">
-              <track src="video/src/Video1.vtt" label="English subtitles" kind="subtitles" type="text/vtt" srclang='en' default>
-              </track>
-          <?php  
-          }
-          ?>
-          <?php if($showVideo3){
-           ?>
-              <source src="video/Video3.mp4" type="video/mp4">
-              <track src="video/src/Video3.vtt" label="English subtitles" kind="subtitles" type="text/vtt" srclang='en' default>
-              </track>
-          <?php  
-          }
-          ?>
-          Your browser does not support the video tag.
+
+        <source src="<?php echo $videoName; ?>" type="video/mp4">
+        <track src="<?php echo $videoSubtitle; ?>" label="English subtitles" kind="subtitles" type="text/vtt" srclang='en' default></track>
+
+        Your browser does not support the video tag.
         </video>
         <label>2-D Timeline</label>
         <canvas id='leftSub'></canvas>
@@ -86,6 +71,9 @@
             <br/>
             <label>Download Concept-Map:</label>
             <a id='click' href="#">click</a>
+            <br/>
+            <br/>
+            <a id='showAllConcepts' href="#" style="visibility:hidden">Click here to download all concepts</a>
         </div>
         </div>
         <div id="rightPanel" tabindex="0">
@@ -111,7 +99,7 @@
         paper.install(window);
         paper.setup('leftSub');
         var quiz = null;
-        var mappingAllSubstitles = false;
+        var mappingAllSubstitles = true;
         window.addEventListener("load", function() {
             setCanvas();
             greatNounList = <?php echo json_encode($file); ?>;
@@ -185,6 +173,7 @@
                 }
                 //The below code is to call external API for concept tagging, and the maximum call limit per day is 1000.
                 //sendCuestoConceptTagging(tmp);
+                document.getElementById('showAllConcepts').style.visibility = 'visible';
             }
             else{
                 //The below code is to show concepts of one-by-one substitle in the video
@@ -321,6 +310,11 @@
         }
 
         $('#click').click(function(){ saveNoteToFile(); return false; });
+        $('#showAllConcepts').click(
+            function(){ 
+                printAllConceptNames();
+                return false; });
+
 
         function handleFileSelect(evt) {
             console.log(evt);
