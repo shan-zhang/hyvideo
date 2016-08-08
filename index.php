@@ -99,7 +99,7 @@
         paper.install(window);
         paper.setup('leftSub');
         var quiz = null;
-        var mappingAllSubstitles = true;
+        var mappingAllSubstitles = false;
         window.addEventListener("load", function() {
             setCanvas();
             greatNounList = <?php echo json_encode($file); ?>;
@@ -326,7 +326,7 @@
                 reader.onload = function(e){
                     var result = jQuery.parseJSON(reader.result);
                     if(result.node){
-                        (result);
+                        setNote(result);
                         evt.srcElement.value = null;
                         document.getElementById('conceptsMapping').style.visibility = 'hidden';
                     }
