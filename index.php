@@ -65,18 +65,22 @@
         <h3 id="closingQuiz" style="display:none">The quiz is over. Thanks for participating. <a href='download.php' onclick="downloadResult()">Download</a>the study result.</h3>
         <div id='footerButton'>  
             <br>      
-            <label>Load Concept-Map:</label>
+            <!-- <label>Load Concept-Map:</label>
             <input type='file' id='file' name='userFile' accept=".json">
             <br/>
             <br/>
             <label>Download Concept-Map:</label>
             <a id='click' href="#">click</a>
             <br/>
-            <br/>
+            <br/> -->
+            <div id='subtitle'>
+
+            </div>
+
             <a id='showAllConcepts' href="#" style="visibility:hidden">Click here to download all concepts</a>
         </div>
         </div>
-        <div id="rightPanel" tabindex="0">
+        <div id="rightPanel" tabindex="0" ondrop="drop(event)" ondragover="allowDrop(event)">
             <input type="text" class="inputText"/>
         </div>
     </div>
@@ -99,7 +103,7 @@
         paper.install(window);
         paper.setup('leftSub');
         var quiz = null;
-        var mappingAllSubstitles = false;
+        var mappingAllSubstitles = true;
         window.addEventListener("load", function() {
             setCanvas();
             greatNounList = <?php echo json_encode($file); ?>;
@@ -128,6 +132,24 @@
                 else { console.log("No update while type enter in inputText."); }
             }
         });
+
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        function drop(event) {
+            console.log(event);
+            event.preventDefault();
+            var data = event.dataTransfer.getData("text");
+            //var id = event.dataTransfer.getData("id");
+            console.log(data);
+            var node = document.createElement("LI");                 // Create a <li> node
+            var textnode = document.createTextNode(data);   // Create a text node
+            node.appendChild(textnode); 
+            //event.target.appendChild(node);
+            $(event.target).before(node);
+            console.log(event.target);
+        }
         function setCanvas(){
             var canvasWidth = document.getElementById('rightPanel').offsetWidth;
             var canvasHeight = document.getElementById('rightPanel').offsetHeight;
@@ -159,6 +181,16 @@
                 }
             }
         }
+        function scrollToSubtitle(id){ // scrollTop has no supporting for negative values. If we want to put the first few subtitles into the center, we probably need to fill in empty lines before the first subtitle.
+            console.log('scroll' + id);
+            var scrollID = '#'+id;
+            console.log($('#subtitle').scrollTop() + ($(scrollID).position().top - $('#subtitle').position().top) - $('#subtitle').height()/2 + $(scrollID).height()/2);
+            var scrollSpeed = 400;
+            //var offset = $('subtitle').offsetHeight() / 2;
+            $('#subtitle').animate({ 
+                scrollTop: $('#subtitle').scrollTop() + ($(scrollID).position().top - $('#subtitle').position().top) - $('#subtitle').height()/2 + $(scrollID).height()/2
+            }, scrollSpeed);
+        }
         function conceptsMapping(){
             var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
             var myCues = myTrack.cues;   // get list of cues 
@@ -166,14 +198,37 @@
             
             if(mappingAllSubstitles){
                 //The below code is to show concepts of all substitles in the video
-                var tmp = '';
+                // var tmp = '';
+                // for(var i = 0; i < myCues.length; i++){
+                //     tmp += myCues[i].getCueAsHTML().textContent + ' ';
+                //     localTextParsing(myCues[i].getCueAsHTML().textContent, myCues[i].startTime, myCues[i].endTime);
+                // }
+                // //The below code is to call external API for concept tagging, and the maximum call limit per day is 1000.
+                // //sendCuestoConceptTagging(tmp);
+                // document.getElementById('showAllConcepts').style.visibility = 'visible';
+
+
+                //The code below is to show all subtitiles one by one in the subtitle DIV tag
                 for(var i = 0; i < myCues.length; i++){
-                    tmp += myCues[i].getCueAsHTML().textContent + ' ';
-                    localTextParsing(myCues[i].getCueAsHTML().textContent, myCues[i].startTime, myCues[i].endTime);
+                    //tmp += myCues[i].getCueAsHTML().textContent + ' ';
+                    //localTextParsing(myCues[i].getCueAsHTML().textContent, myCues[i].startTime, myCues[i].endTime);
+                    myCues[i].id = i;
+                    myCues[i].onenter  = function(){
+                        scrollToSubtitle(this.id);
+                        $('#'+this.id).css('background-color','lightgray');
+                    };
+                    myCues[i].onexit = function(){  
+                       $('#'+this.id).css('background-color','white');
+                    };
+                    var node = document.createElement("LI");                 // Create a <li> node
+                    node.setAttribute('id',i);
+                    var textnode = document.createTextNode(myCues[i].getCueAsHTML().textContent);   // Create a text node
+                    node.appendChild(textnode);                              // Append the text to <li>
+                    document.getElementById('subtitle').appendChild(node);
                 }
                 //The below code is to call external API for concept tagging, and the maximum call limit per day is 1000.
                 //sendCuestoConceptTagging(tmp);
-                document.getElementById('showAllConcepts').style.visibility = 'visible';
+                // $('#subtitle').scrollTop($('#subtitle').scrollTop() + ($('#0').position().top - $('#subtitle').position().top) - $('#subtitle').height()/2 + $('#0').height()/2);          
             }
             else{
                 //The below code is to show concepts of one-by-one substitle in the video
@@ -193,6 +248,8 @@
             }
         }
         function buttonClick(){
+            scrollToSubtitle(0);
+
             if(paper.project.layers.length != 1){
                 paper.project.activeLayer.removeChildren();
                 paper.project.view.update();
@@ -316,28 +373,28 @@
                 return false; });
 
 
-        function handleFileSelect(evt) {
-            console.log(evt);
-            var file = evt.target.files[0]; // FileList object
-            if(file){
-                var reader = new FileReader();
-                reader.readAsText(file);
+        // function handleFileSelect(evt) {
+        //     console.log(evt);
+        //     var file = evt.target.files[0]; // FileList object
+        //     if(file){
+        //         var reader = new FileReader();
+        //         reader.readAsText(file);
 
-                reader.onload = function(e){
-                    var result = jQuery.parseJSON(reader.result);
-                    if(result.node){
-                        setNote(result);
-                        evt.srcElement.value = null;
-                        document.getElementById('conceptsMapping').style.visibility = 'hidden';
-                    }
-                    else{
-                        alert('The input file format is incorrect!');
-                    }
-                    console.log(result);
-                }
-            }
-        }
-        document.getElementById('file').addEventListener('change', handleFileSelect, false);
+        //         reader.onload = function(e){
+        //             var result = jQuery.parseJSON(reader.result);
+        //             if(result.node){
+        //                 setNote(result);
+        //                 evt.srcElement.value = null;
+        //                 document.getElementById('conceptsMapping').style.visibility = 'hidden';
+        //             }
+        //             else{
+        //                 alert('The input file format is incorrect!');
+        //             }
+        //             console.log(result);
+        //         }
+        //     }
+        // }
+        // document.getElementById('file').addEventListener('change', handleFileSelect, false);
 
         function saveNoteToFile (){
             var savedNote = saveNote();
