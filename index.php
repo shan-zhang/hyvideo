@@ -103,14 +103,16 @@
         paper.install(window);
         paper.setup('leftSub');
         var quiz = null;
-        var mappingAllSubstitles = true;
+        var mappingAllSubstitles = false;
+        var mappingSingleSubtitle = true;
         window.addEventListener("load", function() {
             setCanvas();
             greatNounList = <?php echo json_encode($file); ?>;
             quiz = <?php echo $quizFile; ?>;
 
-            //The code below is to automatically map concepts without clicking the 'Concept-Map' button
-            //conceptsMapping();
+            //The code below is to add the subtitle player
+            subtitlePlayer();
+
             $(document).on("keydown", function (e) {
                 if (e.which === 8 && !$(e.target).is('input')) {
                     e.preventDefault();
@@ -138,17 +140,22 @@
         }
 
         function drop(event) {
-            console.log(event);
             event.preventDefault();
             var data = event.dataTransfer.getData("text");
-            //var id = event.dataTransfer.getData("id");
-            console.log(data);
-            var node = document.createElement("LI");                 // Create a <li> node
-            var textnode = document.createTextNode(data);   // Create a text node
-            node.appendChild(textnode); 
-            //event.target.appendChild(node);
-            $(event.target).before(node);
-            console.log(event.target);
+            if(data){            
+                data = data.trim();
+                //var id = event.dataTransfer.getData("id");
+                if(data != ''){
+                    console.log(data);
+                    //---The code below is to add draged text as text node to the canvas
+                    // var node = document.createElement("LI");                 // Create a <li> node
+                    // var textnode = document.createTextNode(data);   // Create a text node
+                    // node.appendChild(textnode); 
+                    // $(event.target).before(node);
+                   
+                    passDragTextToNode(data);
+                }
+            }
         }
         function setCanvas(){
             var canvasWidth = document.getElementById('rightPanel').offsetWidth;
@@ -186,51 +193,51 @@
             var scrollID = '#'+id;
             console.log($('#subtitle').scrollTop() + ($(scrollID).position().top - $('#subtitle').position().top) - $('#subtitle').height()/2 + $(scrollID).height()/2);
             var scrollSpeed = 400;
-            //var offset = $('subtitle').offsetHeight() / 2;
             $('#subtitle').animate({ 
                 scrollTop: $('#subtitle').scrollTop() + ($(scrollID).position().top - $('#subtitle').position().top) - $('#subtitle').height()/2 + $(scrollID).height()/2
             }, scrollSpeed);
+        }
+        function subtitlePlayer(){
+            var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
+            var myCues = myTrack.cues;   // get list of cues 
+            //The code below is to show all subtitiles one by one in the subtitle DIV tag
+            for(var i = 0; i < myCues.length; i++){
+                myCues[i].id = i;
+                myCues[i].onenter  = function(){
+                    scrollToSubtitle(this.id);
+                    $('#'+this.id).css('background-color','lightgray');
+                };
+                myCues[i].onexit = function(){  
+                   $('#'+this.id).css('background-color','white');
+                };
+                var node = document.createElement("li");                 // Create a <li> node
+                node.setAttribute('id',i);
+                var textnode = document.createTextNode(myCues[i].getCueAsHTML().textContent);   // Create a text node
+                node.appendChild(textnode);                              // Append the text to <li>
+                node.onclick = clickSubtitles;
+                node.startTime = myCues[i].startTime;
+                node.endTime = myCues[i].endTime;
+                document.getElementById('subtitle').appendChild(node);
+                          
+            }
         }
         function conceptsMapping(){
             var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
             var myCues = myTrack.cues;   // get list of cues 
 
-            
             if(mappingAllSubstitles){
                 //The below code is to show concepts of all substitles in the video
-                // var tmp = '';
-                // for(var i = 0; i < myCues.length; i++){
-                //     tmp += myCues[i].getCueAsHTML().textContent + ' ';
-                //     localTextParsing(myCues[i].getCueAsHTML().textContent, myCues[i].startTime, myCues[i].endTime);
-                // }
+                var tmp = '';
+                for(var i = 0; i < myCues.length; i++){
+                    tmp += myCues[i].getCueAsHTML().textContent + ' ';
+                    localTextParsing(myCues[i].getCueAsHTML().textContent, myCues[i].startTime, myCues[i].endTime);
+                }
                 // //The below code is to call external API for concept tagging, and the maximum call limit per day is 1000.
                 // //sendCuestoConceptTagging(tmp);
-                // document.getElementById('showAllConcepts').style.visibility = 'visible';
-
-
-                //The code below is to show all subtitiles one by one in the subtitle DIV tag
-                for(var i = 0; i < myCues.length; i++){
-                    //tmp += myCues[i].getCueAsHTML().textContent + ' ';
-                    //localTextParsing(myCues[i].getCueAsHTML().textContent, myCues[i].startTime, myCues[i].endTime);
-                    myCues[i].id = i;
-                    myCues[i].onenter  = function(){
-                        scrollToSubtitle(this.id);
-                        $('#'+this.id).css('background-color','lightgray');
-                    };
-                    myCues[i].onexit = function(){  
-                       $('#'+this.id).css('background-color','white');
-                    };
-                    var node = document.createElement("LI");                 // Create a <li> node
-                    node.setAttribute('id',i);
-                    var textnode = document.createTextNode(myCues[i].getCueAsHTML().textContent);   // Create a text node
-                    node.appendChild(textnode);                              // Append the text to <li>
-                    document.getElementById('subtitle').appendChild(node);
-                }
-                //The below code is to call external API for concept tagging, and the maximum call limit per day is 1000.
-                //sendCuestoConceptTagging(tmp);
-                // $('#subtitle').scrollTop($('#subtitle').scrollTop() + ($('#0').position().top - $('#subtitle').position().top) - $('#subtitle').height()/2 + $('#0').height()/2);          
+                document.getElementById('showAllConcepts').style.visibility = 'visible';        
             }
-            else{
+            if(mappingSingleSubtitle)
+            {
                 //The below code is to show concepts of one-by-one substitle in the video
                 for (var i = 0; i < myCues.length; i++) {
                     myCues[i].onenter  = function(){ 
@@ -247,8 +254,15 @@
                 }
             }
         }
+        function clickSubtitles(event){
+            if(event.ctrlKey){
+                console.log(this.id);
+                document.getElementById("video").currentTime = this.startTime;
+                document.getElementById("video").play();
+            }
+        }
         function buttonClick(){
-            scrollToSubtitle(0);
+            //scrollToSubtitle(0);
 
             if(paper.project.layers.length != 1){
                 paper.project.activeLayer.removeChildren();

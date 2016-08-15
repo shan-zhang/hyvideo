@@ -204,9 +204,11 @@ function dragstart(d) {//Start dragging node
     console.log("dragstart");
     clickOntoLinks = true;
     d3.select(this).classed("fixed", d.fixed = true);
+    $("#subtitle").removeHighlight();
     
     if(d.word && d.video){//This is an empty node
         drawTimeline(d.word, d.video);
+        $("#subtitle").highlight(d.word,"highlight");
         //$("#clips").text("Video clips timestamp:" + JSON.stringify(d.video));
         //console.log("Video clips timestamp:" + JSON.stringify(d.video));
 

@@ -28,6 +28,23 @@ var sendCuestoConceptTagging = function(text){
 		}
 	});
 };
+var passDragTextToNode = function (text) {
+	var localJson = [];
+	var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
+    var myCues = myTrack.cues;   // get list of cues 
+    var videoTime = [];
+    for(var i = 0; i < myCues.length; i++){
+    	if(myCues[i].getCueAsHTML().textContent.search(text) != -1){
+    		console.log('i am here');
+    		videoTime.push({"startTime": myCues[i].startTime,"endTime":myCues[i].endTime});
+    	}
+    }
+    if(videoTime.length != 0){
+	    localJson.push({"word": text, "frequency": videoTime.length, "video":videoTime});
+	    console.log(localJson);
+	   	analyseNodes(JSON.stringify(localJson));
+    }
+};
 var localTextParsing = function(subtitle, startTime, endTime){
 	var punctuationless = (subtitle.trim()).replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()@\+\?><\[\]\+]/g, '');
 	var cleanString = punctuationless.replace(/\s{2,}/g, " ");
