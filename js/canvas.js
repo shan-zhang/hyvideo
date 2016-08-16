@@ -267,7 +267,9 @@ function dblclick(d) {//double click node
 }
 function oneclick(d) {//one click node
     if (d3.event.defaultPrevented) return;
-    console.log("one click on a node");
+
+    //console.log("click on a node: d3.event.x:" + d3.event.x + 'd3.event.y'+d3.event.y);
+    //console.log("click on a node: d3.mouse.x:" + d3.mouse(d3.select('svg').node())[0] + 'd3.mouse.y'+d3.mouse(d3.select('svg').node())[1]);
     if(!d3.event.ctrlKey){//click node without pressing ctrl key
         if(!d.selected){
             //This node is not selected.
@@ -285,7 +287,7 @@ function oneclick(d) {//one click node
                 selectedNodeObj = d;
                 selectedNode.classed("selected", d.selected = true);
             }
-
+            console.log('select node x: ' + selectedNodeObj.x + "   y: " + selectedNodeObj.y);
             $("#subtitle").removeHighlight();
             if(selectedNodeObj.word && selectedNodeObj.video){//This is an empty node
                 drawTimeline(selectedNodeObj.word, selectedNodeObj.video);
@@ -305,11 +307,21 @@ function oneclick(d) {//one click node
 
         if(!mousedown_node){
             mousedown_node = d;
+            // var cursorX = canvasLeft + mousedown_node.x * scale + translate[0];
+            // var cursorY = canvasTop + mousedown_node.y * scale + translate[1];
+            // mousedown_node.cursorX = d3.mouse(this)[0];
+            // mousedown_node.cursorY = d3.mouse(this)[1];
+            mousedown_node.cursorX = d3.mouse(d3.select('svg').node())[0];
+            mousedown_node.cursorY = d3.mouse(d3.select('svg').node())[1];
+            var cursorX = mousedown_node.cursorX;
+            var cursorY = mousedown_node.cursorY;
             //position the drag_line
             drag_line
                 .style('marker-end', 'url(#end-arrow)')
                 .classed('hidden', false)
-                .attr('d', 'M' + mousedown_node.x + ',' + mousedown_node.y + 'L' + mousedown_node.x + ',' + mousedown_node.y);
+                .attr('d', 'M' + cursorX + ',' + cursorY + 'L' + cursorX + ',' + cursorY);
+            
+            tick();
         }
         else{
             drag_line
@@ -413,7 +425,10 @@ function drawLink(d){
 
 function clickSVG(d)
 {
-    console.log("clickSVG-1");
+    console.log(this);
+    console.log(d3.select('svg').node());
+    // console.log("clickSVG-1: d3.event.x:" + d3.event.x + 'd3.event.y'+d3.event.y);
+    // console.log("clickSVG-1: d3.mouse.x:" + d3.mouse(this)[0] + 'd3.mouse.y'+d3.mouse(this)[1]);
     if (clickOntoLinks) {
         clickOntoLinks = false;
     }
@@ -777,6 +792,8 @@ var svgKeydown = function (){
 //************************************************************************
 //Mouse event on nodes
 var resetMouseEvent = function(){
+    mousedown_node.cursorX = null;
+    mousedown_node.cursorY = null;
     mousedown_node = null;
     mouseup_node = null;
 }
@@ -793,7 +810,12 @@ var mouseMove = function(){
     if(mousedown_node) {
         if(d3.event.ctrlKey){
             //update drag line
-            drag_line.attr('d', 'M' + mousedown_node.x + ',' + mousedown_node.y + 'L' + d3.mouse(this)[0] + ',' + d3.mouse(this)[1]);
+            // var cursorX = canvasLeft + mousedown_node.x * scale + translate[0];
+            // var cursorY = canvasTop + mousedown_node.y * scale + translate[1];
+            var cursorX = mousedown_node.cursorX;
+            var cursorY = mousedown_node.cursorY;
+            //console.log('mouseMove-X: '+d3.mouse(this)[0] + ' Y:'+d3.mouse(this)[1]);
+            drag_line.attr('d', 'M' + cursorX + ',' + cursorY + 'L' + d3.mouse(this)[0] + ',' + d3.mouse(this)[1]);
         }
         else{
             drag_line
