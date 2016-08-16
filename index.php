@@ -46,7 +46,7 @@
         </video>
         <label>2-D Timeline</label>
         <canvas id='leftSub'></canvas>
-        <button id="clear" onclick="buttonClick()">Clear</button>
+        <button id="clear" onclick="clearTimeStamp()">Clear</button>
         <!-- <button id="hideVideo" onclick="hideVideo()">Hide Video</button> -->
         <button id="conceptsMapping" onclick="conceptsMapping()">Concept-Map</button>
         <h3 id="clips"></h3>
@@ -80,7 +80,7 @@
             <a id='showAllConcepts' href="#" style="visibility:hidden">Click here to download all concepts</a>
         </div>
         </div>
-        <div id="rightPanel" tabindex="0" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <div id="rightPanel" ondrop="drop(event)" ondragover="allowDrop(event)">
             <input type="text" class="inputText"/>
         </div>
     </div>
@@ -114,7 +114,7 @@
             subtitlePlayer();
 
             $(document).on("keydown", function (e) {
-                if (e.which === 8 && !$(e.target).is('input')) {
+                if (e.which === 8 && !$(e.target).is('input')) {// keycode 8 for backspace
                     e.preventDefault();
                 }
             });
@@ -261,17 +261,21 @@
                 document.getElementById("video").play();
             }
         }
-        function buttonClick(){
+        function clearTimeStamp(){
             //scrollToSubtitle(0);
 
             if(paper.project.layers.length != 1){
                 paper.project.activeLayer.removeChildren();
                 paper.project.view.update();
             }
-            if(dragNodeObj){
-                dragNodeObj.classed("dragged", dragNodeObj.data()[0].dragged = false);
-                dragNodeObj = null;
-            }
+
+            unselectNode();
+            unselectLink();
+            
+            // if(dragNodeObj){
+            //     dragNodeObj.classed("dragged", dragNodeObj.data()[0].dragged = false);
+            //     dragNodeObj = null;
+            // }
         }
         function drawLinkToTimeline(source, target){
             console.log('Show link in the video');

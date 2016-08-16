@@ -35,7 +35,6 @@ var passDragTextToNode = function (text) {
     var videoTime = [];
     for(var i = 0; i < myCues.length; i++){
     	if(myCues[i].getCueAsHTML().textContent.search(text) != -1){
-    		console.log('i am here');
     		videoTime.push({"startTime": myCues[i].startTime,"endTime":myCues[i].endTime});
     	}
     }

@@ -1,9 +1,11 @@
-﻿var width, height, force, node, nodes, link, links, label, drag, svg, tick, container, graph, zoom, overlappingLink;
+﻿var width, height, force, node, nodes, link, links, label, drag, svg, tick, container, graph, zoom, overlappingLink, drag_line;
 var selectedNode = null;
 var selectedNodeObj = null;
 var selectedLink = null;
 var selectedLinkObj = null;
 var dragNodeObj = null;
+var mousedown_node = null;
+var mouseup_node = null;
 var radius = 30;   // base radius for circle
 var canvasLeft = 0;
 var canvasTop = 0;
@@ -44,6 +46,7 @@ var updateSize = function (updatwWidth, updateheight) {
 }
 
 var drawCanvas = function (canvasWidth,canvasHeight,canvasPositionX,canvasPositionY) {
+    //initialize
     console.log("D3-Canvas");
     cleanCache();
     width = canvasWidth;
@@ -55,7 +58,7 @@ var drawCanvas = function (canvasWidth,canvasHeight,canvasPositionX,canvasPositi
 
     force = d3.layout.force()
     .size([width, height])
-    .nodes(nodes) // initialize with a single node
+    .nodes(nodes) 
     .links(links)
     .linkDistance(200)
     .charge(function (d) { return -600 * log2(d.frequency + 1); });
@@ -74,10 +77,13 @@ var drawCanvas = function (canvasWidth,canvasHeight,canvasPositionX,canvasPositi
     svg = d3.select("#rightPanel").append("svg")
         .attr("width", width)
         .attr("height", height)
+        .attr("tabindex",0)
         .call(zoom)
         .on("dblclick.zoom", null)
         .on("click", clickSVG)
-        .on("dblclick", dblclickSVG);
+        .on("dblclick", dblclickSVG)
+        .on('keydown',svgKeydown)
+        .on('mousemove',mouseMove);
        
     svg.append('svg:defs').append('svg:marker')
         .attr('id', 'end-arrow')
@@ -86,11 +92,16 @@ var drawCanvas = function (canvasWidth,canvasHeight,canvasPositionX,canvasPositi
         .attr('markerWidth', 4)
         .attr('markerHeight', 4)
         .attr('orient', 'auto')
-            .append('svg:path')
-            .attr('d', 'M0,-5L10,0L0,5')
-            .attr('fill', '#000')
-            .attr("stroke-width", "1px")
-            .attr("fill-opacity",0.8);
+        .append('svg:path')
+        .attr('d', 'M0,-5L10,0L0,5')
+        .attr('fill', '#000')
+        .attr("stroke-width", "1px")
+        .attr("fill-opacity",0.8);
+
+    // line displayed when dragging new nodes
+    drag_line = svg.append('svg:path')
+      .attr('class', 'link dragline hidden')
+      .attr('d', 'M0,0L0,0');
 
     //svg.append('svg:defs').append('svg:marker')
     //    .attr('id', 'start-arrow')
@@ -109,10 +120,6 @@ var drawCanvas = function (canvasWidth,canvasHeight,canvasPositionX,canvasPositi
     link = container.selectAll(".link");
     label = container.selectAll(".label");
     overlappingLink = container.selectAll(".overlappingLink");
-
-    //d3.select("#rightPanel").append("input")
-    //.attr("class", "inputText")
-    //.attr("type", "text");
 
     tick = function() {
         //link.attr("x1", function (d) { return d.source.x; })
@@ -183,12 +190,10 @@ var drawCanvas = function (canvasWidth,canvasHeight,canvasPositionX,canvasPositi
     }
 
     force.on("tick", tick);
-
-    d3.select("#rightPanel")
-    .on('keydown', keydown)
-    .on('keyup', keyup);
 }
 function zoomed() {
+    if(mousedown_node) return; //when connect nodes; disable the zoom and pan feature
+
     $(".inputText").css({"visibility": "hidden" });
     translate = d3.event.translate;
     scale = d3.event.scale;
@@ -204,21 +209,7 @@ function dragstart(d) {//Start dragging node
     console.log("dragstart");
     clickOntoLinks = true;
     d3.select(this).classed("fixed", d.fixed = true);
-    $("#subtitle").removeHighlight();
     
-    if(d.word && d.video){//This is an empty node
-        drawTimeline(d.word, d.video);
-        $("#subtitle").highlight(d.word,"highlight");
-        //$("#clips").text("Video clips timestamp:" + JSON.stringify(d.video));
-        //console.log("Video clips timestamp:" + JSON.stringify(d.video));
-
-        if(dragNodeObj && dragNodeObj.data()[0].word != d3.select(this).data()[0].word){
-            dragNodeObj.classed("dragged", dragNodeObj.data()[0].dragged = false);
-        }
-        d3.select(this).classed("dragged", d.dragged = true);
-        dragNodeObj = d3.select(this);
-
-    }
 }
 function dragging(d)//drag node
 {
@@ -267,40 +258,76 @@ function dblclick(d) {//double click node
 
     console.log("double click node-1");
     d3.select(this).classed("fixed", d.fixed = false);
-    d3.select(this).classed("connecting", d.connecting = false);
+    d3.select(this).classed("selected", d.selected = false);
     
-    if (d == selectedNodeObj) {
-        selectedNodeObj = null;
-        selectedNode = null;
-    }
+    if (d == selectedNodeObj)
+        clearTimeStamp();
+    
     doubleClickNode = true;
 }
 function oneclick(d) {//one click node
     if (d3.event.defaultPrevented) return;
-    console.log("click node-1");
-    if (d.fixed && !d.connecting) {
-        if (!selectedNode) {
-            selectedNode = d3.select(this);
-            selectedNodeObj = d;
-            d3.select(this).classed("connecting", d.connecting = true);
-            hideEditedLink();
-            //startClips();
-        }
-        else {
-            if (selectedNodeObj == d) return; //Self-connected is not allowed
-            if(!isLinkingable) {
-                //For the pilot study, adding link is not allowed.
-                selectedNode.classed("connecting", selectedNodeObj.connecting = false);
-                //selectedNode.classed("fixed", selectedNodeObj.fixed = false);
-                
+    console.log("one click on a node");
+    if(!d3.event.ctrlKey){//click node without pressing ctrl key
+        if(!d.selected){
+            //This node is not selected.
+            if(!selectedNode){
+                //If no selected node, select this new node;
                 selectedNode = d3.select(this);
                 selectedNodeObj = d;
-                selectedNode.classed("connecting", d.connecting = true);
+                d3.select(this).classed("selected", d.selected = true);
+                hideEditedLink();
+            }
+            else{
+                //If there is selected node, unselect it and select this new node.
+                unselectNode();          
+                selectedNode = d3.select(this);
+                selectedNodeObj = d;
+                selectedNode.classed("selected", d.selected = true);
+            }
+
+            $("#subtitle").removeHighlight();
+            if(selectedNodeObj.word && selectedNodeObj.video){//This is an empty node
+                drawTimeline(selectedNodeObj.word, selectedNodeObj.video);
+                $("#subtitle").highlight(d.word,"highlight");
+            }
+
+            unselectLink();
+        }
+        else{
+            //This node has been selected.
+            unselectNode();
+            $("#subtitle").removeHighlight();
+            clearTimeStamp();     
+        }
+    }
+    else{//click node with pressing ctrl key to connect nodes
+
+        if(!mousedown_node){
+            mousedown_node = d;
+            //position the drag_line
+            drag_line
+                .style('marker-end', 'url(#end-arrow)')
+                .classed('hidden', false)
+                .attr('d', 'M' + mousedown_node.x + ',' + mousedown_node.y + 'L' + mousedown_node.x + ',' + mousedown_node.y);
+        }
+        else{
+            drag_line
+                .classed('hidden', true)
+                .style('marker-end', '');
+
+            //check for drag-to-self
+            mouseup_node = d;
+            if(mousedown_node === mouseup_node) {
+                resetMouseEvent();
                 return;
             }
+            // mousedown_node is the souce node and mouseup_node is the target node
+
+            //check if the conect is depuliated
             var depulicatedConnect = false;
             links.forEach(function (linkValue, linkIndex) { // Depulicated connect is not allowed
-                if (linkValue.source == selectedNodeObj && linkValue.target == d)
+                if (linkValue.source == mousedown_node && linkValue.target == mouseup_node)
                 {
                     depulicatedConnect = true;
                     return; // it only exits the forEach function but not exits the parent function.
@@ -308,42 +335,24 @@ function oneclick(d) {//one click node
             });
             if (depulicatedConnect) return;
 
-            selectedNode.classed("connecting", selectedNodeObj.connecting = false);
-            //saveCurrentState();
+            // add link to graph
             clickOntoLinks = true;
-            //selectedNode.classed("fixed", selectedNodeObj.fixed = false);
-            
-            selectedNode.classed("connected", selectedNodeObj.connected = true);
-
             var linkIndex = 0;
             if (links.length != 0)
                 linkIndex = links[links.length - 1].linkIndex + 1;
 
-            links.push({ "source": selectedNodeObj, "target": d, "linkName": null, "linkType": "Line", "linkIndex":linkIndex});
+            links.push({ "source": mousedown_node, "target": mouseup_node, "linkName": null, "linkType": "Line", "linkIndex":linkIndex});
             newAddedClickLink = true;
             updateLinkType(links[links.length - 1], true);
-            selectedNode = null;
-            selectedNodeObj = null;
-            d3.select(this).classed("fixed", d.fixed = true);
-            d3.select(this).classed("connecting", d.connecting = false);
-            d3.select(this).classed("connected", d.connected = true);
 
             restartLinks();
             restartLabels();
 
             selectedLinkObj = links[links.length - 1];
             drawLink(selectedLinkObj);
-            // var undoButton = document.getElementById("undoNote");
-            // undoButton.style.visibility = "visible";
-        }
-    }
-    else if (d.fixed && d.connecting) {
-        d3.select(this).classed("connecting", d.connecting = false);
-        selectedNode = null;
-        selectedNodeObj = null;
-    }
-    else{
 
+            unselectNode();
+        }
     }
 }
 function clickLink(d) // one click link
@@ -355,18 +364,18 @@ function clickLink(d) // one click link
     if(selectedLink){
         selectedLink.classed("selected", false);
     }
-    console.log(selectedLinkObj);
-    console.log(d);
+
     if(!selectedLinkObj || selectedLinkObj.linkIndex != d.linkIndex){
         var linkIndex = "#linkIndex" + d.linkIndex;
         selectedLink = d3.select(linkIndex);
         selectedLink.classed("selected", true);
         selectedLinkObj = d;
         drawLink(d);
+
+        unselectNode();
     }
     else{
-        selectedLink = null;
-        selectedLinkObj = null;
+        unselectLink();
     }
     restartLinks();
 }
@@ -470,8 +479,6 @@ var restartLabels = function () { //redrawing Labels
 
     //Data-Join: Exit
     label.exit().remove();
-
-    //force.start();
 }
 var restartLinks = function() {//redrawing Links
     console.log("HomePage--linkNum:" + force.links().length);
@@ -495,7 +502,6 @@ var restartLinks = function() {//redrawing Links
     //.attr("id", function (d) { return "linkIndex" + d.linkIndex; })
     //.style('marker-end', 'url(#end-arrow)')
     .on("click", clickLink);
-
 
     if (newAddedClickLink) {
         if(selectedLink){
@@ -524,7 +530,7 @@ var restartNodes = function () {//redrawing Nodes
     //Data-Join : Update
     // node.attr("class", function (d) {
     //     if (d.fixed) {
-    //         // if (d.connecting) return "node fixed connecting";
+    //         // if (d.selected) return "node fixed selected";
     //         //     else return "node fixed";
 
     //         return "node fixed";
@@ -568,6 +574,8 @@ var restartNodes = function () {//redrawing Nodes
         //.attr("id", function (d) { return d.id; })
         .on("dblclick", dblclick)
         .on("click", oneclick)
+        .on('mouseover',nodeMouseover)
+        .on('mouseout', nodeMouseout)
         .call(drag);
 
     nodeEnter.append("circle")
@@ -717,20 +725,26 @@ var hideEditedLink = function () {
 };
 //**************************************************************************
 //Keyboard event
-function keyup() {
+var svgKeydown = function (){
+    if(d3.event.ctrlKey) return;
     if(!isEditable) return; // if the concept-map is not editable
-    if ($(".inputText").css("visibility")==='visible') return;
+    if (!selectedLinkObj && !selectedNodeObj) return;
+    //if ($(".inputText").css("visibility") === 'visible') return;
+    console.log(d3.event.keyCode);
+
     switch (d3.event.keyCode) {
         case 69: //Edit
             if (selectedNodeObj) {
-                console.log('edit the node name');
+                console.log('edit the node label');
                 $(".inputText").css({
                     "left": canvasLeft + selectedNodeObj.x * scale + translate[0], "top": canvasTop + selectedNodeObj.y * scale + translate[1], "visibility": "visible"
                 });
                 $(".inputText").focus();
+                d3.event.preventDefault();
             }
             else if(selectedLinkObj){
                 editLinkName = true;
+                console.log('edit the link label');
                 if (selectedLinkObj.linkName && selectedLinkObj.linkName != "")
                 {
                     $(".inputText").val(selectedLinkObj.linkName);
@@ -742,31 +756,123 @@ function keyup() {
                 });
                 //$(".inputText").css({ "left": d3.event.x, "top": d3.event.y, "visibility": "visible" });
                 $(".inputText").focus();
+                d3.event.preventDefault();
             }
-            else{
-
-            }
+            else{}
             break;
-    }
-}
-
-function keydown() {
-    //d3.event.preventDefault(); //to stop the default keyboard event
-    if(!isEditable) return; // if the concept-map is not editable
-    if (!selectedLinkObj && !selectedNodeObj) return;
-
-    switch (d3.event.keyCode) {
         case 46: //delete
-            if (selectedLinkObj)
-            {
-                delLinkandLabel();
-            }
             if (selectedNodeObj)
             {
                 delNodeWithLink();
             }
+            else if (selectedLinkObj)
+            {
+                delLinkandLabel();
+            }
+            else{}
             break;
     }
+
+}
+//************************************************************************
+//Mouse event on nodes
+var resetMouseEvent = function(){
+    mousedown_node = null;
+    mouseup_node = null;
+}
+
+var nodeMouseover = function(d){
+
+}
+
+var nodeMouseout = function(d){
+
+}
+
+var mouseMove = function(){
+    if(mousedown_node) {
+        if(d3.event.ctrlKey){
+            //update drag line
+            drag_line.attr('d', 'M' + mousedown_node.x + ',' + mousedown_node.y + 'L' + d3.mouse(this)[0] + ',' + d3.mouse(this)[1]);
+        }
+        else{
+            drag_line
+                .classed('hidden',true)
+                .style('marker-end', '');
+
+            resetMouseEvent();
+        }
+    }
+}
+
+function tmp (){
+    if (d.fixed && !d.selected) {
+        if (!selectedNode) {
+            selectedNode = d3.select(this);
+            selectedNodeObj = d;
+            d3.select(this).classed("selected", d.selected = true);
+            hideEditedLink();
+            //startClips();
+        }
+        else {
+            if (selectedNodeObj == d) return; //Self-connected is not allowed
+            if(!isLinkingable) {
+                //For the pilot study, adding link is not allowed.
+                selectedNode.classed("selected", selectedNodeObj.selected = false);
+                //selectedNode.classed("fixed", selectedNodeObj.fixed = false);
+                
+                selectedNode = d3.select(this);
+                selectedNodeObj = d;
+                selectedNode.classed("selected", d.selected = true);
+                return;
+            }
+            var depulicatedConnect = false;
+            links.forEach(function (linkValue, linkIndex) { // Depulicated connect is not allowed
+                if (linkValue.source == selectedNodeObj && linkValue.target == d)
+                {
+                    depulicatedConnect = true;
+                    return; // it only exits the forEach function but not exits the parent function.
+                }
+            });
+            if (depulicatedConnect) return;
+
+            selectedNode.classed("selected", selectedNodeObj.selected = false);
+            //saveCurrentState();
+            clickOntoLinks = true;
+            //selectedNode.classed("fixed", selectedNodeObj.fixed = false);
+            
+            selectedNode.classed("connected", selectedNodeObj.connected = true);
+
+            var linkIndex = 0;
+            if (links.length != 0)
+                linkIndex = links[links.length - 1].linkIndex + 1;
+
+            links.push({ "source": selectedNodeObj, "target": d, "linkName": null, "linkType": "Line", "linkIndex":linkIndex});
+            newAddedClickLink = true;
+            updateLinkType(links[links.length - 1], true);
+            selectedNode = null;
+            selectedNodeObj = null;
+            d3.select(this).classed("fixed", d.fixed = true);
+            d3.select(this).classed("selected", d.selected = false);
+            d3.select(this).classed("connected", d.connected = true);
+
+            restartLinks();
+            restartLabels();
+
+            selectedLinkObj = links[links.length - 1];
+            drawLink(selectedLinkObj);
+            // var undoButton = document.getElementById("undoNote");
+            // undoButton.style.visibility = "visible";
+        }
+    }
+    else if (d.fixed && d.selected) {
+        d3.select(this).classed("selected", d.selected = false);
+        selectedNode = null;
+        selectedNodeObj = null;
+    }
+    else{
+
+    }    
 }
 //************************************************************************
 // var saveNoteToFile = function (textContent)
@@ -784,6 +890,8 @@ var cleanCache = function () {
     selectedNodeObj = null;
     selectedLink = null;
     selectedLinkObj = null;
+    mousedown_node = null,
+    mouseup_node = null;
     dragNodeObj = null;
     radius = 30;   // base radius for circle
     clickOntoLinks = false;
@@ -842,12 +950,12 @@ var updateNoteNodeWord = function (inputText)//Update Node word for Nodes
     });
 
     newAddNode.fixed = false;
-    newAddNode.connecting = false;
+    newAddNode.selected = false;
     newAddNode.connected = false;
     /*
     This part needs update if we set state/style for connected node.
     */
-    //selectedNode.classed("connecting", selectedNodeObj.connecting = false);
+    //selectedNode.classed("selected", selectedNodeObj.selected = false);
     //selectedNode.classed("fixed", selectedNodeObj.fixed = false);
     //changeItemViewColor(selectedNodeObj, false);
     selectedNodeObj = null;
@@ -855,6 +963,22 @@ var updateNoteNodeWord = function (inputText)//Update Node word for Nodes
     restartNodes();
     restartLinks();
     restartLabels();
+}
+
+var unselectNode = function(){
+    if(selectedNode){
+        selectedNode.classed("selected", selectedNodeObj.selected = false);
+        selectedNode = null;
+        selectedNodeObj = null;
+    }
+}
+
+var unselectLink = function(){
+    if(selectedLink){
+        selectedLink.classed("selected", false);
+        selectedLink = null;
+        selectedLinkObj = null;
+    }   
 }
 //************************************************************************
 var saveNote = function () {
