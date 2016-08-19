@@ -22,6 +22,7 @@
         <link href="css/d3canvas.css" rel="stylesheet" />
         <link href="css/jquery-ui.min.css" rel="stylesheet" />
         <script src="js/jquery-2.1.1.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
         <script src="js/jquery.highlight-5.js"></script>
         <script src="js/d3.min.js"></script>
         <script src="js/paper-full.min.js"></script>
@@ -35,15 +36,31 @@
     <div id="section">
         <div id="leftPanel">
         <video id="video" controls>
-          <!-- <source src="video/example1.webm" type="video/webm"> -->
-          <!-- <source src="video/example1.mp4" type="video/mp4"> -->
-          <!-- <track src="video/src/example1.vtt" label="English subtitles" kind="subtitles" type="text/vtt" srclang='en' default></track> -->
-
-        <source src="<?php echo $videoName; ?>" type="video/mp4">
-        <track src="<?php echo $videoSubtitle; ?>" label="English subtitles" kind="subtitles" type="text/vtt" srclang='en' default></track>
-
-        Your browser does not support the video tag.
+              <!-- <source src="video/example1.webm" type="video/webm"> -->
+              <!-- <source src="video/example1.mp4" type="video/mp4"> -->
+              <!-- <track src="video/src/example1.vtt" label="English subtitles" kind="subtitles" type="text/vtt" srclang='en' default></track> -->
+            
+            <source src="<?php echo $videoName; ?>" type="video/mp4">
+            <track src="<?php echo $videoSubtitle; ?>" label="English subtitles" kind="subtitles" type="text/vtt" srclang='en' default></track>
+            Your browser does not support the video tag.
         </video>
+        <div id="draggable" class="video-overlay">
+            Concept Name:<input type='text'></input>
+            <br />
+            <br />
+            <div>
+                <button onclick="saveStartTime()">Start time</button>&nbsp;&nbsp;<label id='startTime'></label>
+            </div>
+            <br />
+            <div>
+                <button onclick="saveEndTime()">End time</button>&nbsp;&nbsp;<label id='endTime'></label>
+            </div>
+            <br />
+            Concept description:<textarea rows='4' cols='25'></textarea>
+            <br />
+            <br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button onclick='saveEdit()'>Save</button>&nbsp;&nbsp;<button onclick='discardEdit()'>Discard</button>
+        </div>
         <label>2-D Timeline</label>
         <canvas id='leftSub'></canvas>
         <button id="clear" onclick="clearTimeStamp()">Clear</button>
@@ -112,9 +129,10 @@
 
             //The code below is to add the subtitle player
             subtitlePlayer();
+            $( "#draggable" ).draggable();
 
             $(document).on("keydown", function (e) {
-                if (e.which === 8 && !$(e.target).is('input')) {// keycode 8 for backspace
+                if (e.which === 8 && !$(e.target).is('input') && !$(e.target).is('textarea')) {// keycode 8 for backspace
                     e.preventDefault();
                 }
             });
@@ -128,34 +146,47 @@
                 if (selectedLinkObj && editLinkName) {
                     updateLinkLabelName(inputText);
                 }
-                else if (selectedNodeObj) {
-                    updateNoteNodeWord(inputText);
-                }
+                // else if (selectedNodeObj) {
+                //     updateNoteNodeWord(inputText);
+                // }
                 else { console.log("No update while type enter in inputText."); }
             }
         });
-
-        function allowDrop(event) {
-            event.preventDefault();
+        function saveStartTime(){
+            var startTime = document.getElementById("video").currentTime;
+            $("#draggable").find("#startTime").attr('time', startTime);
+            $("#draggable").find("#startTime").text(Math.floor(startTime/60) + " min: "+ Math.floor((startTime - Math.floor(startTime/60) * 60)) + " sec");
         }
+        function saveEndTime(){
+            var endTime = document.getElementById("video").currentTime;
+            $("#draggable").find("#endTime").attr('time', endTime);
+            $("#draggable").find("#endTime").text(Math.floor(endTime/60) + " min: "+ Math.floor((endTime - Math.floor(endTime/60) * 60)) + " sec");
 
-        function drop(event) {
-            event.preventDefault();
-            var data = event.dataTransfer.getData("text");
-            if(data){            
-                data = data.trim();
-                //var id = event.dataTransfer.getData("id");
-                if(data != ''){
-                    console.log(data);
-                    //---The code below is to add draged text as text node to the canvas
-                    // var node = document.createElement("LI");                 // Create a <li> node
-                    // var textnode = document.createTextNode(data);   // Create a text node
-                    // node.appendChild(textnode); 
-                    // $(event.target).before(node);
-                   
-                    passDragTextToNode(data);
+        }
+        function saveEdit(){
+            var startTime = $("#draggable").find("#startTime").attr('time');
+            var endTime = $("#draggable").find("#endTime").attr('time');
+            var word = $("#draggable").find("input").val();
+            var description = $("#draggable").find("textarea").val();
+            if (selectedNodeObj) {
+                console.log(selectedNodeObj);
+                if( startTime != null & endTime != null){
+                    endTime = Math.max(startTime,endTime);
+                    startTime = Math.min(startTime,endTime);
+                    if(!selectedNodeObj.video || selectedNodeObj.video.length <= 1){
+                        selectedNodeObj.video = [];
+                        selectedNodeObj.video.push({"startTime":startTime, "endTime":endTime});
+                    }
+                }
+                if(description != ''){
+                    selectedNodeObj.description = description;
                 }
             }
+            console.log(selectedNodeObj);
+            updateNoteNodeWord(word);
+        }
+        function discardEdit(){
+
         }
         function setCanvas(){
             var canvasWidth = document.getElementById('rightPanel').offsetWidth;
@@ -185,6 +216,28 @@
                         video.style.visibility = "visible";
                         video.muted = false;
                     }
+                }
+            }
+        }
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        function drop(event) {
+            event.preventDefault();
+            var data = event.dataTransfer.getData("text");
+            if(data){            
+                data = data.trim();
+                //var id = event.dataTransfer.getData("id");
+                if(data != ''){
+                    console.log(data);
+                    //---The code below is to add draged text as text node to the canvas
+                    // var node = document.createElement("LI");                 // Create a <li> node
+                    // var textnode = document.createTextNode(data);   // Create a text node
+                    // node.appendChild(textnode); 
+                    // $(event.target).before(node);
+                   
+                    passDragTextToNode(data);
                 }
             }
         }

@@ -1,4 +1,4 @@
-﻿var width, height, force, node, nodes, link, links, label, drag, svg, tick, container, graph, zoom, overlappingLink, drag_line;
+﻿var width, height, force, node, nodes, link, links, label, drag, svg, tick, container, graph, zoom, overlappingLink, drag_line, div;
 var selectedNode = null;
 var selectedNodeObj = null;
 var selectedLink = null;
@@ -73,6 +73,11 @@ var drawCanvas = function (canvasWidth,canvasHeight,canvasPositionX,canvasPositi
     zoom = d3.behavior.zoom()
         .scaleExtent([scaleMin, scaleMax])
         .on("zoom", zoomed);
+
+    // Define the div for the tooltip
+    div = d3.select("body").append("div")   
+        .attr("class", "tooltip")         
+        .style("opacity", 0);
 
     svg = d3.select("#rightPanel").append("svg")
         .attr("width", width)
@@ -193,7 +198,8 @@ var drawCanvas = function (canvasWidth,canvasHeight,canvasPositionX,canvasPositi
 }
 function zoomed() {
     if(mousedown_node) return; //when connect nodes; disable the zoom and pan feature
-
+    if(nodes.length == 0) return; //when there are no nodes and links in the canvas, disable the zoom feature.
+    div.style("opacity", 0); 
     $(".inputText").css({"visibility": "hidden" });
     translate = d3.event.translate;
     scale = d3.event.scale;
@@ -209,7 +215,7 @@ function dragstart(d) {//Start dragging node
     console.log("dragstart");
     clickOntoLinks = true;
     d3.select(this).classed("fixed", d.fixed = true);
-    
+    div.style("opacity", 0); 
 }
 function dragging(d)//drag node
 {
@@ -244,12 +250,15 @@ function dragging(d)//drag node
             }
         }
     });
+
+    div.style("opacity", 0); 
     //tick();
     //force.resume();
 }
 function dragend(d)//end dragging node
 {
     console.log("dragend");
+    div.style("opacity", 0); 
     tick();
     force.resume();
 }
@@ -268,8 +277,6 @@ function dblclick(d) {//double click node
 function oneclick(d) {//one click node
     if (d3.event.defaultPrevented) return;
 
-    //console.log("click on a node: d3.event.x:" + d3.event.x + 'd3.event.y'+d3.event.y);
-    //console.log("click on a node: d3.mouse.x:" + d3.mouse(d3.select('svg').node())[0] + 'd3.mouse.y'+d3.mouse(d3.select('svg').node())[1]);
     if(!d3.event.ctrlKey){//click node without pressing ctrl key
         if(!d.selected){
             //This node is not selected.
@@ -307,19 +314,13 @@ function oneclick(d) {//one click node
 
         if(!mousedown_node){
             mousedown_node = d;
-            // var cursorX = canvasLeft + mousedown_node.x * scale + translate[0];
-            // var cursorY = canvasTop + mousedown_node.y * scale + translate[1];
-            // mousedown_node.cursorX = d3.mouse(this)[0];
-            // mousedown_node.cursorY = d3.mouse(this)[1];
             mousedown_node.cursorX = d3.mouse(d3.select('svg').node())[0];
             mousedown_node.cursorY = d3.mouse(d3.select('svg').node())[1];
-            var cursorX = mousedown_node.cursorX;
-            var cursorY = mousedown_node.cursorY;
             //position the drag_line
             drag_line
                 .style('marker-end', 'url(#end-arrow)')
                 .classed('hidden', false)
-                .attr('d', 'M' + cursorX + ',' + cursorY + 'L' + cursorX + ',' + cursorY);
+                .attr('d', 'M' + mousedown_node.cursorX + ',' + mousedown_node.cursorY + 'L' + mousedown_node.cursorX + ',' + mousedown_node.cursorY);
             
             tick();
         }
@@ -425,10 +426,7 @@ function drawLink(d){
 
 function clickSVG(d)
 {
-    console.log(this);
-    console.log(d3.select('svg').node());
-    // console.log("clickSVG-1: d3.event.x:" + d3.event.x + 'd3.event.y'+d3.event.y);
-    // console.log("clickSVG-1: d3.mouse.x:" + d3.mouse(this)[0] + 'd3.mouse.y'+d3.mouse(this)[1]);
+    console.log('click the SVG');
     if (clickOntoLinks) {
         clickOntoLinks = false;
     }
@@ -459,7 +457,7 @@ function dblclickSVG(d) {
         });
         if (addNewNode)
         {
-            nodes.push({ "word": "", "frequency": 1, "x": d3.event.x, "y": d3.event.y, "dx": d3.event.x, "dy": d3.event.y });
+            nodes.push({ "word": "", "frequency": 1, "video":[], "x": d3.event.x, "y": d3.event.y, "dx": d3.event.x, "dy": d3.event.y,});
             restartNodes();
         }
     }
@@ -749,13 +747,40 @@ var svgKeydown = function (){
 
     switch (d3.event.keyCode) {
         case 69: //Edit
-            if (selectedNodeObj) {
-                console.log('edit the node label');
-                $(".inputText").css({
-                    "left": canvasLeft + selectedNodeObj.x * scale + translate[0], "top": canvasTop + selectedNodeObj.y * scale + translate[1], "visibility": "visible"
-                });
-                $(".inputText").focus();
+            if (selectedNodeObj) 
+            {
+                console.log('edit the node');
+                document.getElementById('draggable').style.visibility = 'visible';
+                $("#draggable").find("input").val(selectedNodeObj.word);
+                $("#draggable").find("textarea").empty();
+                $("#draggable").find("#startTime").empty();
+                $("#draggable").find("#startTime").removeAttr('time');
+                $("#draggable").find("#endTime").empty();
+                $("#draggable").find("#endTime").removeAttr('time');
+                if(selectedNodeObj.description){
+                    $("#draggable").find("textarea").val(selectedNodeObj.description);
+                }
+                if(selectedNodeObj.video && selectedNodeObj.video.length == 1){
+                    var startTime = selectedNodeObj.video[0].startTime;
+                    $("#draggable").find("#startTime").attr('time',startTime);
+                    $("#draggable").find("#startTime").text(Math.floor(startTime/60) + " min: "+ Math.floor((startTime - Math.floor(startTime/60) * 60)) + " sec");
+                    var endTime = selectedNodeObj.video[0].endTime;
+                    $("#draggable").find("#endTime").attr('time',endTime);
+                    $("#draggable").find("#endTime").text(Math.floor(endTime/60) + " min: "+ Math.floor((endTime - Math.floor(endTime/60) * 60)) + " sec");
+                }
+                // if(selectedNodeObj.endTime){
+                //     $("#draggable").find("#endTime").val(selectedNodeObj.description);
+                // }
+                
                 d3.event.preventDefault();
+            
+                // console.log('edit the node label');
+                // $(".inputText").val(selectedNodeObj.word);
+                // $(".inputText").css({
+                //     "left": canvasLeft + selectedNodeObj.x * scale + translate[0], "top": canvasTop + selectedNodeObj.y * scale + translate[1], "visibility": "visible"
+                // });
+                // $(".inputText").focus();
+                // d3.event.preventDefault();
             }
             else if(selectedLinkObj){
                 editLinkName = true;
@@ -799,23 +824,29 @@ var resetMouseEvent = function(){
 }
 
 var nodeMouseover = function(d){
-
+    //console.log('mouse over a node');
+    if(d.description && d.description != ''){
+        div.transition()       
+            .duration(200)      
+            .style("opacity", .9);      
+        div .html(d.description + "<br/>")
+            .style("left", (d3.event.pageX) + "px")     
+            .style("top", (d3.event.pageY) + "px"); 
+    }
 }
 
 var nodeMouseout = function(d){
-
+    //console.log('mouse out a node');
+    div.transition()        
+        .duration(200)      
+        .style("opacity", 0);   
 }
 
 var mouseMove = function(){
     if(mousedown_node) {
         if(d3.event.ctrlKey){
             //update drag line
-            // var cursorX = canvasLeft + mousedown_node.x * scale + translate[0];
-            // var cursorY = canvasTop + mousedown_node.y * scale + translate[1];
-            var cursorX = mousedown_node.cursorX;
-            var cursorY = mousedown_node.cursorY;
-            //console.log('mouseMove-X: '+d3.mouse(this)[0] + ' Y:'+d3.mouse(this)[1]);
-            drag_line.attr('d', 'M' + cursorX + ',' + cursorY + 'L' + d3.mouse(this)[0] + ',' + d3.mouse(this)[1]);
+            drag_line.attr('d', 'M' + mousedown_node.cursorX + ',' + mousedown_node.cursorY + 'L' + d3.mouse(this)[0] + ',' + d3.mouse(this)[1]);
         }
         else{
             drag_line
@@ -827,75 +858,6 @@ var mouseMove = function(){
     }
 }
 
-function tmp (){
-    if (d.fixed && !d.selected) {
-        if (!selectedNode) {
-            selectedNode = d3.select(this);
-            selectedNodeObj = d;
-            d3.select(this).classed("selected", d.selected = true);
-            hideEditedLink();
-            //startClips();
-        }
-        else {
-            if (selectedNodeObj == d) return; //Self-connected is not allowed
-            if(!isLinkingable) {
-                //For the pilot study, adding link is not allowed.
-                selectedNode.classed("selected", selectedNodeObj.selected = false);
-                //selectedNode.classed("fixed", selectedNodeObj.fixed = false);
-                
-                selectedNode = d3.select(this);
-                selectedNodeObj = d;
-                selectedNode.classed("selected", d.selected = true);
-                return;
-            }
-            var depulicatedConnect = false;
-            links.forEach(function (linkValue, linkIndex) { // Depulicated connect is not allowed
-                if (linkValue.source == selectedNodeObj && linkValue.target == d)
-                {
-                    depulicatedConnect = true;
-                    return; // it only exits the forEach function but not exits the parent function.
-                }
-            });
-            if (depulicatedConnect) return;
-
-            selectedNode.classed("selected", selectedNodeObj.selected = false);
-            //saveCurrentState();
-            clickOntoLinks = true;
-            //selectedNode.classed("fixed", selectedNodeObj.fixed = false);
-            
-            selectedNode.classed("connected", selectedNodeObj.connected = true);
-
-            var linkIndex = 0;
-            if (links.length != 0)
-                linkIndex = links[links.length - 1].linkIndex + 1;
-
-            links.push({ "source": selectedNodeObj, "target": d, "linkName": null, "linkType": "Line", "linkIndex":linkIndex});
-            newAddedClickLink = true;
-            updateLinkType(links[links.length - 1], true);
-            selectedNode = null;
-            selectedNodeObj = null;
-            d3.select(this).classed("fixed", d.fixed = true);
-            d3.select(this).classed("selected", d.selected = false);
-            d3.select(this).classed("connected", d.connected = true);
-
-            restartLinks();
-            restartLabels();
-
-            selectedLinkObj = links[links.length - 1];
-            drawLink(selectedLinkObj);
-            // var undoButton = document.getElementById("undoNote");
-            // undoButton.style.visibility = "visible";
-        }
-    }
-    else if (d.fixed && d.selected) {
-        d3.select(this).classed("selected", d.selected = false);
-        selectedNode = null;
-        selectedNodeObj = null;
-    }
-    else{
-
-    }    
-}
 //************************************************************************
 // var saveNoteToFile = function (textContent)
 // {
@@ -929,8 +891,8 @@ var cleanCache = function () {
 // }
 var updateNoteNodeWord = function (inputText)//Update Node word for Nodes
 {
-    $(".inputText").css({ "visibility": "hidden" });
-    $(".inputText").val("");
+    // $(".inputText").css({ "visibility": "hidden" });
+    // $(".inputText").val("");
     if(inputText == '') {
         selectedNodeObj = null;
         selectedNode = null;
@@ -973,15 +935,10 @@ var updateNoteNodeWord = function (inputText)//Update Node word for Nodes
 
     newAddNode.fixed = false;
     newAddNode.selected = false;
-    newAddNode.connected = false;
-    /*
-    This part needs update if we set state/style for connected node.
-    */
-    //selectedNode.classed("selected", selectedNodeObj.selected = false);
-    //selectedNode.classed("fixed", selectedNodeObj.fixed = false);
-    //changeItemViewColor(selectedNodeObj, false);
-    selectedNodeObj = null;
-    selectedNode = null;
+
+    console.log(newAddNode);
+    clearTimeStamp();
+
     restartNodes();
     restartLinks();
     restartLabels();
@@ -993,6 +950,7 @@ var unselectNode = function(){
         selectedNode = null;
         selectedNodeObj = null;
     }
+    document.getElementById('draggable').style.visibility = 'hidden';
 }
 
 var unselectLink = function(){
