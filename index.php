@@ -147,7 +147,7 @@
                     updateLinkLabelName(inputText);
                 }
                 // else if (selectedNodeObj) {
-                //     updateNoteNodeWord(inputText);
+                //     updateConceptName(inputText);
                 // }
                 else { console.log("No update while type enter in inputText."); }
             }
@@ -167,26 +167,31 @@
             var startTime = $("#draggable").find("#startTime").attr('time');
             var endTime = $("#draggable").find("#endTime").attr('time');
             var word = $("#draggable").find("input").val();
+            word = word.trim();
             var description = $("#draggable").find("textarea").val();
-            if (selectedNodeObj) {
-                console.log(selectedNodeObj);
-                if( startTime != null & endTime != null){
+            description = description.trim();
+            var manualVideoTime = [];
+            if (selectedNodeObj && word != '') {
+                if( startTime != null && endTime != null){
                     endTime = Math.max(startTime,endTime);
                     startTime = Math.min(startTime,endTime);
-                    if(!selectedNodeObj.video || selectedNodeObj.video.length <= 1){
-                        selectedNodeObj.video = [];
-                        selectedNodeObj.video.push({"startTime":startTime, "endTime":endTime});
+                    if(endTime){
+                        //If both startTime and endTime equal to 00:00, this video time stamp will not be marked.
+                        manualVideoTime.push({"startTime":startTime, "endTime":endTime});
                     }
                 }
                 if(description != ''){
                     selectedNodeObj.description = description;
                 }
+                updateConceptName(word,manualVideoTime);
             }
-            console.log(selectedNodeObj);
-            updateNoteNodeWord(word);
+            else{
+                window.alert('Please do not leave the blank for the concept name');
+            }
+
         }
         function discardEdit(){
-
+            document.getElementById('draggable').style.visibility = 'hidden';
         }
         function setCanvas(){
             var canvasWidth = document.getElementById('rightPanel').offsetWidth;
@@ -242,9 +247,9 @@
             }
         }
         function scrollToSubtitle(id){ // scrollTop has no supporting for negative values. If we want to put the first few subtitles into the center, we probably need to fill in empty lines before the first subtitle.
-            console.log('scroll' + id);
+            //console.log('scroll' + id);
             var scrollID = '#'+id;
-            console.log($('#subtitle').scrollTop() + ($(scrollID).position().top - $('#subtitle').position().top) - $('#subtitle').height()/2 + $(scrollID).height()/2);
+            // console.log($('#subtitle').scrollTop() + ($(scrollID).position().top - $('#subtitle').position().top) - $('#subtitle').height()/2 + $(scrollID).height()/2);
             var scrollSpeed = 400;
             $('#subtitle').animate({ 
                 scrollTop: $('#subtitle').scrollTop() + ($(scrollID).position().top - $('#subtitle').position().top) - $('#subtitle').height()/2 + $(scrollID).height()/2
@@ -308,7 +313,7 @@
             }
         }
         function clickSubtitles(event){
-            if(event.ctrlKey){
+            if(event.ctrlKey || event.altKey){
                 console.log(this.id);
                 document.getElementById("video").currentTime = this.startTime;
                 document.getElementById("video").play();

@@ -277,7 +277,7 @@ function dblclick(d) {//double click node
 function oneclick(d) {//one click node
     if (d3.event.defaultPrevented) return;
 
-    if(!d3.event.ctrlKey){//click node without pressing ctrl key
+    if(!d3.event.ctrlKey && !d3.event.altKey){//click node without pressing ctrl key
         if(!d.selected){
             //This node is not selected.
             if(!selectedNode){
@@ -739,7 +739,7 @@ var hideEditedLink = function () {
 //**************************************************************************
 //Keyboard event
 var svgKeydown = function (){
-    if(d3.event.ctrlKey) return;
+    if(d3.event.ctrlKey || d3.event.altKey) return;
     if(!isEditable) return; // if the concept-map is not editable
     if (!selectedLinkObj && !selectedNodeObj) return;
     //if ($(".inputText").css("visibility") === 'visible') return;
@@ -844,7 +844,7 @@ var nodeMouseout = function(d){
 
 var mouseMove = function(){
     if(mousedown_node) {
-        if(d3.event.ctrlKey){
+        if(d3.event.ctrlKey || d3.event.altKey){
             //update drag line
             drag_line.attr('d', 'M' + mousedown_node.cursorX + ',' + mousedown_node.cursorY + 'L' + d3.mouse(this)[0] + ',' + d3.mouse(this)[1]);
         }
@@ -889,16 +889,16 @@ var cleanCache = function () {
 //     DataExample.currentNoteState.Title = titleName.innerText.trim();
 //     DataExample.currentNoteState.Data = savedString;
 // }
-var updateNoteNodeWord = function (inputText)//Update Node word for Nodes
+var updateConceptName = function (inputText, manualVideoTime)//Update Node word for Nodes
 {
-    // $(".inputText").css({ "visibility": "hidden" });
-    // $(".inputText").val("");
-    if(inputText == '') {
-        selectedNodeObj = null;
-        selectedNode = null;
-        restartNodes();
-        return;
-    };
+    //Check if input text is empty
+    // if(inputText == '') {
+    //     selectedNodeObj = null;
+    //     selectedNode = null;
+    //     restartNodes();
+    //     return;
+    // };
+
     var selectedNodeIndex = nodes.indexOf(selectedNodeObj);
     nodes.splice(selectedNodeIndex, 1);
     var newAddNode = null;
@@ -910,11 +910,44 @@ var updateNoteNodeWord = function (inputText)//Update Node word for Nodes
     if (!newAddNode) {
         newAddNode = JSON.parse(JSON.stringify(selectedNodeObj));
         newAddNode.word = inputText;
+        newAddNode.description = selectedNodeObj.description;
+
+        var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
+        var myCues = myTrack.cues;   // get list of cues 
+        var autoVideoTime = [];
+        for(var i = 0; i < myCues.length; i++){
+            if(myCues[i].getCueAsHTML().textContent.search(new RegExp(inputText, "i")) != -1){
+                autoVideoTime.push({"startTime": myCues[i].startTime,"endTime":myCues[i].endTime});
+            }
+        }
+        if(autoVideoTime.length != 0){
+            newAddNode.video = autoVideoTime;
+            newAddNode.frequency = autoVideoTime.length;
+        }
+        else if(manualVideoTime.length != 0){
+            newAddNode.video = manualVideoTime;
+            newAddNode.frequency = manualVideoTime.length;
+        }
+        else{
+            newAddNode.video = [];
+            //To do: need to change the code below. It depends on how we want to make use fo the frequency attribute.
+            newAddNode.frequency = 1;
+        }
         nodes.push(newAddNode);
     }
     else {
         //need to delete the corresponding self - links
-        newAddNode.frequency += selectedNodeObj.frequency;
+        if(newAddNode.description)
+            newAddNode.description += selectedNodeObj.description;
+        else
+            newAddNode.description = selectedNodeObj.description;
+
+        if(manualVideoTime.length != 0){//Add the manul video time to the existing node
+            newAddNode.video.push({"startTime": manualVideoTime[0].startTime,"endTime":manualVideoTime[0].endTime});
+            newAddNode.frequency ++;
+        }
+        //frequency stands for the length of video stamps stored in the node
+        
         for (var i = 0; i < links.length; i++)
         {
             if (links[i].source == selectedNodeObj && links[i].target == newAddNode)
@@ -933,7 +966,6 @@ var updateNoteNodeWord = function (inputText)//Update Node word for Nodes
         else { }
     });
 
-    newAddNode.fixed = false;
     newAddNode.selected = false;
 
     console.log(newAddNode);

@@ -34,15 +34,14 @@ var passDragTextToNode = function (text) {
     var myCues = myTrack.cues;   // get list of cues 
     var videoTime = [];
     for(var i = 0; i < myCues.length; i++){
-    	if(myCues[i].getCueAsHTML().textContent.search(text) != -1){
+    	if(myCues[i].getCueAsHTML().textContent.search(new RegExp(text, "i")) != -1){
     		videoTime.push({"startTime": myCues[i].startTime,"endTime":myCues[i].endTime});
     	}
     }
-    if(videoTime.length != 0){
-	    localJson.push({"word": text, "frequency": videoTime.length, "video":videoTime});
-	    console.log(localJson);
-	   	analyseNodes(JSON.stringify(localJson));
-    }
+    
+	localJson.push({"word": text, "frequency": videoTime.length, "video":videoTime});
+	console.log(localJson);
+	analyseNodes(JSON.stringify(localJson));
 };
 var localTextParsing = function(subtitle, startTime, endTime){
 	var punctuationless = (subtitle.trim()).replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()@\+\?><\[\]\+]/g, '');
