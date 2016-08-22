@@ -38,17 +38,16 @@ var passDragTextToNode = function (text) {
     		videoTime.push({"startTime": myCues[i].startTime,"endTime":myCues[i].endTime});
     	}
     }
-    
-	localJson.push({"word": text, "frequency": videoTime.length, "video":videoTime});
+	localJson.push({"word": text, "frequency": videoTime.length, "video":videoTime, "isSubtitle": true});
 	console.log(localJson);
-	analyseNodes(JSON.stringify(localJson));
+	AddConcept(JSON.stringify(localJson));
+
 };
 var localTextParsing = function(subtitle, startTime, endTime){
 	var punctuationless = (subtitle.trim()).replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()@\+\?><\[\]\+]/g, '');
 	var cleanString = punctuationless.replace(/\s{2,}/g, " ");
 	var words = cleanString.split(" ");
 	var localJson = [];
-	console.log("starttime:" + startTime + "	endTime:"+endTime);
 	words.forEach(function (wordValue, wordIndex) {
 		var isExisted = false;
 		var tmp = wordValue.trim();
@@ -57,12 +56,14 @@ var localTextParsing = function(subtitle, startTime, endTime){
 			//Check this word has already been stored into localJson
 		    if (JsonValue.word.toLowerCase() == tmp) {
 		        isExisted = true;
-		        JsonValue.frequency++;
+				return; //Return out of the loop when this tmp has appeared before.
 		    }
 		});
 
 		if (!isExisted) {
-		    var isNoun = false;//Check if this word has appeared in the tmp Cache: either is noun or not.
+			//Check if this word has appeared in the tmp Cache: either is noun or not.
+			//The tmp cache is to speed up the look-up process.
+		    var isNoun = false;
 		    for (var i = 0; i < tmpCache.length; i++) {
 		        if (tmp == tmpCache[i].word){
 		            isNoun = tmpCache[i].isNoun;
@@ -70,7 +71,7 @@ var localTextParsing = function(subtitle, startTime, endTime){
 		        }
 		    }
 		    if (isNoun) {
-		        localJson.push({ "word": tmp, "frequency": 1, "video": [{"startTime": startTime,"endTime":endTime}]});
+		        localJson.push({ "word": tmp, "frequency": 1, "isSubtitle": true, "video": [{"startTime": startTime,"endTime":endTime}]});
 		    }
 		    else {
 		        var isNewNoun = false;
@@ -94,7 +95,7 @@ var localTextParsing = function(subtitle, startTime, endTime){
 						}
 		            });
 		            if(isNewNoun){
-		      		    localJson.push({ "word": multiTerms[0], "frequency": 1, "video": [{"startTime": startTime,"endTime":endTime}]});
+		      		    localJson.push({ "word": multiTerms[0], "frequency": 1, "isSubtitle": true, "video": [{"startTime": startTime,"endTime":endTime}]});
 		                tmpCache.push({ "word": multiTerms[0].toLowerCase(), "isNoun": true });
 		                break;
 		            }
@@ -105,5 +106,5 @@ var localTextParsing = function(subtitle, startTime, endTime){
 		    }
 		}
 	});
-    analyseNodes(JSON.stringify(localJson));
+    AddConcept(JSON.stringify(localJson));
 };

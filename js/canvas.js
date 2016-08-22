@@ -12,8 +12,8 @@ var canvasTop = 0;
 var clickOntoLinks = false;
 var translate = [0, 0];
 var newAddedClickLink = false;
-var scaleMin = 0.3;
-var scaleMax = 1.5;
+var scaleMin = 0.5;
+var scaleMax = 2;
 var scale = 1;
 var doubleClickNode = false;
 var doubleClickLink = false;
@@ -79,7 +79,7 @@ var drawCanvas = function (canvasWidth,canvasHeight,canvasPositionX,canvasPositi
         .attr("class", "tooltip")         
         .style("opacity", 0);
 
-    svg = d3.select("#rightPanel").append("svg")
+    svg = d3.select("#rightPanelDown").append("svg")
         .attr("width", width)
         .attr("height", height)
         .attr("tabindex",0)
@@ -276,7 +276,7 @@ function dblclick(d) {//double click node
 }
 function oneclick(d) {//one click node
     if (d3.event.defaultPrevented) return;
-
+    console.log(d);
     if(!d3.event.ctrlKey && !d3.event.altKey){//click node without pressing ctrl key
         if(!d.selected){
             //This node is not selected.
@@ -305,9 +305,7 @@ function oneclick(d) {//one click node
         }
         else{
             //This node has been selected.
-            unselectNode();
-            $("#subtitle").removeHighlight();
-            clearTimeStamp();     
+            clearTimeStamp();
         }
     }
     else{//click node with pressing ctrl key to connect nodes
@@ -409,15 +407,7 @@ function drawLink(d){
     }
     else{
         $("#clips").text("No such link in the video.");
-        if(paper.project.layers.length != 1){
-                paper.project.activeLayer.removeChildren();
-                paper.project.view.update();
-        }
-
-        if(dragNodeObj){
-            dragNodeObj.classed("dragged", dragNodeObj.data()[0].dragged = false);
-        }
-
+        resetTimeline();
         setTimeout(function(){
             $("#clips").text("");
         }, 1500);
@@ -617,31 +607,167 @@ var restartNodes = function () {//redrawing Nodes
 
     force.start();
 }
-
-var analyseNodes = function(jsonData) { //Analyse the textarea/jsonData and update Nodes 
+//****************************************************************************
+//modify the node and link
+var AddConcept = function(jsonData) { //Analyse the textarea/jsonData and update Nodes 
     var graph = {};
     graph.nodes = JSON.parse(jsonData);
     console.log("graph:" + jsonData);
-    //Add new nodes and update the frequency of words
+    //Add new nodes and update the frequency
     graph.nodes.forEach(function (graphValue, graphIndex) {
-        var isExist = false;
+        var tmpVideo = graphValue.video;//Check if there is exising video time stamp. The lenght of it should be 0 or 1.
+        var isExist = false;//If the word exists in the graph
+        var isVideoExist = false; //If the video in the new node exists in the auto searched results or existing video array
         nodes.forEach(function (nodesValue, nodesIndex) {
             if(nodesValue.word.toLowerCase() == graphValue.word.toLowerCase())
-            {
-                nodesValue.frequency += graphValue.frequency;
-                nodesValue.video.push({"startTime": graphValue.video[0].startTime,"endTime":graphValue.video[0].endTime});
+            {//The word is existing in the graph
+                nodesValue.frequency ++;
+                if(tmpVideo.length > 0){
+                    nodesValue.video.forEach(function(videoItem){
+                        if(tmpVideo[0].startTime == videoItem.startTime && tmpVideo[0].endTime == videoItem.endTime){
+                            isVideoExist = true;
+                            return;
+                        }
+                    });
+                    if(!isVideoExist){
+                        nodesValue.video.push({"startTime": tmpVideo[0].startTime,"endTime":tmpVideo[0].endTime});
+                    }
+                }
                 isExist = true;
+                return;
             }
         });
-        if (!isExist)
+        if (!isExist) // The word is not existing in the graph
         {
+            var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
+            var myCues = myTrack.cues;   // get list of cues 
+            var videoTime = []; //Auto searched results on the "graphValue.word"
+            for(var i = 0; i < myCues.length; i++){
+                if(myCues[i].getCueAsHTML().textContent.search(new RegExp(graphValue.word, "i")) != -1){
+                    videoTime.push({"startTime": myCues[i].startTime,"endTime":myCues[i].endTime});
+                }
+            }
+            //Check if the tmpVideo exists in the videoTime
+            if(tmpVideo.length > 0){
+                videoTime.forEach(function(videoItem){
+                    if(tmpVideo[0].startTime == videoItem.startTime && tmpVideo[0].endTime == videoItem.endTime){
+                        isVideoExist = true;
+                        return;
+                    }
+                });
+
+                if(!isVideoExist){
+                    videoTime.push({"startTime": tmpVideo[0].startTime,"endTime":tmpVideo[0].endTime});
+                }
+            }
+
+            graphValue.video = videoTime;
+            graphValue.frequency = videoTime.length;
             nodes.push(graphValue);
         }
     });
     restartNodes();
 }
 
-//****************************************************************************
+var updateConceptName = function (inputText, manualVideoTime)//Update Node word for Nodes
+{
+    var selectedNodeIndex = nodes.indexOf(selectedNodeObj);
+    nodes.splice(selectedNodeIndex, 1);
+    var newAddNode = null;
+    nodes.forEach(function (nodeValue, nodeIndex) {
+        if (nodeValue.word.toLowerCase() == inputText.toLowerCase()) {
+            newAddNode = nodeValue;
+        }
+    });
+    if (!newAddNode) {
+        newAddNode = JSON.parse(JSON.stringify(selectedNodeObj));
+        newAddNode.word = inputText;
+        newAddNode.description = selectedNodeObj.description;
+
+        var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
+        var myCues = myTrack.cues;   // get list of cues 
+        var autoVideoTime = [];
+        for(var i = 0; i < myCues.length; i++){
+            if(myCues[i].getCueAsHTML().textContent.search(new RegExp(inputText, "i")) != -1){
+                autoVideoTime.push({"startTime": myCues[i].startTime,"endTime":myCues[i].endTime});
+            }
+        }
+        if(autoVideoTime.length != 0){
+            newAddNode.video = autoVideoTime;
+            newAddNode.frequency = autoVideoTime.length;
+            newAddNode.isSubtitle = true;
+        }
+        else if(manualVideoTime.length != 0){
+            newAddNode.video = manualVideoTime;
+            newAddNode.frequency = manualVideoTime.length;
+            newAddNode.isSubtitle = false;
+        }
+        else{
+            newAddNode.video = [];
+            newAddNode.isSubtitle = false;
+            //To do: need to change the code below. It depends on how we want to make use fo the frequency attribute.
+            newAddNode.frequency = 1;
+        }
+        nodes.push(newAddNode);
+    }
+    else {
+        //need to delete the corresponding self - links
+        if(newAddNode.description)
+            newAddNode.description += selectedNodeObj.description;
+        else
+            newAddNode.description = selectedNodeObj.description;
+
+        if(manualVideoTime.length != 0){//Add the manul video time to the existing node
+            newAddNode.video.push({"startTime": manualVideoTime[0].startTime,"endTime":manualVideoTime[0].endTime});
+            newAddNode.frequency ++;
+        }
+        //frequency stands for the length of video stamps stored in the node
+        
+        for (var i = 0; i < links.length; i++)
+        {
+            if (links[i].source == selectedNodeObj && links[i].target == newAddNode)
+                links.splice(i--, 1);
+            else if(links[i].source == newAddNode && links[i].target == selectedNodeObj)
+                links.splice(i--, 1);
+            else{}
+        }
+    }
+
+    links.forEach(function (linkValue, linkIndex) {
+        if (linkValue.source == selectedNodeObj)
+            linkValue.source = newAddNode;
+        else if (linkValue.target == selectedNodeObj)
+            linkValue.target = newAddNode;
+        else { }
+    });
+
+    newAddNode.selected = false;
+
+    clearTimeStamp();
+
+    restartNodes();
+    restartLinks();
+    restartLabels();
+}
+
+var unselectNode = function(){
+    if(selectedNode){
+        selectedNode.classed("selected", selectedNodeObj.selected = false);
+        selectedNode = null;
+        selectedNodeObj = null;
+    }
+    document.getElementById('draggable').style.visibility = 'hidden';
+    $("#subtitle").removeHighlight();
+}
+
+var unselectLink = function(){
+    if(selectedLink){
+        selectedLink.classed("selected", false);
+        selectedLink = null;
+        selectedLinkObj = null;
+    }
+}
+
 var updateLinkLabelName = function(inputText) //update label name for link
 {
     selectedLinkObj.linkName = inputText;
@@ -669,6 +795,7 @@ var delLinkandLabel = function ()//delete selected link and its label
     restartLinks();
     restartLabels();
 }
+
 var delNodeWithLink = function ()//delete seleced node and its associated links
 {
     hideEditedLink();
@@ -700,6 +827,7 @@ var delNodeWithLink = function ()//delete seleced node and its associated links
     restartLinks();
     restartLabels();
 }
+
 var updateLinkType = function (targetedLink, isLinkAdded)
 {
     links.forEach(function (linkValue, linkIndex) {
@@ -716,6 +844,7 @@ var updateLinkType = function (targetedLink, isLinkAdded)
         }
     });
 }
+
 var linkstoNodes = function () {
     links.forEach(function (linkValue, linkIndex) {
         nodes.forEach(function (nodeValue, nodeIndex) {
@@ -746,6 +875,24 @@ var svgKeydown = function (){
     console.log(d3.event.keyCode);
 
     switch (d3.event.keyCode) {
+        case 187: //+ to increase the frequency of the node
+            if(selectedNodeObj){
+                selectedNodeObj.frequency ++;
+                restartNodes();
+                restartLinks();
+                restartLabels();
+            }
+            break;
+        case 189: //- to decrease the frequency of the node
+            if(selectedNodeObj){
+                if(selectedNodeObj.frequency > 1){
+                    selectedNodeObj.frequency --;
+                    restartNodes();
+                    restartLinks();
+                    restartLabels();
+                }
+            }
+            break;
         case 69: //Edit
             if (selectedNodeObj) 
             {
@@ -804,10 +951,12 @@ var svgKeydown = function (){
             if (selectedNodeObj)
             {
                 delNodeWithLink();
+                resetTimeline();
             }
             else if (selectedLinkObj)
             {
                 delLinkandLabel();
+                resetTimeline();
             }
             else{}
             break;
@@ -836,7 +985,6 @@ var nodeMouseover = function(d){
 }
 
 var nodeMouseout = function(d){
-    //console.log('mouse out a node');
     div.transition()        
         .duration(200)      
         .style("opacity", 0);   
@@ -857,7 +1005,6 @@ var mouseMove = function(){
         }
     }
 }
-
 //************************************************************************
 // var saveNoteToFile = function (textContent)
 // {
@@ -882,116 +1029,7 @@ var cleanCache = function () {
     translate = [0, 0];
     scale = 1;
 }
-// var saveCurrentState = function () {
-//     var textShow = document.getElementById("textShow");
-//     var savedString = saveNoteToFile(textShow.innerText.trim());
-//     var titleName = document.getElementById("title");
-//     DataExample.currentNoteState.Title = titleName.innerText.trim();
-//     DataExample.currentNoteState.Data = savedString;
-// }
-var updateConceptName = function (inputText, manualVideoTime)//Update Node word for Nodes
-{
-    //Check if input text is empty
-    // if(inputText == '') {
-    //     selectedNodeObj = null;
-    //     selectedNode = null;
-    //     restartNodes();
-    //     return;
-    // };
 
-    var selectedNodeIndex = nodes.indexOf(selectedNodeObj);
-    nodes.splice(selectedNodeIndex, 1);
-    var newAddNode = null;
-    nodes.forEach(function (nodeValue, nodeIndex) {
-        if (nodeValue.word.toLowerCase() == inputText.toLowerCase()) {
-            newAddNode = nodeValue;
-        }
-    });
-    if (!newAddNode) {
-        newAddNode = JSON.parse(JSON.stringify(selectedNodeObj));
-        newAddNode.word = inputText;
-        newAddNode.description = selectedNodeObj.description;
-
-        var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
-        var myCues = myTrack.cues;   // get list of cues 
-        var autoVideoTime = [];
-        for(var i = 0; i < myCues.length; i++){
-            if(myCues[i].getCueAsHTML().textContent.search(new RegExp(inputText, "i")) != -1){
-                autoVideoTime.push({"startTime": myCues[i].startTime,"endTime":myCues[i].endTime});
-            }
-        }
-        if(autoVideoTime.length != 0){
-            newAddNode.video = autoVideoTime;
-            newAddNode.frequency = autoVideoTime.length;
-        }
-        else if(manualVideoTime.length != 0){
-            newAddNode.video = manualVideoTime;
-            newAddNode.frequency = manualVideoTime.length;
-        }
-        else{
-            newAddNode.video = [];
-            //To do: need to change the code below. It depends on how we want to make use fo the frequency attribute.
-            newAddNode.frequency = 1;
-        }
-        nodes.push(newAddNode);
-    }
-    else {
-        //need to delete the corresponding self - links
-        if(newAddNode.description)
-            newAddNode.description += selectedNodeObj.description;
-        else
-            newAddNode.description = selectedNodeObj.description;
-
-        if(manualVideoTime.length != 0){//Add the manul video time to the existing node
-            newAddNode.video.push({"startTime": manualVideoTime[0].startTime,"endTime":manualVideoTime[0].endTime});
-            newAddNode.frequency ++;
-        }
-        //frequency stands for the length of video stamps stored in the node
-        
-        for (var i = 0; i < links.length; i++)
-        {
-            if (links[i].source == selectedNodeObj && links[i].target == newAddNode)
-                links.splice(i--, 1);
-            else if(links[i].source == newAddNode && links[i].target == selectedNodeObj)
-                links.splice(i--, 1);
-            else{}
-        }
-    }
-
-    links.forEach(function (linkValue, linkIndex) {
-        if (linkValue.source == selectedNodeObj)
-            linkValue.source = newAddNode;
-        else if (linkValue.target == selectedNodeObj)
-            linkValue.target = newAddNode;
-        else { }
-    });
-
-    newAddNode.selected = false;
-
-    console.log(newAddNode);
-    clearTimeStamp();
-
-    restartNodes();
-    restartLinks();
-    restartLabels();
-}
-
-var unselectNode = function(){
-    if(selectedNode){
-        selectedNode.classed("selected", selectedNodeObj.selected = false);
-        selectedNode = null;
-        selectedNodeObj = null;
-    }
-    document.getElementById('draggable').style.visibility = 'hidden';
-}
-
-var unselectLink = function(){
-    if(selectedLink){
-        selectedLink.classed("selected", false);
-        selectedLink = null;
-        selectedLinkObj = null;
-    }   
-}
 //************************************************************************
 var saveNote = function () {
     var savedString = {};

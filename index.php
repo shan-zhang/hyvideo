@@ -31,78 +31,80 @@
     </head>
 <body>
     <div id="header">
-    <h1>Authoring Mode</h1>
+        <stan style='font-size: 25px'>MapVideo - Authoring Mode</stan>
     </div>
     <div id="section">
         <div id="leftPanel">
-        <video id="video" controls>
-              <!-- <source src="video/example1.webm" type="video/webm"> -->
-              <!-- <source src="video/example1.mp4" type="video/mp4"> -->
-              <!-- <track src="video/src/example1.vtt" label="English subtitles" kind="subtitles" type="text/vtt" srclang='en' default></track> -->
-            
-            <source src="<?php echo $videoName; ?>" type="video/mp4">
-            <track src="<?php echo $videoSubtitle; ?>" label="English subtitles" kind="subtitles" type="text/vtt" srclang='en' default></track>
-            Your browser does not support the video tag.
-        </video>
-        <div id="draggable" class="video-overlay">
-            Concept Name:<input type='text'></input>
-            <br />
-            <br />
-            <div>
-                <button onclick="saveStartTime()">Start time</button>&nbsp;&nbsp;<label id='startTime'></label>
+            <video id="video" controls>
+                <!-- <source src="video/example1.webm" type="video/webm"> -->
+                <!-- <source src="video/example1.mp4" type="video/mp4"> -->
+                <!-- <track src="video/src/example1.vtt" label="English subtitles" kind="subtitles" type="text/vtt" srclang='en' default></track> -->
+                
+                <source src="<?php echo $videoName; ?>" type="video/mp4">
+                <track src="<?php echo $videoSubtitle; ?>" label="English subtitles" kind="subtitles" type="text/vtt" srclang='en' default></track>
+                Your browser does not support the video tag.
+            </video>
+            <div id="draggable" class="video-overlay">
+                Concept Name:<input type='text'></input>
+                <br />
+                <br />
+                <div>
+                    <button onclick="saveStartTime()">Start time</button>&nbsp;&nbsp;<label id='startTime'></label>
+                </div>
+                <br />
+                <div>
+                    <button onclick="saveEndTime()">End time</button>&nbsp;&nbsp;<label id='endTime'></label>
+                </div>
+                <br />
+                Concept description:<textarea rows='4' cols='25'></textarea>
+                <br />
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button onclick='saveEdit()'>Save</button>&nbsp;&nbsp;<button onclick='discardEdit()'>Discard</button>
             </div>
-            <br />
-            <div>
-                <button onclick="saveEndTime()">End time</button>&nbsp;&nbsp;<label id='endTime'></label>
-            </div>
-            <br />
-            Concept description:<textarea rows='4' cols='25'></textarea>
-            <br />
-            <br />
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button onclick='saveEdit()'>Save</button>&nbsp;&nbsp;<button onclick='discardEdit()'>Discard</button>
-        </div>
-        <label>2-D Timeline</label>
-        <canvas id='leftSub'></canvas>
-        <button id="clear" onclick="clearTimeStamp()">Clear</button>
-        <!-- <button id="hideVideo" onclick="hideVideo()">Hide Video</button> -->
-        <button id="conceptsMapping" onclick="conceptsMapping()">Concept-Map</button>
-        <h3 id="clips"></h3>
-        <!-- <button id="startQuiz" onclick="startQuiz(event)">Start Quiz!</button> -->
-        <form action="php/grade.php" method="post" id="myForm" style="display:none">
-              <label id='quizLabel'></label><br>
-              <label id='quizContent'></label><br><br>
-              <div id='quizRadio' style="display:none">
-                  <input type="radio" value="true" name="answer">True<br>
-                  <input type="radio" value="false" name="answer">False<br><br>
-                  <input type="submit" name="submit" value="submit">
-              </div>
-        </form>
-        <button id='radioOption' onclick="showRadio(event)" style="display:none">Ready!</button>
-        <br/>
-        <h3 id="closingQuiz" style="display:none">The quiz is over. Thanks for participating. <a href='download.php' onclick="downloadResult()">Download</a>the study result.</h3>
-        <div id='footerButton'>  
-            <br>      
-            <!-- <label>Load Concept-Map:</label>
-            <input type='file' id='file' name='userFile' accept=".json">
+            <label>2-D Timeline</label>
+            <canvas id='leftSub'></canvas>
+            <button id="clear" onclick="clearTimeStamp()">Clear</button>
+            <!-- <button id="hideVideo" onclick="hideVideo()">Hide Video</button> -->
+            <button id="conceptsMapping" onclick="conceptsMapping()">Concept-Map</button>
+            <h3 id="clips"></h3>
+            <!-- The code below is for quiz -->
+            <!-- <button id="startQuiz" onclick="startQuiz(event)">Start Quiz!</button> -->
+    <!--         <form action="php/grade.php" method="post" id="myForm" style="display:none">
+                  <label id='quizLabel'></label><br>
+                  <label id='quizContent'></label><br><br>
+                  <div id='quizRadio' style="display:none">
+                      <input type="radio" value="true" name="answer">True<br>
+                      <input type="radio" value="false" name="answer">False<br><br>
+                      <input type="submit" name="submit" value="submit">
+                  </div>
+            </form>
+            <button id='radioOption' onclick="showRadio(event)" style="display:none">Ready!</button>
             <br/>
-            <br/>
-            <label>Download Concept-Map:</label>
-            <a id='click' href="#">click</a>
-            <br/>
-            <br/> -->
-            <div id='subtitle'>
+            <h3 id="closingQuiz" style="display:none">The quiz is over. Thanks for participating. <a href='download.php' onclick="downloadResult()">Download</a>the study result.</h3> -->
 
+            <div id='footerButton'>
+                <label>Suggested Key Concepts:</label>
+                <br />
+                <br />
+                <div id='keyconcepts'></div>
+                <br />
+                <br />
+                <label>Load Concept-Map:</label>
+                <input type='file' id='file' name='userFile' accept=".json">
+                <label>Download Concept-Map:</label>
+                <a id='click' href="#">click</a>
+                <!-- <a id='showAllConcepts' href="#" style="visibility:hidden">Click here to download all concepts</a> -->
             </div>
-
-            <a id='showAllConcepts' href="#" style="visibility:hidden">Click here to download all concepts</a>
         </div>
-        </div>
-        <div id="rightPanel" ondrop="drop(event)" ondragover="allowDrop(event)">
-            <input type="text" class="inputText"/>
+        <div id="rightPanel">
+            <div id="subtitle"></div>
+            <div id="rightPanelDown" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <input type="text" class="inputText"/>
+            </div>
         </div>
     </div>
     <div id="footer">
-    Copyright @ NUS-HCI
+        Copyright @ NUS-HCI
     </div>
     <script type="text/paperscript" canvas="leftSub">
         var background = new Path.Rectangle(0,5,paper.view.viewSize.width,10);
@@ -129,7 +131,11 @@
 
             //The code below is to add the subtitle player
             subtitlePlayer();
-            $( "#draggable" ).draggable();
+
+            //The code below is to extract key concepts from substitles using third-party APY
+            extractKeyConceptsFromSubtitles();
+
+            $("#draggable").draggable();
 
             $(document).on("keydown", function (e) {
                 if (e.which === 8 && !$(e.target).is('input') && !$(e.target).is('textarea')) {// keycode 8 for backspace
@@ -146,23 +152,23 @@
                 if (selectedLinkObj && editLinkName) {
                     updateLinkLabelName(inputText);
                 }
-                // else if (selectedNodeObj) {
-                //     updateConceptName(inputText);
-                // }
                 else { console.log("No update while type enter in inputText."); }
             }
         });
+
         function saveStartTime(){
             var startTime = document.getElementById("video").currentTime;
             $("#draggable").find("#startTime").attr('time', startTime);
             $("#draggable").find("#startTime").text(Math.floor(startTime/60) + " min: "+ Math.floor((startTime - Math.floor(startTime/60) * 60)) + " sec");
         }
+
         function saveEndTime(){
             var endTime = document.getElementById("video").currentTime;
             $("#draggable").find("#endTime").attr('time', endTime);
             $("#draggable").find("#endTime").text(Math.floor(endTime/60) + " min: "+ Math.floor((endTime - Math.floor(endTime/60) * 60)) + " sec");
 
         }
+
         function saveEdit(){
             var startTime = $("#draggable").find("#startTime").attr('time');
             var endTime = $("#draggable").find("#endTime").attr('time');
@@ -190,24 +196,30 @@
             }
 
         }
+
         function discardEdit(){
             document.getElementById('draggable').style.visibility = 'hidden';
         }
+
         function setCanvas(){
-            var canvasWidth = document.getElementById('rightPanel').offsetWidth;
-            var canvasHeight = document.getElementById('rightPanel').offsetHeight;
-            var canvasPositionX = $('#rightPanel').offset().left;
-            var canvasPositionY = $('#rightPanel').offset().top;
+            var canvasWidth = document.getElementById('rightPanelDown').offsetWidth;
+            var canvasHeight = document.getElementById('rightPanelDown').offsetHeight;
+            var canvasPositionX = $('#rightPanelDown').offset().left;
+            var canvasPositionY = $('#rightPanelDown').offset().top;
             drawCanvas(canvasWidth,canvasHeight,canvasPositionX,canvasPositionY);//Draw the D3 layout to the page
         }
-        function getConceptsFromSubtitles(){
+
+        function extractKeyConceptsFromSubtitles(){//Extract key concepts from the subtitles using API
             var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
             var myCues = myTrack.cues;   // get list of cues 
             var tmp = '';
             for(var i = 0; i < myCues.length; i++){
-                localTextParsing(myCues[i].getCueAsHTML().textContent, myCues[i].startTime, myCues[i].endTime);
+                tmp += myCues[i].getCueAsHTML().textContent + ' ';
             }
+            //The below code is to call external API for concept tagging, and the maximum call limit per day is 1000.
+            sendCuestoConceptTagging(tmp);
         }
+
         function hideVideo(){
             var video = document.getElementById("video");
             if(video.style.visibility == '' || video.style.visibility == 'visible'){
@@ -224,6 +236,7 @@
                 }
             }
         }
+
         function allowDrop(event) {
             event.preventDefault();
         }
@@ -241,20 +254,22 @@
                     // var textnode = document.createTextNode(data);   // Create a text node
                     // node.appendChild(textnode); 
                     // $(event.target).before(node);
-                   
-                    passDragTextToNode(data);
+                    var localJson = [];
+                    localJson.push({"word": data, "frequency": 1, "isSubtitle": true, 'video':[]});
+                    AddConcept(JSON.stringify(localJson));
                 }
             }
         }
-        function scrollToSubtitle(id){ // scrollTop has no supporting for negative values. If we want to put the first few subtitles into the center, we probably need to fill in empty lines before the first subtitle.
+
+        function scrollToSubtitle(id){ // To-do: scrollTop has no supporting for negative values. If we want to put the first few subtitles into the center, we probably need to fill in empty lines before the first subtitle.
             //console.log('scroll' + id);
             var scrollID = '#'+id;
-            // console.log($('#subtitle').scrollTop() + ($(scrollID).position().top - $('#subtitle').position().top) - $('#subtitle').height()/2 + $(scrollID).height()/2);
             var scrollSpeed = 400;
             $('#subtitle').animate({ 
                 scrollTop: $('#subtitle').scrollTop() + ($(scrollID).position().top - $('#subtitle').position().top) - $('#subtitle').height()/2 + $(scrollID).height()/2
             }, scrollSpeed);
         }
+
         function subtitlePlayer(){
             var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
             var myCues = myTrack.cues;   // get list of cues 
@@ -279,6 +294,7 @@
                           
             }
         }
+
         function conceptsMapping(){
             var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
             var myCues = myTrack.cues;   // get list of cues 
@@ -290,8 +306,6 @@
                     tmp += myCues[i].getCueAsHTML().textContent + ' ';
                     localTextParsing(myCues[i].getCueAsHTML().textContent, myCues[i].startTime, myCues[i].endTime);
                 }
-                // //The below code is to call external API for concept tagging, and the maximum call limit per day is 1000.
-                // //sendCuestoConceptTagging(tmp);
                 document.getElementById('showAllConcepts').style.visibility = 'visible';        
             }
             if(mappingSingleSubtitle)
@@ -312,6 +326,7 @@
                 }
             }
         }
+
         function clickSubtitles(event){
             if(event.ctrlKey || event.altKey){
                 console.log(this.id);
@@ -319,27 +334,23 @@
                 document.getElementById("video").play();
             }
         }
-        function clearTimeStamp(){
-            //scrollToSubtitle(0);
 
+        function clearTimeStamp(){
+            resetTimeline();
+            unselectNode();
+            unselectLink();
+        }
+
+        function resetTimeline(){
             if(paper.project.layers.length != 1){
                 paper.project.activeLayer.removeChildren();
                 paper.project.view.update();
             }
-
-            unselectNode();
-            unselectLink();
-            
-            // if(dragNodeObj){
-            //     dragNodeObj.classed("dragged", dragNodeObj.data()[0].dragged = false);
-            //     dragNodeObj = null;
-            // }
         }
+
         function drawLinkToTimeline(source, target){
             console.log('Show link in the video');
-            if(paper.project.layers.length != 1){
-                paper.project.activeLayer.removeChildren();
-            }
+            resetTimeline();
             new paper.Layer();
             var duration = document.getElementById("video").duration;
             var viewSize = paper.view.viewSize.width;
@@ -392,14 +403,10 @@
             console.log("Drawing Link in video is over");
         }
 
-
         function drawTimeline(word, timeline){
             //console.log(paper.project);
             console.log("draw on the Timeline");
-            //console.log(timeline);
-            if(paper.project.layers.length != 1){
-                paper.project.activeLayer.removeChildren();
-            }
+            resetTimeline();
             new paper.Layer();
             var duration = document.getElementById("video").duration;
             var viewSize = paper.view.viewSize.width;
@@ -447,7 +454,6 @@
             function(){ 
                 printAllConceptNames();
                 return false; });
-
 
         // function handleFileSelect(evt) {
         //     console.log(evt);
