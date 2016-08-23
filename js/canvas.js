@@ -498,12 +498,9 @@ var restartLinks = function() {//redrawing Links
         .attr("class", "link")
         .attr("id", function (d) { return "linkIndex" + d.linkIndex; })
         .style('marker-end', 'url(#end-arrow)');
-        //.on("click", clickLink);
    
     var enterOverlappingLink = overlappingLink.enter().insert("path", ".node")
     .attr("class", "overlappingLink")
-    //.attr("id", function (d) { return "linkIndex" + d.linkIndex; })
-    //.style('marker-end', 'url(#end-arrow)')
     .on("click", clickLink);
 
     if (newAddedClickLink) {
@@ -549,14 +546,16 @@ var restartNodes = function () {//redrawing Nodes
     //     }
     // });
 
+    //Update existing nodes
     node.select("circle")
-        .transition().duration(500)
+        .transition().duration(200)
         .attr("r", function (d) { return radius * log2(d.frequency + 1); });
 
     node.select("text")
-        .transition().duration(500)
-        .style("font-size", function (d) { return Math.min(2 * radius * log2(d.frequency + 1), (2 * radius * log2(d.frequency + 1) - 8) / d.textlength * 24) + "px"; })
-        .attr("dy", ".35em");
+        .attr("dy", ".35em")
+        .transition().duration(200)
+        .style("font-size", function (d) {return Math.min(2 * radius * log2(d.frequency + 1), (2 * radius * log2(d.frequency + 1) - 8) / d.textlength * 24) + "px"; });
+        
     //Data-Join: Enter
     var nodeEnter = node.enter().append("g")
         //.attr("class", "node")
@@ -891,6 +890,10 @@ var svgKeydown = function (){
                     restartLinks();
                     restartLabels();
                 }
+                
+                restartNodes();
+                restartLinks();
+                restartLabels();
             }
             break;
         case 69: //Edit

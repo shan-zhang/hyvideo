@@ -65,7 +65,7 @@
             <canvas id='leftSub'></canvas>
             <button id="clear" onclick="clearTimeStamp()">Clear</button>
             <!-- <button id="hideVideo" onclick="hideVideo()">Hide Video</button> -->
-            <button id="conceptsMapping" onclick="conceptsMapping()">Concept-Map</button>
+            <button id="conceptsMapping" onclick="clickConceptMap()">Concept-Map</button>
             <h3 id="clips"></h3>
             <!-- The code below is for quiz -->
             <!-- <button id="startQuiz" onclick="startQuiz(event)">Start Quiz!</button> -->
@@ -123,7 +123,7 @@
         paper.setup('leftSub');
         var quiz = null;
         var mappingAllSubstitles = false;
-        var mappingSingleSubtitle = true;
+        var mappingSingleSubtitle = false;
         window.addEventListener("load", function() {
             setCanvas();
             greatNounList = <?php echo json_encode($file); ?>;
@@ -279,6 +279,11 @@
                 myCues[i].onenter  = function(){
                     scrollToSubtitle(this.id);
                     $('#'+this.id).css('background-color','lightgray');
+
+                    if(mappingSingleSubtitle && !this.show){
+                        localTextParsing(this.getCueAsHTML().textContent, this.startTime, this.endTime);
+                        this.show = true;
+                    }
                 };
                 myCues[i].onexit = function(){  
                    $('#'+this.id).css('background-color','white');
@@ -293,6 +298,10 @@
                 document.getElementById('subtitle').appendChild(node);
                           
             }
+        }
+
+        function clickConceptMap (){
+            mappingSingleSubtitle = !mappingSingleSubtitle;
         }
 
         function conceptsMapping(){
