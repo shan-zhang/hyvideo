@@ -39,7 +39,9 @@ html, body {
 }
 #clips{
     visibility: visible;
-    height: 25px;
+    height: 45px;
+    overflow-y: auto;
+    margin-right: 1%;
 }
 video{
     width: 99%;

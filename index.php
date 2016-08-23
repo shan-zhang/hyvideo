@@ -428,10 +428,11 @@
                 };
                 rect.startTime = timeStamp.startTime;
                 rect.word = word;
+                rect.showCue = '';
                 for (var i = 0; i < myCues.length; i++) {
-                    if(myCues[i].startTime == timeStamp.startTime && myCues[i].endTime == timeStamp.endTime){
-                        rect.showCue = myCues[i].getCueAsHTML().textContent;
-                        break;
+                    if(myCues[i].startTime >= timeStamp.startTime && myCues[i].endTime <= timeStamp.endTime){
+                        rect.showCue += myCues[i].getCueAsHTML().textContent + ' ';
+                        //break;
                     }
                 }
                 rect.onClick = function(event){
@@ -441,7 +442,6 @@
                     document.getElementById("video").play();
                 };
                 rect.onMouseEnter = function(event){
-                    //console.log(this.word);
                     if(this.showCue){
                         $("#clips").text(this.showCue);
                         //hightlight text
