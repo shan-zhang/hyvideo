@@ -902,7 +902,7 @@ var svgKeydown = function (){
                 console.log('edit the node');
                 document.getElementById('draggable').style.visibility = 'visible';
                 $("#draggable").find("input").val(selectedNodeObj.word);
-                $("#draggable").find("textarea").empty();
+                $("#draggable").find("textarea").val('');
                 $("#draggable").find("#startTime").empty();
                 $("#draggable").find("#startTime").removeAttr('time');
                 $("#draggable").find("#endTime").empty();
