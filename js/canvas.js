@@ -206,6 +206,23 @@ function zoomed() {
     container.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
     tick();
 }
+
+function pantoCentre(selection, d){
+    console.log(translate);
+    var centerPointX = width/2;
+    var centerPointY = height/2;
+
+    d3.transition().duration(1000).tween("zoom", function() {
+        var ix = d3.interpolate(translate[0], centerPointX - scale * d.x);
+        var iy = d3.interpolate(translate[1], centerPointY - scale * d.y);
+        return function(t){
+            zoom.translate([ix(t), iy(t)]).event(svg);
+        }
+    });
+    // d3.event.translate[0] = centerPointX - d.x;
+    // d3.event.translate[1] = centerPointY - d.y;
+    // container.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+}
 //******************************************************************
 //Drag and Click operations
 function dragstart(d) {//Start dragging node
@@ -276,6 +293,7 @@ function dblclick(d) {//double click node
 }
 function oneclick(d) {//one click node
     if (d3.event.defaultPrevented) return;
+    pantoCentre(d3.select(this), d);
     console.log(d);
     if(!d3.event.ctrlKey && !d3.event.altKey){//click node without pressing ctrl key
         if(!d.selected){
