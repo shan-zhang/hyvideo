@@ -558,21 +558,21 @@ var restartNodes = function () {//redrawing Nodes
         
     //Data-Join: Enter
     var nodeEnter = node.enter().append("g")
-        //.attr("class", "node")
-         // .attr("class", function (d) {
-         //     if (d.fixed) {
-         //         return "node fixed";
-         //     }
-         //     else if (d.connected) {
-         //         return "node connected";
-         //     }
-         //     else if(d.dragged){
-         //         return "node dragged";
-         //     }
-         //     else {
-         //         return "node";
-         //     }
-         // })
+         // .attr("class", "node")
+         .attr("class", function (d) {
+             if (d.fixed) {
+                return "node fixed";
+             }
+             else if (d.selected) {
+                return "node selected";
+             }
+             else if (d.fixed && d.selected){
+                return "node fixed selected";
+             }
+             else {
+                return "node";
+             }
+         })
         //.attr("id", function (d) { return d.id; })
         .on("dblclick", dblclick)
         .on("click", oneclick)

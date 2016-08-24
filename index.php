@@ -464,28 +464,28 @@
                 printAllConceptNames();
                 return false; });
 
-        // function handleFileSelect(evt) {
-        //     console.log(evt);
-        //     var file = evt.target.files[0]; // FileList object
-        //     if(file){
-        //         var reader = new FileReader();
-        //         reader.readAsText(file);
+        function handleFileSelect(evt) {
+            console.log(evt);
+            var file = evt.target.files[0]; // FileList object
+            if(file){
+                var reader = new FileReader();
+                reader.readAsText(file);
 
-        //         reader.onload = function(e){
-        //             var result = jQuery.parseJSON(reader.result);
-        //             if(result.node){
-        //                 setNote(result);
-        //                 evt.srcElement.value = null;
-        //                 document.getElementById('conceptsMapping').style.visibility = 'hidden';
-        //             }
-        //             else{
-        //                 alert('The input file format is incorrect!');
-        //             }
-        //             console.log(result);
-        //         }
-        //     }
-        // }
-        // document.getElementById('file').addEventListener('change', handleFileSelect, false);
+                reader.onload = function(e){
+                    var result = jQuery.parseJSON(reader.result);
+                    if(result.node){
+                        setNote(result);
+                        evt.srcElement.value = null;
+                        document.getElementById('conceptsMapping').style.visibility = 'hidden';
+                    }
+                    else{
+                        alert('The input file format is incorrect!');
+                    }
+                    console.log(result);
+                }
+            }
+        }
+        document.getElementById('file').addEventListener('change', handleFileSelect, false);
 
         function saveNoteToFile (){
             var savedNote = saveNote();
