@@ -521,6 +521,15 @@ var restartLinks = function() {//redrawing Links
     force.start();
 }
 
+var removeHiddenNodes = function (){
+    d3.selectAll('.node').filter(function(d){
+        return (!d.highlighted);
+    }).attr("opacity", 0);
+    d3.selectAll('.node').filter(function(d){
+        return (d.highlighted);
+    }).attr("opacity", 1);
+}
+
 var restartNodes = function () {//redrawing Nodes
     //Printf for debugging
     console.log("NodeNum:" + force.nodes().length);
@@ -529,19 +538,18 @@ var restartNodes = function () {//redrawing Nodes
 
     //Data-Join : Update
     node.attr("class", function (d) {
-        console.log('This is an update');
-         if (d.fixed && d.selected){
+        if (d.fixed && d.selected){
             return "node fixed selected";
-         }
-         else if (d.fixed) {
+        }
+        else if (d.fixed) {
             return "node fixed";
-         }
-         else if (d.selected) {
+        }
+        else if (d.selected) {
             return "node selected";
-         }
-         else {
+        }
+        else {
             return "node";
-         }
+        }
     });
 
     //Update existing nodes
@@ -557,19 +565,18 @@ var restartNodes = function () {//redrawing Nodes
     //Data-Join: Enter
     var nodeEnter = node.enter().append("g")
          .attr("class", function (d) {
-            console.log('This is an enter');
-             if (d.fixed && d.selected){
+            if (d.fixed && d.selected){
                 return "node fixed selected";
-             }
-             else if (d.fixed) {
+            }
+            else if (d.fixed) {
                 return "node fixed";
-             }
-             else if (d.selected) {
+            }
+            else if (d.selected) {
                 return "node selected";
-             }
-             else {
+            }
+            else {
                 return "node";
-             }
+            }
          })
         //.attr("id", function (d) { return d.id; })
         .on("dblclick", dblclick)
