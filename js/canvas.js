@@ -529,17 +529,14 @@ var restartNodes = function () {//redrawing Nodes
 
     //Data-Join : Update
     // node.attr("class", function (d) {
-    //     if (d.fixed) {
-    //         // if (d.selected) return "node fixed selected";
-    //         //     else return "node fixed";
-
+    //     if (d.fixed && d.selected){
+    //         return "node fixed selected";
+    //     }
+    //     else if (d.fixed) {
     //         return "node fixed";
     //     }
-    //     else if (d.connected) {
-    //         return "node connected";
-    //     }
-    //     else if(d.dragged){
-    //         return "node dragged";
+    //     else if (d.selected) {
+    //         return "node selected";
     //     }
     //     else {
     //         return "node";
@@ -558,20 +555,19 @@ var restartNodes = function () {//redrawing Nodes
         
     //Data-Join: Enter
     var nodeEnter = node.enter().append("g")
-         // .attr("class", "node")
          .attr("class", function (d) {
-             if (d.fixed) {
-                return "node fixed";
-             }
-             else if (d.selected) {
-                return "node selected";
-             }
-             else if (d.fixed && d.selected){
+            if (d.fixed && d.selected){
                 return "node fixed selected";
-             }
-             else {
+            }
+            else if (d.fixed) {
+                return "node fixed";
+            }
+            else if (d.selected) {
+                return "node selected";
+            }
+            else {
                 return "node";
-             }
+            }
          })
         //.attr("id", function (d) { return d.id; })
         .on("dblclick", dblclick)
