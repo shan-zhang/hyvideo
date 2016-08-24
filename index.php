@@ -98,6 +98,9 @@
         </div>
         <div id="rightPanel">
             <div id="subtitle"></div>
+            <div id="draggableSearch">
+                Search: <input type="text" id='searchText'></input><button onclick="hideSearch()">x</button>
+            </div>
             <div id="rightPanelDown" ondrop="drop(event)" ondragover="allowDrop(event)">
                 <input type="text" class="inputText"/>
             </div>
@@ -136,10 +139,17 @@
             extractKeyConceptsFromSubtitles();
 
             $("#draggable").draggable();
+            $("#draggableSearch").draggable();
 
             $(document).on("keydown", function (e) {
                 if (e.which === 8 && !$(e.target).is('input') && !$(e.target).is('textarea')) {// keycode 8 for backspace
                     e.preventDefault();
+                }
+                if(e.which === 70 && e.ctrlKey){
+                    e.preventDefault();
+                    $("#searchText").val('');
+                    document.getElementById('draggableSearch').style.visibility = 'visible';
+                    $("#searchText").focus();
                 }
             });
         });
@@ -156,6 +166,36 @@
             }
         });
 
+        $("#searchText").keyup(function (e) {
+             $("#rightPanelDown").removeHighlight();
+            var searchText = $("#searchText").val();
+            searchText = searchText.trim();
+            if(searchText != ''){
+                nodes.forEach(function (nodeItem){
+                    if(nodeItem.word.toLowerCase() == searchText.toLowerCase()){
+                        d3.selectAll('.node').filter(function(d){
+                            return (d == nodeItem);
+                        })
+                        .classed("searched", nodeItem.searched = true);
+                    }
+                    else{
+                        d3.selectAll('.node').filter(function(d){
+                            return (d == nodeItem);
+                        }).classed("searched", nodeItem.searched = false);                       
+                    }
+                });
+            }
+            else{
+                nodes.forEach(function (nodeItem){
+                    if(nodeItem.searched){
+                        d3.selectAll('.node').filter(function(d){
+                            return (d == nodeItem);
+                        }).classed("searched", nodeItem.searched = false);
+                    }
+                });
+            }
+        });
+
         function saveStartTime(){
             var startTime = document.getElementById("video").currentTime;
             $("#draggable").find("#startTime").attr('time', startTime);
@@ -166,7 +206,6 @@
             var endTime = document.getElementById("video").currentTime;
             $("#draggable").find("#endTime").attr('time', endTime);
             $("#draggable").find("#endTime").text(Math.floor(endTime/60) + " min: "+ Math.floor((endTime - Math.floor(endTime/60) * 60)) + " sec");
-
         }
 
         function saveEdit(){
@@ -199,6 +238,10 @@
 
         function discardEdit(){
             document.getElementById('draggable').style.visibility = 'hidden';
+        }
+
+        function hideSearch(){
+            document.getElementById('draggableSearch').style.visibility = 'hidden';
         }
 
         function setCanvas(){
