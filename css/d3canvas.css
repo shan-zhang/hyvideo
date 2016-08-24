@@ -61,6 +61,10 @@ path.link.hidden {
     fill: darkgray;
 }
 
+.searched .circle{
+    fill: yellow;
+    fill-opacity:0.5;
+}
 
 /*.dragged .circle{
     stroke: red;

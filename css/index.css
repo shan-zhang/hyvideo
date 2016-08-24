@@ -92,8 +92,27 @@ li{
     margin: 10px;
     padding: 5px 5px;
     font-size: 15px;
-    font-family: Helvetica;
+    color: #FFF;
+    background-color: rgba(50, 50, 50, 0.5);
+    visibility: hidden;
+}
+
+#draggableSearch {
+    position: absolute;
+    width: 230px;
+    height: 20px;
+    left: 1250px;
+    top: 220px;
+    margin: 10px;
+    padding: 5px 5px;
+    font-size: 15px;
     color: #FFF;
     background-color: rgba(50, 50, 50, 0.3);
+    font-weight:bold;
     visibility: hidden;
+}
+
+#searchText{
+    width: 140px;
+    margin-right: 5px;
 }
