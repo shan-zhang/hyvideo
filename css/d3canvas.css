@@ -49,17 +49,18 @@ path.link.hidden {
 }
 
 .fixed .circle {
-    stroke-width: 3px;
+    stroke-width: 2px;
 }
 
 .selected .circle {
     stroke: red;
-    stroke-width: 3px;
+    stroke-width: 2px;
 }
 
-/*.selected .circle {
+.highlighted .circle {
     fill: darkgray;
-}*/
+}
+
 
 /*.dragged .circle{
     stroke: red;

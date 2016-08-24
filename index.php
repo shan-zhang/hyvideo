@@ -31,7 +31,7 @@
     </head>
 <body>
     <div id="header">
-        <stan style='font-size: 25px'>MapVideo - Authoring Mode</stan>
+        <stan style='font-size: 25px'>MapVideo - Navigation Mode</stan>
     </div>
     <div id="section">
         <div id="leftPanel">
@@ -262,7 +262,6 @@
         }
 
         function scrollToSubtitle(id){ // To-do: scrollTop has no supporting for negative values. If we want to put the first few subtitles into the center, we probably need to fill in empty lines before the first subtitle.
-            //console.log('scroll' + id);
             var scrollID = '#'+id;
             var scrollSpeed = 400;
             $('#subtitle').animate({ 
@@ -277,16 +276,37 @@
             for(var i = 0; i < myCues.length; i++){
                 myCues[i].id = i;
                 myCues[i].onenter  = function(){
-                    scrollToSubtitle(this.id);
-                    $('#'+this.id).css('background-color','lightgray');
-
+                    var cueItem = this;
+                    scrollToSubtitle(cueItem.id);
+                    $('#'+cueItem.id).css('background-color','lightgray');
+                    nodes.forEach(function (nodeItem){
+                        if(nodeItem.isSubtitle){
+                            if(cueItem.getCueAsHTML().textContent.search(new RegExp(nodeItem.word, "i")) != -1){
+                                //Highlight the nodes that are being discussed
+                                d3.selectAll('.node').filter(function(d){
+                                    return (d == nodeItem);
+                                })
+                                .classed("highlighted", nodeItem.highlighted = true);
+                                //removeHiddenNodes();
+                            }
+                            else{
+                                //Unhighlighting the nodes that are not being discussed
+                                d3.selectAll('.node').filter(function(d){
+                                    return (d == nodeItem);
+                                }).classed("highlighted", nodeItem.highlighted = false);
+                                //removeHiddenNodes();
+                            }
+                        }
+                    });
+                    console.log('enter #'+cueItem.id);
                     if(mappingSingleSubtitle && !this.show){
                         localTextParsing(this.getCueAsHTML().textContent, this.startTime, this.endTime);
                         this.show = true;
                     }
                 };
-                myCues[i].onexit = function(){  
-                   $('#'+this.id).css('background-color','white');
+                myCues[i].onexit = function(){
+                    var cueItem = this;
+                    $('#'+cueItem.id).css('background-color','white');
                 };
                 var node = document.createElement("li");                 // Create a <li> node
                 node.setAttribute('id',i);
@@ -322,7 +342,6 @@
                 //The below code is to show concepts of one-by-one substitle in the video
                 for (var i = 0; i < myCues.length; i++) {
                     myCues[i].onenter  = function(){ 
-                        // console.log(this);
                         if(!this.show){
                             //document.getElementById("leftSub").innerHTML += ('<span>' + this.getCueAsHTML().textContent + '</span> <br/>');
                             //Technique 1: use the great noun list to match proper noun
@@ -413,8 +432,7 @@
         }
 
         function drawTimeline(word, timeline){
-            //console.log(paper.project);
-            console.log("draw on the Timeline");
+            console.log("draw concepts on the Timeline");
             resetTimeline();
             new paper.Layer();
             var duration = document.getElementById("video").duration;
@@ -437,7 +455,6 @@
                 }
                 rect.onClick = function(event){
                     this.fillColor = 'green';
-                    console.log('startTime:' + this.startTime);
                     document.getElementById("video").currentTime = this.startTime;
                     document.getElementById("video").play();
                 };
@@ -455,7 +472,6 @@
                 };
             });
             paper.project.view.update();
-            console.log("Drawing concept in video is over");
         }
 
         $('#click').click(function(){ saveNoteToFile(); return false; });
@@ -481,7 +497,7 @@
                     else{
                         alert('The input file format is incorrect!');
                     }
-                    console.log(result);
+                    //console.log(result);
                 }
             }
         }
@@ -497,7 +513,6 @@
                 {
                     //data - response from server
                     window.location.href = 'php/downloadSavedNote.php';
-                    console.log(data);
                 },
                 error: function (jqXHR, textStatus, errorThrown)
                 {

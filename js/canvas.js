@@ -521,6 +521,15 @@ var restartLinks = function() {//redrawing Links
     force.start();
 }
 
+var removeHiddenNodes = function (){
+    d3.selectAll('.node').filter(function(d){
+        return (!d.highlighted);
+    }).attr("opacity", 0);
+    d3.selectAll('.node').filter(function(d){
+        return (d.highlighted);
+    }).attr("opacity", 1);
+}
+
 var restartNodes = function () {//redrawing Nodes
     //Printf for debugging
     console.log("NodeNum:" + force.nodes().length);
