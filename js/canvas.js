@@ -528,23 +528,21 @@ var restartNodes = function () {//redrawing Nodes
     node = node.data(force.nodes(), function (d) { return d.word; });
 
     //Data-Join : Update
-    // node.attr("class", function (d) {
-    //     if (d.fixed) {
-    //         // if (d.selected) return "node fixed selected";
-    //         //     else return "node fixed";
-
-    //         return "node fixed";
-    //     }
-    //     else if (d.connected) {
-    //         return "node connected";
-    //     }
-    //     else if(d.dragged){
-    //         return "node dragged";
-    //     }
-    //     else {
-    //         return "node";
-    //     }
-    // });
+    node.attr("class", function (d) {
+        console.log('This is an update');
+         if (d.fixed && d.selected){
+            return "node fixed selected";
+         }
+         else if (d.fixed) {
+            return "node fixed";
+         }
+         else if (d.selected) {
+            return "node selected";
+         }
+         else {
+            return "node";
+         }
+    });
 
     //Update existing nodes
     node.select("circle")
@@ -558,16 +556,16 @@ var restartNodes = function () {//redrawing Nodes
         
     //Data-Join: Enter
     var nodeEnter = node.enter().append("g")
-         // .attr("class", "node")
          .attr("class", function (d) {
-             if (d.fixed) {
+            console.log('This is an enter');
+             if (d.fixed && d.selected){
+                return "node fixed selected";
+             }
+             else if (d.fixed) {
                 return "node fixed";
              }
              else if (d.selected) {
                 return "node selected";
-             }
-             else if (d.fixed && d.selected){
-                return "node fixed selected";
              }
              else {
                 return "node";

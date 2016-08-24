@@ -31,7 +31,7 @@
     </head>
 <body>
     <div id="header">
-        <stan style='font-size: 25px'>MapVideo - Authoring Mode</stan>
+        <stan style='font-size: 25px'>MapVideo - Navigation Mode</stan>
     </div>
     <div id="section">
         <div id="leftPanel">
@@ -277,16 +277,44 @@
             for(var i = 0; i < myCues.length; i++){
                 myCues[i].id = i;
                 myCues[i].onenter  = function(){
-                    scrollToSubtitle(this.id);
-                    $('#'+this.id).css('background-color','lightgray');
+                    var cueItem = this;
+                    scrollToSubtitle(cueItem.id);
+                    $('#'+cueItem.id).css('background-color','lightgray');
+                    nodes.forEach(function (nodeItem){
+                        if(nodeItem.isSubtitle){
+                            if(cueItem.getCueAsHTML().textContent.search(new RegExp(nodeItem.word, "i")) != -1){
+                                var updateNode = d3.selectAll('.node').filter(function(d){
+                                    return (d == nodeItem);
+                                });
+                                updateNode.classed("highlighted", nodeItem.highlighted = true);
+                            }
+                        }
+                    });
 
+                    //restartNodes();
+                    // restartLinks();
+                    // restartLabels();
                     if(mappingSingleSubtitle && !this.show){
                         localTextParsing(this.getCueAsHTML().textContent, this.startTime, this.endTime);
                         this.show = true;
                     }
                 };
-                myCues[i].onexit = function(){  
-                   $('#'+this.id).css('background-color','white');
+                myCues[i].onexit = function(){
+                    var cueItem = this;
+                    $('#'+cueItem.id).css('background-color','white');
+                    nodes.forEach(function (nodeItem){
+                        if(nodeItem.isSubtitle){
+                            if(cueItem.getCueAsHTML().textContent.search(new RegExp(nodeItem.word, "i")) != -1){
+                                var updateNode = d3.selectAll('.node').filter(function(d){
+                                    return (d == nodeItem);
+                                });
+                                updateNode.classed("highlighted", nodeItem.highlighted = false);
+                            }
+                        }
+                    });
+                    //restartNodes();
+                    // restartLinks();
+                    // restartLabels();
                 };
                 var node = document.createElement("li");                 // Create a <li> node
                 node.setAttribute('id',i);

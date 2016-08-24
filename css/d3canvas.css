@@ -57,9 +57,9 @@ path.link.hidden {
     stroke-width: 3px;
 }
 
-/*.selected .circle {
+.highlighted .circle {
     fill: darkgray;
-}*/
+}
 
 /*.dragged .circle{
     stroke: red;
