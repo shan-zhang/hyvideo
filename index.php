@@ -93,6 +93,7 @@
                 <input type='file' id='file' name='userFile' accept=".json">
                 <label>Download Concept-Map:</label>
                 <a id='click' href="#">click</a>
+                <button id="centerConcept" onclick="clicktoCenter()">Auto-Center: off</button>
                 <!-- <a id='showAllConcepts' href="#" style="visibility:hidden">Click here to download all concepts</a> -->
             </div>
         </div>
@@ -127,6 +128,7 @@
         var quiz = null;
         var mappingAllSubstitles = false;
         var mappingSingleSubtitle = false;
+        var clickNodetoCenter = false;
         window.addEventListener("load", function() {
             setCanvas();
             greatNounList = <?php echo json_encode($file); ?>;
@@ -322,14 +324,20 @@
                     var cueItem = this;
                     scrollToSubtitle(cueItem.id);
                     $('#'+cueItem.id).css('background-color','lightgray');
+                    var pantoCenter = true;
                     nodes.forEach(function (nodeItem){
                         if(nodeItem.isSubtitle){
                             if(cueItem.getCueAsHTML().textContent.search(new RegExp(nodeItem.word, "i")) != -1){
                                 //Highlight the nodes that are being discussed
-                                d3.selectAll('.node').filter(function(d){
+                                var selection = d3.selectAll('.node').filter(function(d){
                                     return (d == nodeItem);
                                 })
                                 .classed("highlighted", nodeItem.highlighted = true);
+
+                                if(pantoCenter){
+                                    pantoCenter = false;
+                                    pantoCentre(selection, nodeItem, 1500);
+                                }
                                 //removeHiddenNodes();
                             }
                             else{
@@ -361,6 +369,15 @@
                 document.getElementById('subtitle').appendChild(node);
                           
             }
+        }
+
+        function clicktoCenter(){
+            clickNodetoCenter = !clickNodetoCenter;
+            if(clickNodetoCenter){
+                $('#centerConcept').html('Auto-Center: On');
+            }
+            else
+                $('#centerConcept').html('Auto-Center: off');
         }
 
         function clickConceptMap (){
