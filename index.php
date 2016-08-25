@@ -65,7 +65,7 @@
             <canvas id='leftSub'></canvas>
             <button id="clear" onclick="clearTimeStamp()">Clear</button>
             <!-- <button id="hideVideo" onclick="hideVideo()">Hide Video</button> -->
-            <button id="conceptsMapping" onclick="clickConceptMap()">Concept-Map</button>
+            <button id="conceptsMapping" onclick="clickConceptMap()">Auto-Concepts: off</button>
             <h3 id="clips"></h3>
             <!-- The code below is for quiz -->
             <!-- <button id="startQuiz" onclick="startQuiz(event)">Start Quiz!</button> -->
@@ -365,6 +365,11 @@
 
         function clickConceptMap (){
             mappingSingleSubtitle = !mappingSingleSubtitle;
+            if(mappingSingleSubtitle){
+                $('#conceptsMapping').html('Auto-Concepts: On');
+            }
+            else
+                $('#conceptsMapping').html('Auto-Concepts: Off');
         }
 
         function conceptsMapping(){
