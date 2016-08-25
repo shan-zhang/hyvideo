@@ -12,8 +12,8 @@ var canvasTop = 0;
 var clickOntoLinks = false;
 var translate = [0, 0];
 var newAddedClickLink = false;
-var scaleMin = 0.5;
-var scaleMax = 2;
+var scaleMin = 0.2;
+var scaleMax = 3;
 var scale = 1;
 var doubleClickNode = false;
 var doubleClickLink = false;
@@ -312,11 +312,12 @@ function oneclick(d) {//one click node
             }
             console.log('select node x: ' + selectedNodeObj.x + "   y: " + selectedNodeObj.y);
             $("#subtitle").removeHighlight();
-            if(selectedNodeObj.word && selectedNodeObj.video){//This is an empty node
-                drawTimeline(selectedNodeObj.word, selectedNodeObj.video);
+            if(selectedNodeObj.word != ''){//If this is not an empty node
                 $("#subtitle").highlight(d.word,"highlight");
             }
-
+            document.getElementById("video").currentTime = selectedNodeObj.createTime;
+            document.getElementById("video").play();
+            drawTimeline(selectedNodeObj.word, selectedNodeObj.video, selectedNodeObj.createTime);
             unselectLink();
             pantoCentre(d3.select(this), d, 1000);
         }
@@ -459,12 +460,14 @@ function dblclickSVG(d) {
     if(addNewConcept){
         var addNewNode = true;
         nodes.forEach(function (nodeValue, nodeIndex) {
-            if (nodeValue.word == "")
+            if (nodeValue.word == ""){
+                nodeValue.createTime = document.getElementById("video").currentTime();
                 addNewNode = false;
+            }
         });
         if (addNewNode)
         {
-            nodes.push({ "word": "", "frequency": 1, "video":[], "x": d3.event.x, "y": d3.event.y, "dx": d3.event.x, "dy": d3.event.y,});
+            nodes.push({ "word": "", "frequency": 1, "isSubtitle": false, "createTime": document.getElementById("video").currentTime,"video":[], "x": d3.event.x, "y": d3.event.y, "dx": d3.event.x, "dy": d3.event.y,});
             restartNodes();
         }
     }
@@ -642,7 +645,6 @@ var AddConcept = function(jsonData) { //Analyse the textarea/jsonData and update
         nodes.forEach(function (nodesValue, nodesIndex) {
             if(nodesValue.word.toLowerCase() == graphValue.word.toLowerCase())
             {//The word is existing in the graph
-                nodesValue.frequency ++;
                 if(tmpVideo.length > 0){
                     nodesValue.video.forEach(function(videoItem){
                         if(tmpVideo[0].startTime == videoItem.startTime && tmpVideo[0].endTime == videoItem.endTime){
@@ -652,6 +654,7 @@ var AddConcept = function(jsonData) { //Analyse the textarea/jsonData and update
                     });
                     if(!isVideoExist){
                         nodesValue.video.push({"startTime": tmpVideo[0].startTime,"endTime":tmpVideo[0].endTime});
+                        nodesValue.frequency ++;
                     }
                 }
                 isExist = true;
@@ -666,6 +669,7 @@ var AddConcept = function(jsonData) { //Analyse the textarea/jsonData and update
             for(var i = 0; i < myCues.length; i++){
                 if(myCues[i].getCueAsHTML().textContent.search(new RegExp(graphValue.word, "i")) != -1){
                     videoTime.push({"startTime": myCues[i].startTime,"endTime":myCues[i].endTime});
+                    graphValue.isSubtitle = true;
                 }
             }
             //Check if the tmpVideo exists in the videoTime
@@ -676,14 +680,30 @@ var AddConcept = function(jsonData) { //Analyse the textarea/jsonData and update
                         return;
                     }
                 });
-
                 if(!isVideoExist){
                     videoTime.push({"startTime": tmpVideo[0].startTime,"endTime":tmpVideo[0].endTime});
                 }
             }
 
+            if(graphValue.isSubtitle){//If the concept is from subtitle, then the sysytem automatically matches the create time to the neareat startTime of a subtitile
+                var index = 0;
+                var diff = document.getElementById("video").duration;
+                for(var i = 0; i < myCues.length; i++){
+                    if(myCues[i].getCueAsHTML().textContent.search(new RegExp(graphValue.word, "i")) != -1)
+                    {
+                        if(diff >= Math.abs(myCues[i].startTime - graphValue.createTime)){
+                            diff = Math.abs(myCues[i].startTime - graphValue.createTime);
+                            index = i;
+                        }
+                    }
+                }
+                graphValue.createTime = myCues[index].startTime;
+            }
+
             graphValue.video = videoTime;
             graphValue.frequency = videoTime.length;
+            if(graphValue.frequency == 0) graphValue.frequency ++;
+
             nodes.push(graphValue);
         }
     });
@@ -704,6 +724,7 @@ var updateConceptName = function (inputText, manualVideoTime)//Update Node word 
         newAddNode = JSON.parse(JSON.stringify(selectedNodeObj));
         newAddNode.word = inputText;
         newAddNode.description = selectedNodeObj.description;
+        newAddNode.createTime = selectedNodeObj.createTime;
 
         var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
         var myCues = myTrack.cues;   // get list of cues 
@@ -929,6 +950,8 @@ var svgKeydown = function (){
                 $("#draggable").find("#startTime").removeAttr('time');
                 $("#draggable").find("#endTime").empty();
                 $("#draggable").find("#endTime").removeAttr('time');
+                $("#draggable").find("#createTime").empty();
+                $("#draggable").find("#createTime").removeAttr('time');
                 if(selectedNodeObj.description){
                     $("#draggable").find("textarea").val(selectedNodeObj.description);
                 }
@@ -940,9 +963,11 @@ var svgKeydown = function (){
                     $("#draggable").find("#endTime").attr('time',endTime);
                     $("#draggable").find("#endTime").text(Math.floor(endTime/60) + " min: "+ Math.floor((endTime - Math.floor(endTime/60) * 60)) + " sec");
                 }
-                // if(selectedNodeObj.endTime){
-                //     $("#draggable").find("#endTime").val(selectedNodeObj.description);
-                // }
+
+                if(selectedNodeObj.createTime){
+                    $("#draggable").find("#createTime").attr('time',selectedNodeObj.createTime);
+                    $("#draggable").find("#createTime").text(Math.floor(selectedNodeObj.createTime/60) + " min: "+ Math.floor((selectedNodeObj.createTime - Math.floor(selectedNodeObj.createTime/60) * 60)) + " sec");
+                }
                 
                 d3.event.preventDefault();
             

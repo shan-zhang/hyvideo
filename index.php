@@ -56,6 +56,10 @@
                     <button onclick="saveEndTime()">End time</button>&nbsp;&nbsp;<label id='endTime'></label>
                 </div>
                 <br />
+                <div>
+                    <button onclick="createTime()">Create time</button>&nbsp;&nbsp;<label id='createTime'></label>
+                </div>
+                <br />
                 Concept description:<textarea rows='4' cols='25'></textarea>
                 <br />
                 <br />
@@ -125,6 +129,7 @@
         }
         paper.install(window);
         paper.setup('leftSub');
+        var circle = null;
         var quiz = null;
         var mappingAllSubstitles = false;
         var mappingSingleSubtitle = false;
@@ -210,9 +215,29 @@
             $("#draggable").find("#endTime").text(Math.floor(endTime/60) + " min: "+ Math.floor((endTime - Math.floor(endTime/60) * 60)) + " sec");
         }
 
+        function createTime(){
+            var createTime = document.getElementById("video").currentTime;
+            $("#draggable").find("#createTime").attr('time', createTime);
+            $("#draggable").find("#createTime").text(Math.floor(createTime/60) + " min: "+ Math.floor((createTime - Math.floor(createTime/60) * 60)) + " sec");
+
+            circle.position = new Point(circle.viewSize*createTime/document.getElementById("video").duration,circle.y);
+            circle.createTime = createTime;
+            circle.showCue = '';
+            var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
+            var myCues = myTrack.cues;   // get list of cues 
+            for (var i = 0; i < myCues.length; i++) {
+                if(createTime >= myCues[i].startTime && createTime <= myCues[i].endTime){
+                    circle.showCue += myCues[i].getCueAsHTML().textContent + ' ';
+                    break;
+                }
+            }
+            paper.project.view.update();
+        }
+
         function saveEdit(){
             var startTime = $("#draggable").find("#startTime").attr('time');
             var endTime = $("#draggable").find("#endTime").attr('time');
+            var createTime = $("#draggable").find("#createTime").attr('time');
             var word = $("#draggable").find("input").val();
             word = word.trim();
             var description = $("#draggable").find("textarea").val();
@@ -230,6 +255,8 @@
                 if(description != ''){
                     selectedNodeObj.description = description;
                 }
+
+                selectedNodeObj.createTime = createTime;
                 updateConceptName(word,manualVideoTime);
             }
             else{
@@ -290,17 +317,18 @@
             event.preventDefault();
             var data = event.dataTransfer.getData("text");
             if(data){            
-                data = data.trim();
+                var punctuationless = (data.trim()).replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()@\+\?><\[\]\+]/g, '');
+                var cleanData = punctuationless.replace(/\s{2,}/g, " ");
                 //var id = event.dataTransfer.getData("id");
-                if(data != ''){
-                    console.log(data);
+                if(cleanData != '' && cleanData.length <= 30){
+                    console.log(cleanData.length);
                     //---The code below is to add draged text as text node to the canvas
                     // var node = document.createElement("LI");                 // Create a <li> node
                     // var textnode = document.createTextNode(data);   // Create a text node
                     // node.appendChild(textnode); 
                     // $(event.target).before(node);
                     var localJson = [];
-                    localJson.push({"word": data, "frequency": 1, "isSubtitle": true, 'video':[]});
+                    localJson.push({"word": cleanData, "frequency": 1, 'video':[], "createTime":document.getElementById("video").currentTime});
                     AddConcept(JSON.stringify(localJson));
                 }
             }
@@ -349,7 +377,6 @@
                             }
                         }
                     });
-                    console.log('enter #'+cueItem.id);
                     if(mappingSingleSubtitle && !this.show){
                         localTextParsing(this.getCueAsHTML().textContent, this.startTime, this.endTime);
                         this.show = true;
@@ -496,7 +523,7 @@
             console.log("Drawing Link in video is over");
         }
 
-        function drawTimeline(word, timeline){
+        function drawTimeline(word, timeline, createTime){
             console.log("draw concepts on the Timeline");
             resetTimeline();
             new paper.Layer();
@@ -536,6 +563,38 @@
                     $("#clips").removeHighlight();
                 };
             });
+
+            circle = new paper.Path.Circle(new Point(viewSize*createTime/duration,10),8);
+            circle.viewSize = viewSize;
+            circle.y = 10;
+            circle.style = {
+                fillColor: 'blue'
+            };
+            circle.word = word;
+            circle.showCue = '';
+            circle.createTime = createTime;
+            for (var i = 0; i < myCues.length; i++) {
+                if(createTime >= myCues[i].startTime && createTime <= myCues[i].endTime){
+                    circle.showCue += myCues[i].getCueAsHTML().textContent + ' ';
+                    break;
+                }
+            }
+            circle.onClick = function(event){
+                document.getElementById("video").currentTime = this.createTime;
+                document.getElementById("video").play();
+            };
+            circle.onMouseEnter = function(event){
+                if(this.showCue){
+                    $("#clips").text(this.showCue);
+                    //hightlight text
+                    var highlightText = this.word;
+                    $("#clips").highlight(highlightText,"highlight");
+                }
+            };
+            circle.onMouseLeave = function(event){
+                $("#clips").text("");
+                $("#clips").removeHighlight();
+            };
             paper.project.view.update();
         }
 

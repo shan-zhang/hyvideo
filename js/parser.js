@@ -57,7 +57,7 @@ var localTextParsing = function(subtitle, startTime, endTime){
 		        }
 		    }
 		    if (isNoun) {
-		        localJson.push({ "word": tmp, "frequency": 1, "isSubtitle": true, "video": [{"startTime": startTime,"endTime":endTime}]});
+		        localJson.push({ "word": tmp, "frequency": 1, "isSubtitle": true, "createTime":startTime,"video": [{"startTime": startTime,"endTime":endTime}]});
 		    }
 		    else {
 		        var isNewNoun = false;
@@ -81,7 +81,7 @@ var localTextParsing = function(subtitle, startTime, endTime){
 						}
 		            });
 		            if(isNewNoun){
-		      		    localJson.push({ "word": multiTerms[0], "frequency": 1, "isSubtitle": true, "video": [{"startTime": startTime,"endTime":endTime}]});
+		      		    localJson.push({ "word": multiTerms[0], "frequency": 1, "isSubtitle": true, "createTime":startTime,"video": [{"startTime": startTime,"endTime":endTime}]});
 		                tmpCache.push({ "word": multiTerms[0].toLowerCase(), "isNoun": true });
 		                break;
 		            }
