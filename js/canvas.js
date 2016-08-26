@@ -509,7 +509,6 @@ var restartLinks = function() {//redrawing Links
     link = link.data(links);
     overlappingLink = overlappingLink.data(links);
     //Data-join: Update
-    //link.style('marker-end', 'url(#end-arrow)');
     link.attr("id", function (d) { return "linkIndex" + d.linkIndex; });
 
     //Data-Join: Enter
@@ -540,14 +539,14 @@ var restartLinks = function() {//redrawing Links
     force.start();
 }
 
-var removeHiddenNodes = function (){
-    d3.selectAll('.node').filter(function(d){
-        return (!d.highlighted);
-    }).attr("opacity", 0);
-    d3.selectAll('.node').filter(function(d){
-        return (d.highlighted);
-    }).attr("opacity", 1);
-}
+// var removeHiddenNodes = function (){
+//     d3.selectAll('.node').filter(function(d){
+//         return (!d.highlighted);
+//     }).attr("opacity", 0);
+//     d3.selectAll('.node').filter(function(d){
+//         return (d.highlighted);
+//     }).attr("opacity", 1);
+// }
 
 var restartNodes = function () {//redrawing Nodes
     //Printf for debugging
@@ -632,6 +631,15 @@ var restartNodes = function () {//redrawing Nodes
 }
 //****************************************************************************
 //modify the node and link
+var drawConceptPath = function (){
+    nodes.sort(function(nodeA,nodeB){
+        return nodeA.createTime - nodeB.createTime;
+    });
+    console.log(nodes);
+
+
+}
+
 var AddConcept = function(jsonData) { //Analyse the textarea/jsonData and update Nodes 
     var graph = {};
     graph.nodes = JSON.parse(jsonData);
@@ -1117,6 +1125,8 @@ var releaseNodes = function (){
     restartLabels();
     restartLinks();
     restartNodes();
+
+    drawConceptPath();
 }
 
 var saveNote = function () {
