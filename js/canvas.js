@@ -60,11 +60,10 @@ var drawCanvas = function (canvasWidth,canvasHeight,canvasPositionX,canvasPositi
     .size([width, height])
     .nodes(nodes) 
     .links(links)
-    .linkDistance(200)
-    .charge(function (d) { return -600 * log2(d.frequency + 1); });
-    //.charge(0)
-    //.on("tick", tick);
-    //drag = force.drag()
+    .linkDistance(function(d){ return 200 +  100 * log2((d.source.frequency + d.target.frequency)/2 + 1);})
+    // .linkDistance(400)
+    .charge(function (d) { return -1200 * log2(d.frequency + 1); });
+
     drag = d3.behavior.drag()
         .on("dragstart", dragstart)
         .on("drag", dragging)  
@@ -461,7 +460,7 @@ function dblclickSVG(d) {
         var addNewNode = true;
         nodes.forEach(function (nodeValue, nodeIndex) {
             if (nodeValue.word == ""){
-                nodeValue.createTime = document.getElementById("video").currentTime();
+                nodeValue.createTime = document.getElementById("video").currentTime;
                 addNewNode = false;
             }
         });
@@ -494,7 +493,7 @@ var restartLabels = function () { //redrawing Labels
     //.attr("y", function (d) { return (d.source.y + d.target.y) / 2; })
     .attr("text-anchor", "middle")
     .attr("dy", -5)
-    .style("font-size", function (d) { return 15 * log2((d.source.frequency + d.target.frequency)/2 + 1) + "px" })
+    .style("font-size", function (d) { return 10 * log2((d.source.frequency + d.target.frequency)/2 + 1) + "px" })
     .append("textPath")
     .attr("xlink:href", function (d) { return "#linkIndex"+d.linkIndex; })
     .attr("startOffset", "50%")
@@ -1081,6 +1080,45 @@ var cleanCache = function () {
 }
 
 //************************************************************************
+var releaseNodes = function (){
+    clearTimeStamp();
+    for(var i = 0; i < nodes.length; i++){
+        var nodeItem = nodes[i];
+        if(nodeItem.fixed){
+            d3.selectAll('.node').filter(function(d){
+                return (d == nodeItem);
+            }).classed("fixed", nodeItem.fixed = false);
+        }
+
+        var isolated = true;
+        links.forEach(function (linkItem){
+            if(linkItem.source == nodeItem || linkItem.target == nodeItem){
+                isolated = false;
+                return;
+            }
+        });
+
+        if(isolated){
+            nodes.splice(i--,1);
+        }
+    }
+
+    nodes.forEach(function(nodeItem){
+        if(!nodeItem.createTime){
+            if(nodeItem.video.length != 0){
+                nodeItem.createTime = nodeItem.video[0].startTime;
+            }
+            else{
+                nodeItem.createTime = document.getElementById("video").currentTime;
+            }
+        }
+    });
+
+    restartLabels();
+    restartLinks();
+    restartNodes();
+}
+
 var saveNote = function () {
     var savedString = {};
     savedString.node = nodes;

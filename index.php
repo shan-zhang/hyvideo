@@ -98,6 +98,7 @@
                 <label>Download Concept-Map:</label>
                 <a id='click' href="#">click</a>
                 <button id="centerConcept" onclick="clicktoCenter()">Auto-Center: off</button>
+                <button id="releaseNodes" onclick="releaseNodes()">Release Nodes</button>
                 <!-- <a id='showAllConcepts' href="#" style="visibility:hidden">Click here to download all concepts</a> -->
             </div>
         </div>
