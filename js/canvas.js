@@ -672,50 +672,59 @@ var restartNodes = function () {//redrawing Nodes
 //****************************************************************************
 //modify the node and link
 var drawConceptPath = function (){
-    var currentTime = document.getElementById("video").currentTime;
-    nodes.sort(function(nodeA,nodeB){
-        if(nodeA.createTime != nodeB.createTime)
-            return nodeA.createTime - nodeB.createTime;
-        else
-            return nodeA.word.localeCompare(nodeB.word);
-    });
-    var index = -1;
-    for(var i = 0; i < nodes.length; i++){
-        if(nodes[i].createTime <= currentTime){
-            index = i;
-            if( i == nodes.length-1 || nodes[i+1].createTime > currentTime){
-                break;
+    if(conceptPath){
+        var currentTime = document.getElementById("video").currentTime;
+        nodes.sort(function(nodeA,nodeB){
+            if(nodeA.createTime != nodeB.createTime)
+                return nodeA.createTime - nodeB.createTime;
+            else
+                return nodeA.word.localeCompare(nodeB.word);
+        });
+        var index = -1;
+        for(var i = 0; i < nodes.length; i++){
+            if(nodes[i].createTime <= currentTime){
+                index = i;
+                if( i == nodes.length-1 || nodes[i+1].createTime > currentTime){
+                    break;
+                }
             }
         }
-    }
-    var pastNodes = [];
-    var upcomingNodes = [];
-    if(index == -1){
-        upcomingNodes = nodes;
-    }
-    else if (index == nodes.length - 1){
-        pastNodes = nodes;
+        var pastNodes = [];
+        var upcomingNodes = [];
+        if(index == -1){
+            upcomingNodes = nodes;
+        }
+        else if (index == nodes.length - 1){
+            pastNodes = nodes;
+        }
+        else{
+            pastNodes = nodes.slice(0, index + 1);
+            upcomingNodes = nodes.slice(index);
+        }
+
+        conceptPathPast = container.append("path")
+                                   .attr("class","conceptPath")
+                                   .attr("d",lineFunction(pastNodes))
+                                   .attr("stroke","blue")
+                                   .attr("stroke-width",2)
+                                   .attr("stroke-dasharray", (10,5))
+                                   .attr("opacity", 0.5)
+                                   .attr("fill","none");
+
+        conceptPathUpcoming = container.append("path")
+                                   .attr("class","conceptPath")
+                                   .attr("d",lineFunction(upcomingNodes))
+                                   .attr("stroke","red")
+                                   .attr("stroke-width",2)
+                                   .attr("stroke-dasharray", (10,5))
+                                   .attr("opacity", 0.5)
+                                   .attr("fill","none");
     }
     else{
-        pastNodes = nodes.slice(0, index + 1);
-        upcomingNodes = nodes.slice(index);
+        container.selectAll(".conceptPath").remove();
+        conceptPathPast = null;
+        conceptPathUpcoming = null;
     }
-
-    conceptPathPast = container.append("path")
-                               .attr("d",lineFunction(pastNodes))
-                               .attr("stroke","blue")
-                               .attr("stroke-width",2)
-                               .attr("stroke-dasharray", (10,5))
-                               .attr("opacity", 0.5)
-                               .attr("fill","none");
-
-    conceptPathUpcoming = container.append("path")
-                               .attr("d",lineFunction(upcomingNodes))
-                               .attr("stroke","red")
-                               .attr("stroke-width",2)
-                               .attr("stroke-dasharray", (10,5))
-                               .attr("opacity", 0.5)
-                               .attr("fill","none");
 }
 
 var AddConcept = function(jsonData) { //Analyse the textarea/jsonData and update Nodes 
@@ -1203,8 +1212,6 @@ var releaseNodes = function (){
     restartLabels();
     restartLinks();
     restartNodes();
-
-    drawConceptPath();
 }
 
 var saveNote = function () {

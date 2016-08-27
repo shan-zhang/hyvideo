@@ -97,7 +97,10 @@
                 <input type='file' id='file' name='userFile' accept=".json">
                 <label>Download Concept-Map:</label>
                 <a id='click' href="#">click</a>
+                <br />
+                <br />
                 <button id="centerConcept" onclick="clicktoCenter()">Auto-Center: off</button>
+                <button id="conceptPath" onclick="setConceptPath()">Concept-Path: off</button>
                 <button id="releaseNodes" onclick="releaseNodes()">Release Nodes</button>
                 <!-- <a id='showAllConcepts' href="#" style="visibility:hidden">Click here to download all concepts</a> -->
             </div>
@@ -135,6 +138,7 @@
         var mappingAllSubstitles = false;
         var mappingSingleSubtitle = false;
         var clickNodetoCenter = false;
+        var conceptPath = false;
         window.addEventListener("load", function() {
             setCanvas();
             greatNounList = <?php echo json_encode($file); ?>;
@@ -353,7 +357,7 @@
                     var cueItem = this;
                     scrollToSubtitle(cueItem.id);
                     $('#'+cueItem.id).css('background-color','lightgray');
-                    var pantoCenter = true;
+                    var pantoCenterNode = null;
                     nodes.forEach(function (nodeItem){
                         if(nodeItem.isSubtitle){
                             if(cueItem.getCueAsHTML().textContent.search(new RegExp(nodeItem.word, "i")) != -1){
@@ -363,10 +367,13 @@
                                 })
                                 .classed("highlighted", nodeItem.highlighted = true);
 
-                                if(pantoCenter){
-                                    pantoCenter = false;
-                                    pantoCentre(selection, nodeItem, 1500);
+                                if(pantoCenterNode){
+                                    if(pantoCenterNode.createTime < nodeItem.createTime){
+                                        pantoCenterNode = nodeItem;
+                                    }
                                 }
+                                else
+                                    pantoCenterNode = nodeItem;
                                 //removeHiddenNodes();
                             }
                             else{
@@ -378,6 +385,14 @@
                             }
                         }
                     });
+
+                    if(pantoCenterNode){
+                        var selection = d3.selectAll('.node').filter(function(d){
+                            return (d == pantoCenterNode);
+                        });
+                        pantoCentre(selection, pantoCenterNode, 1500);
+                    }
+
                     if(mappingSingleSubtitle && !this.show){
                         localTextParsing(this.getCueAsHTML().textContent, this.startTime, this.endTime);
                         this.show = true;
@@ -408,6 +423,19 @@
             }
             else
                 $('#centerConcept').html('Auto-Center: off');
+        }
+
+        function setConceptPath(){
+            conceptPath = !conceptPath;
+            if(conceptPath){
+                $('#conceptPath').html('Concept-Path: On');
+                drawConceptPath();
+
+            }
+            else{
+                $('#conceptPath').html('Concept-Path: off');
+                drawConceptPath();
+            }
         }
 
         function clickConceptMap (){
