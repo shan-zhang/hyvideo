@@ -1,4 +1,4 @@
-﻿var width, height, force, node, nodes, link, links, label, drag, svg, tick, container, graph, zoom, overlappingLink, drag_line, div;
+﻿var width, height, force, node, nodes, link, links, label, drag, svg, tick, container, graph, zoom, overlappingLink, drag_line, div,lineFunction, conceptPathPast,conceptPathUpcoming;
 var selectedNode = null;
 var selectedNodeObj = null;
 var selectedLink = null;
@@ -107,6 +107,11 @@ var drawCanvas = function (canvasWidth,canvasHeight,canvasPositionX,canvasPositi
       .attr('class', 'link dragline hidden')
       .attr('d', 'M0,0L0,0');
 
+    lineFunction = d3.svg.line()
+                        .x(function(d) { return d.x; })
+                        .y(function(d) { return d.y; })
+                        .interpolate("linear");
+
     //svg.append('svg:defs').append('svg:marker')
     //    .attr('id', 'start-arrow')
     //    .attr('viewBox', '0 -5 10 10')
@@ -126,6 +131,7 @@ var drawCanvas = function (canvasWidth,canvasHeight,canvasPositionX,canvasPositi
     overlappingLink = container.selectAll(".overlappingLink");
 
     tick = function() {
+        console.log('tick');
         //link.attr("x1", function (d) { return d.source.x; })
         //    .attr("y1", function (d) { return d.source.y; })
         //    .attr("x2", function (d) { return d.target.x; })
@@ -190,6 +196,40 @@ var drawCanvas = function (canvasWidth,canvasHeight,canvasPositionX,canvasPositi
                 "left": canvasLeft + (selectedLinkObj.source.x + selectedLinkObj.target.x) / 2 * scale + translate[0], "top": canvasTop + (selectedLinkObj.source.y + selectedLinkObj.target.y) / 2 * scale + translate[1], "visibility": "visible"
             });
             $(".inputText").focus();
+        }
+
+        if(conceptPathPast && conceptPathUpcoming){
+            var currentTime = document.getElementById("video").currentTime;
+            nodes.sort(function(nodeA,nodeB){
+                if(nodeA.createTime != nodeB.createTime)
+                    return nodeA.createTime - nodeB.createTime;
+                else
+                    return nodeA.word.localeCompare(nodeB.word);
+            });
+            var index = -1;
+            for(var i = 0; i < nodes.length; i++){
+                if(nodes[i].createTime <= currentTime){
+                    index = i;
+                    if( i == nodes.length-1 || nodes[i+1].createTime > currentTime){
+                        break;
+                    }
+                }
+            }
+            var pastNodes = [];
+            var upcomingNodes = [];
+            if(index == -1){
+                upcomingNodes = nodes;
+            }
+            else if (index == nodes.length - 1){
+                pastNodes = nodes;
+            }
+            else{
+                pastNodes = nodes.slice(0, index + 1);
+                upcomingNodes = nodes.slice(index);
+            }
+
+            conceptPathPast.attr("d",lineFunction(pastNodes));
+            conceptPathUpcoming.attr("d",lineFunction(upcomingNodes));
         }
     }
 
@@ -632,12 +672,50 @@ var restartNodes = function () {//redrawing Nodes
 //****************************************************************************
 //modify the node and link
 var drawConceptPath = function (){
+    var currentTime = document.getElementById("video").currentTime;
     nodes.sort(function(nodeA,nodeB){
-        return nodeA.createTime - nodeB.createTime;
+        if(nodeA.createTime != nodeB.createTime)
+            return nodeA.createTime - nodeB.createTime;
+        else
+            return nodeA.word.localeCompare(nodeB.word);
     });
-    console.log(nodes);
+    var index = -1;
+    for(var i = 0; i < nodes.length; i++){
+        if(nodes[i].createTime <= currentTime){
+            index = i;
+            if( i == nodes.length-1 || nodes[i+1].createTime > currentTime){
+                break;
+            }
+        }
+    }
+    var pastNodes = [];
+    var upcomingNodes = [];
+    if(index == -1){
+        upcomingNodes = nodes;
+    }
+    else if (index == nodes.length - 1){
+        pastNodes = nodes;
+    }
+    else{
+        pastNodes = nodes.slice(0, index + 1);
+        upcomingNodes = nodes.slice(index);
+    }
 
+    conceptPathPast = container.append("path")
+                               .attr("d",lineFunction(pastNodes))
+                               .attr("stroke","blue")
+                               .attr("stroke-width",2)
+                               .attr("stroke-dasharray", (10,5))
+                               .attr("opacity", 0.5)
+                               .attr("fill","none");
 
+    conceptPathUpcoming = container.append("path")
+                               .attr("d",lineFunction(upcomingNodes))
+                               .attr("stroke","red")
+                               .attr("stroke-width",2)
+                               .attr("stroke-dasharray", (10,5))
+                               .attr("opacity", 0.5)
+                               .attr("fill","none");
 }
 
 var AddConcept = function(jsonData) { //Analyse the textarea/jsonData and update Nodes 

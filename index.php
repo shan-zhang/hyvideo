@@ -382,6 +382,8 @@
                         localTextParsing(this.getCueAsHTML().textContent, this.startTime, this.endTime);
                         this.show = true;
                     }
+
+                    tick();
                 };
                 myCues[i].onexit = function(){
                     var cueItem = this;
