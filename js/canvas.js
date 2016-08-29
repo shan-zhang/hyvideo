@@ -110,7 +110,7 @@ var drawCanvas = function (canvasWidth,canvasHeight,canvasPositionX,canvasPositi
         .attr('d', 'M0,-5L10,0L0,5')
         .attr('fill', 'green')
         .attr("stroke-width", "5px")
-        .attr("fill-opacity",0.9);
+        .attr("fill-opacity",1);
 
     svg.append('svg:defs').append('svg:marker')
         .attr('id', 'upComingPath-arrow')
@@ -123,7 +123,7 @@ var drawCanvas = function (canvasWidth,canvasHeight,canvasPositionX,canvasPositi
         .attr('d', 'M0,-5L10,0L0,5')
         .attr('fill', 'blue')
         .attr("stroke-width", "5px")
-        .attr("fill-opacity",0.9);
+        .attr("fill-opacity",1);
 
     // line displayed when dragging new nodes
     drag_line = svg.append('svg:path')
@@ -243,6 +243,21 @@ var drawCanvas = function (canvasWidth,canvasHeight,canvasPositionX,canvasPositi
                 upcomingNodes = nodes.slice(index);
             }
 
+
+            if(pastNodes.length > 1){
+                $("#pastPath-arrow").find("path").attr('opacity',1);
+            }
+            else{
+                $("#pastPath-arrow").find("path").attr('opacity',0);
+            }
+
+            if(upcomingNodes.length > 1){
+                $("#upComingPath-arrow").find("path").attr('opacity',1);
+            }
+            else{
+                $("#upComingPath-arrow").find("path").attr('opacity',0);
+            }
+
             conceptPathPast.attr("d",lineFunction(pastNodes));
             conceptPathUpcoming.attr("d",lineFunction(upcomingNodes));
         }
@@ -264,7 +279,7 @@ function zoomed() {
 function pantoCentre(selection, d, time){
     if(!clickNodetoCenter) return;
 
-    console.log(translate);
+    //console.log(translate);
     var centerPointX = width/2;
     var centerPointY = height/2;
 
@@ -360,8 +375,8 @@ function dblclick(d) {//double click node
 }
 function oneclick(d) {//one click node
     if (d3.event.defaultPrevented) return;
-
     console.log('Click the node');
+    console.log(d);
     if(!d3.event.ctrlKey && !d3.event.altKey){//click node without pressing ctrl key
         if(!d.selected){
             //This node is not selected.
@@ -384,8 +399,10 @@ function oneclick(d) {//one click node
             if(selectedNodeObj.word != ''){//If this is not an empty node
                 $("#subtitle").highlight(d.word,"highlight");
             }
-            document.getElementById("video").currentTime = selectedNodeObj.createTime;
-            document.getElementById("video").play();
+            if(autoPlayByClick){//Add a button to control the auto playing by clicking
+                document.getElementById("video").currentTime = selectedNodeObj.createTime;
+                document.getElementById("video").play();
+            }
             drawTimeline(selectedNodeObj.word, selectedNodeObj.video, selectedNodeObj.createTime);
             pantoCentre(d3.select(this), d, 1000);
         }
@@ -512,7 +529,6 @@ function clickSVG(d)
     console.log('click the SVG');
     d3.event.preventDefault();
 
-    console.log('content:' + $(".inputText").val().trim());
     if($(".inputText").css("visibility") === 'visible'){
         if(editLinkName){
             updateLinkLabelName($(".inputText").val().trim());
@@ -551,7 +567,7 @@ var restartLabels = function () { //redrawing Labels
     .attr("xlink:href",null)
     .attr("xlink:href", function (d) { return "#linkIndex"+d.linkIndex; })
     .text(function (d) {return d.linkName })
-    .style("font-size", function (d) { return 15 * log2((d.source.frequency + d.target.frequency)/2 + 1) + "px" });
+    .style("font-size", function (d) { return 10 * log2((d.source.frequency + d.target.frequency)/2 + 1) + "px" });
 
     //Data-Join: Enter
     var enterLabel = label.enter().insert("text",".node")
@@ -624,20 +640,20 @@ var restartNodes = function () {//redrawing Nodes
     node = node.data(force.nodes(), function (d) { return d.word; });
 
     //Data-Join : Update
-    // node.attr("class", function (d) {
-    //     if (d.fixed && d.selected){
-    //         return "node fixed selected";
-    //     }
-    //     else if (d.fixed) {
-    //         return "node fixed";
-    //     }
-    //     else if (d.selected) {
-    //         return "node selected";
-    //     }
-    //     else {
-    //         return "node";
-    //     }
-    // });
+    node.attr("class", function (d) {
+        if (d.fixed && d.selected){
+            return "node fixed selected";
+        }
+        else if (d.fixed) {
+            return "node fixed";
+        }
+        else if (d.selected) {
+            return "node selected";
+        }
+        else {
+            return "node";
+        }
+    });
 
     //Update existing nodes
     node.select("circle")
@@ -701,52 +717,21 @@ var restartNodes = function () {//redrawing Nodes
 //modify the node and link
 var drawConceptPath = function (){
     if(conceptPath){
-        var currentTime = document.getElementById("video").currentTime;
-        nodes.sort(function(nodeA,nodeB){
-            if(nodeA.createTime != nodeB.createTime)
-                return nodeA.createTime - nodeB.createTime;
-            else
-                return nodeA.word.localeCompare(nodeB.word);
-        });
-        var index = -1;
-        for(var i = 0; i < nodes.length; i++){
-            if(nodes[i].createTime <= currentTime){
-                index = i;
-                if( i == nodes.length-1 || nodes[i+1].createTime > currentTime){
-                    break;
-                }
-            }
-        }
-        var pastNodes = [];
-        var upcomingNodes = [];
-        if(index == -1){
-            upcomingNodes = nodes;
-        }
-        else if (index == nodes.length - 1){
-            pastNodes = nodes;
-        }
-        else{
-            pastNodes = nodes.slice(0, index + 1);
-            upcomingNodes = nodes.slice(index);
-        }
-
         conceptPathPast = container.append("path")
                                    .attr("class","conceptPath")
-                                   .attr("d",lineFunction(pastNodes))
                                    .attr("stroke","green")
                                    .attr("stroke-width",5)
                                    .attr("stroke-dasharray", (10,5))
-                                   .attr("opacity", 0.6)
+                                   .attr("opacity", 0.3)
                                    .attr("fill","none")
                                    .style('marker-end', 'url(#pastPath-arrow)');;
 
         conceptPathUpcoming = container.append("path")
                                    .attr("class","conceptPath")
-                                   .attr("d",lineFunction(upcomingNodes))
                                    .attr("stroke","blue")
                                    .attr("stroke-width",5)
                                    .attr("stroke-dasharray", (10,5))
-                                   .attr("opacity", 0.6)
+                                   .attr("opacity", 0.3)
                                    .attr("fill","none")
                                    .style('marker-end', 'url(#upComingPath-arrow)');
     }
@@ -755,6 +740,8 @@ var drawConceptPath = function (){
         conceptPathPast = null;
         conceptPathUpcoming = null;
     }
+
+    tick();
 }
 
 var AddConcept = function(jsonData) { //Analyse the textarea/jsonData and update Nodes 
@@ -791,7 +778,9 @@ var AddConcept = function(jsonData) { //Analyse the textarea/jsonData and update
             var myCues = myTrack.cues;   // get list of cues 
             var videoTime = []; //Auto searched results on the "graphValue.word"
             for(var i = 0; i < myCues.length; i++){
-                if(myCues[i].getCueAsHTML().textContent.search(new RegExp(graphValue.word, "i")) != -1){
+                var punctuationless = (myCues[i].getCueAsHTML().textContent.trim()).replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()@\+\?><\[\]\+]/g, '');
+                var cleanString = punctuationless.replace(/\s{2,}/g, " ");
+                if(cleanString.search(new RegExp(graphValue.word, "i")) != -1){
                     videoTime.push({"startTime": myCues[i].startTime,"endTime":myCues[i].endTime});
                     graphValue.isSubtitle = true;
                 }
@@ -813,7 +802,9 @@ var AddConcept = function(jsonData) { //Analyse the textarea/jsonData and update
                 var index = 0;
                 var diff = document.getElementById("video").duration;
                 for(var i = 0; i < myCues.length; i++){
-                    if(myCues[i].getCueAsHTML().textContent.search(new RegExp(graphValue.word, "i")) != -1)
+                    var punctuationless = (myCues[i].getCueAsHTML().textContent.trim()).replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()@\+\?><\[\]\+]/g, '');
+                    var cleanString = punctuationless.replace(/\s{2,}/g, " ");
+                    if(cleanString.search(new RegExp(graphValue.word, "i")) != -1)
                     {
                         if(diff >= Math.abs(myCues[i].startTime - graphValue.createTime)){
                             diff = Math.abs(myCues[i].startTime - graphValue.createTime);
@@ -836,6 +827,17 @@ var AddConcept = function(jsonData) { //Analyse the textarea/jsonData and update
 
 var updateConceptName = function (inputText, manualVideoTime)//Update Node word for Nodes
 {
+    if(selectedNodeObj.word.toLowerCase() == inputText.toLowerCase()){//The concept has not been edited.
+        if(manualVideoTime.length != 0){
+            selectedNodeObj.video.push({"startTime": manualVideoTime[0].startTime,"endTime":manualVideoTime[0].endTime});
+            selectedNodeObj.frequency ++;
+            restartNodes();
+        }
+        clearTimeStamp();
+
+        return;
+    }
+
     var selectedNodeIndex = nodes.indexOf(selectedNodeObj);
     nodes.splice(selectedNodeIndex, 1);
     var newAddNode = null;
@@ -844,7 +846,7 @@ var updateConceptName = function (inputText, manualVideoTime)//Update Node word 
             newAddNode = nodeValue;
         }
     });
-    if (!newAddNode) {
+    if (!newAddNode) {//Add a new concept
         newAddNode = JSON.parse(JSON.stringify(selectedNodeObj));
         newAddNode.word = inputText;
         newAddNode.description = selectedNodeObj.description;
@@ -1270,6 +1272,7 @@ var setNote = function(result){
 
     if(result.node){
         result.node.forEach(function(nodeItem){
+            if(nodeItem.selected)nodeItem.selected = false;
             nodes.push(nodeItem);
         });
     }

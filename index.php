@@ -100,6 +100,7 @@
                 <br />
                 <br />
                 <button id="centerConcept" onclick="clicktoCenter()">Auto-Center: off</button>
+                <button id="autoPlayByClick" onclick="autoPlayByClicking()">AutoPlay-by-clicking: off</button>
                 <button id="conceptPath" onclick="setConceptPath()">Concept-Path: off</button>
                 <button id="releaseNodes" onclick="releaseNodes()">Release Nodes</button>
                 <!-- <a id='showAllConcepts' href="#" style="visibility:hidden">Click here to download all concepts</a> -->
@@ -138,6 +139,7 @@
         var mappingAllSubstitles = false;
         var mappingSingleSubtitle = false;
         var clickNodetoCenter = false;
+        var autoPlayByClick = false;
         var conceptPath = false;
         window.addEventListener("load", function() {
             setCanvas();
@@ -249,7 +251,7 @@
             description = description.trim();
             var manualVideoTime = [];
             if (selectedNodeObj && word != '') {
-                if( startTime != null && endTime != null){
+                if(startTime != null && endTime != null){
                     endTime = Math.max(startTime,endTime);
                     startTime = Math.min(startTime,endTime);
                     if(endTime){
@@ -354,6 +356,8 @@
             for(var i = 0; i < myCues.length; i++){
                 myCues[i].id = i;
                 myCues[i].onenter  = function(){
+                    var startTime = this.startTime;
+                    var endTime = this.endTime;
                     var cueItem = this;
                     scrollToSubtitle(cueItem.id);
                     $('#'+cueItem.id).css('background-color','lightgray');
@@ -367,14 +371,15 @@
                                 })
                                 .classed("highlighted", nodeItem.highlighted = true);
 
-                                if(pantoCenterNode){
-                                    if(pantoCenterNode.createTime < nodeItem.createTime){
-                                        pantoCenterNode = nodeItem;
+                                if(nodeItem.createTime >= startTime && nodeItem.createTime <= endTime){
+                                    if(pantoCenterNode){
+                                        if(pantoCenterNode.createTime < nodeItem.createTime){
+                                            pantoCenterNode = nodeItem;
+                                        }
                                     }
+                                    else
+                                        pantoCenterNode = nodeItem;
                                 }
-                                else
-                                    pantoCenterNode = nodeItem;
-                                //removeHiddenNodes();
                             }
                             else{
                                 //Unhighlighting the nodes that are not being discussed
@@ -387,6 +392,7 @@
                     });
 
                     if(pantoCenterNode){
+                        console.log('center to :' + pantoCenterNode.word);
                         var selection = d3.selectAll('.node').filter(function(d){
                             return (d == pantoCenterNode);
                         });
@@ -394,7 +400,7 @@
                     }
 
                     if(mappingSingleSubtitle && !this.show){
-                        localTextParsing(this.getCueAsHTML().textContent, this.startTime, this.endTime);
+                        localTextParsing(this.getCueAsHTML().textContent, startTime, endTime);
                         this.show = true;
                     }
 
@@ -403,6 +409,7 @@
                 myCues[i].onexit = function(){
                     var cueItem = this;
                     $('#'+cueItem.id).css('background-color','white');
+                    tick();
                 };
                 var node = document.createElement("li");                 // Create a <li> node
                 node.setAttribute('id',i);
@@ -438,13 +445,22 @@
             }
         }
 
-        function clickConceptMap (){
+        function clickConceptMap(){
             mappingSingleSubtitle = !mappingSingleSubtitle;
             if(mappingSingleSubtitle){
                 $('#conceptsMapping').html('Auto-Concepts: On');
             }
             else
                 $('#conceptsMapping').html('Auto-Concepts: Off');
+        }
+
+        function autoPlayByClicking(){
+            autoPlayByClick = !autoPlayByClick;
+            if(autoPlayByClick){
+                $('#autoPlayByClick').html('AutoPlay-by-clicking: on');
+            }
+            else
+                $('#autoPlayByClick').html('AutoPlay-by-clicking: off');
         }
 
         function conceptsMapping(){
