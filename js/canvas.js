@@ -9,7 +9,6 @@ var mouseup_node = null;
 var radius = 30;   // base radius for circle
 var canvasLeft = 0;
 var canvasTop = 0;
-var clickOntoLinks = false;
 var translate = [0, 0];
 var newAddedClickLink = false;
 var scaleMin = 0.2;
@@ -131,15 +130,6 @@ var drawCanvas = function (canvasWidth,canvasHeight,canvasPositionX,canvasPositi
     overlappingLink = container.selectAll(".overlappingLink");
 
     tick = function() {
-        console.log('tick');
-        //link.attr("x1", function (d) { return d.source.x; })
-        //    .attr("y1", function (d) { return d.source.y; })
-        //    .attr("x2", function (d) { return d.target.x; })
-        //    .attr("y2", function (d) { return d.target.y; });
-
-        //link.attr("d", function (d) {
-        //    return 'M' + d.source.x + ',' + d.source.y + ',' + 'L' + d.target.x + ',' + d.target.y;
-        //});
         link.each(function () { this.parentNode.insertBefore(this, this); });
 
         link.attr('d', function (d) {
@@ -263,12 +253,10 @@ function pantoCentre(selection, d, time){
 }
 //******************************************************************
 //Drag and Click operations
-function dragstart(d) {//Start dragging node
-    //if (d3.event.defaultPrevented) return;
-    //d3.event.sourceEvent.stopPropagation();
+function dragstart(d) //Start dragging node
+{
     d3.event.sourceEvent.stopPropagation(); // silence other listeners
     console.log("dragstart");
-    clickOntoLinks = true;
     d3.select(this).classed("fixed", d.fixed = true);
     div.style("opacity", 0); 
 }
@@ -283,10 +271,32 @@ function dragging(d)//drag node
     d.py += d3.event.dy;
     d.x += d3.event.dx;
     d.y += d3.event.dy;
-    //d.px = d3.event.x;
-    //d.py = d3.event.y;
-    //d.x = d3.event.x;
-    //d.y = d3.event.y
+
+    //// The code below is to avoid collision even while dragging and moving a node
+    // nodes.forEach(function (nodeValue, nodeIndex) {
+    //     if (nodeValue.fixed && nodeValue != d)
+    //     {
+    //         var deltaX = d.x - nodeValue.x;
+    //         var deltaY = d.y - nodeValue.y;
+    //         var distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+    //         var sumRadius = log2(d.frequency + 1) * radius + log2(nodeValue.frequency + 1) * radius;
+    //         if (distance <= sumRadius)
+    //         {
+    //             console.log("Collision Detection");
+    //             d.px = oldPX;
+    //             d.py = oldPY;
+    //             d.x = oldX;
+    //             d.y = oldY;
+    //         }
+    //     }
+    // });
+
+    div.style("opacity", 0); 
+}
+function dragend(d)//end dragging node
+{
+    console.log("dragend");
+    var dragNode = d3.select(this);
 
     nodes.forEach(function (nodeValue, nodeIndex) {
         if (nodeValue.fixed && nodeValue != d)
@@ -298,40 +308,37 @@ function dragging(d)//drag node
             if (distance <= sumRadius)
             {
                 console.log("Collision Detection");
-                d.px = oldPX;
-                d.py = oldPY;
-                d.x = oldX;
-                d.y = oldY;
+                if(d == selectedNodeObj){
+                    clearTimeStamp();
+                }
+                
+                dragNode.classed("fixed", d.fixed = false);
+                return;
             }
         }
     });
 
-    div.style("opacity", 0); 
-    //tick();
-    //force.resume();
-}
-function dragend(d)//end dragging node
-{
-    console.log("dragend");
     div.style("opacity", 0); 
     tick();
     force.resume();
 }
 function dblclick(d) {//double click node
     if (d3.event.defaultPrevented) return;
-
     console.log("double click node-1");
+
     d3.select(this).classed("fixed", d.fixed = false);
-    d3.select(this).classed("selected", d.selected = false);
     
     if (d == selectedNodeObj)
         clearTimeStamp();
     
     doubleClickNode = true;
+
+    d3.event.preventDefault();
 }
 function oneclick(d) {//one click node
     if (d3.event.defaultPrevented) return;
-    console.log(d);
+
+    console.log('Click the node');
     if(!d3.event.ctrlKey && !d3.event.altKey){//click node without pressing ctrl key
         if(!d.selected){
             //This node is not selected.
@@ -340,7 +347,6 @@ function oneclick(d) {//one click node
                 selectedNode = d3.select(this);
                 selectedNodeObj = d;
                 d3.select(this).classed("selected", d.selected = true);
-                hideEditedLink();
             }
             else{
                 //If there is selected node, unselect it and select this new node.
@@ -349,7 +355,8 @@ function oneclick(d) {//one click node
                 selectedNodeObj = d;
                 selectedNode.classed("selected", d.selected = true);
             }
-            console.log('select node x: ' + selectedNodeObj.x + "   y: " + selectedNodeObj.y);
+            unselectLink();
+
             $("#subtitle").removeHighlight();
             if(selectedNodeObj.word != ''){//If this is not an empty node
                 $("#subtitle").highlight(d.word,"highlight");
@@ -357,7 +364,6 @@ function oneclick(d) {//one click node
             document.getElementById("video").currentTime = selectedNodeObj.createTime;
             document.getElementById("video").play();
             drawTimeline(selectedNodeObj.word, selectedNodeObj.video, selectedNodeObj.createTime);
-            unselectLink();
             pantoCentre(d3.select(this), d, 1000);
         }
         else{
@@ -404,7 +410,6 @@ function oneclick(d) {//one click node
             if (depulicatedConnect) return;
 
             // add link to graph
-            clickOntoLinks = true;
             var linkIndex = 0;
             if (links.length != 0)
                 linkIndex = links[links.length - 1].linkIndex + 1;
@@ -424,26 +429,31 @@ function oneclick(d) {//one click node
     }
 }
 function clickLink(d) // one click link
-{
-    console.log("clickLink-1");
-    clickOntoLinks = true;
+{   
+    d3.event.preventDefault();
+    console.log("clickLink");
     doubleClickLink = true;
 
-    if(selectedLink){
-        selectedLink.classed("selected", false);
+    if(selectedLink){//There is link being selected
+        if(d.linkIndex != selectedLinkObj.linkIndex){
+            unselectLink();
+            var linkIndex = "#linkIndex" + d.linkIndex;
+            selectedLink = d3.select(linkIndex);
+            selectedLink.classed("selected", true);
+            selectedLinkObj = d;
+            drawLink(d);
+        }
+        else{
+            unselectLink();
+        }
     }
-
-    if(!selectedLinkObj || selectedLinkObj.linkIndex != d.linkIndex){
+    else{//There is no link being selected
+        unselectNode();
         var linkIndex = "#linkIndex" + d.linkIndex;
         selectedLink = d3.select(linkIndex);
         selectedLink.classed("selected", true);
         selectedLinkObj = d;
         drawLink(d);
-
-        unselectNode();
-    }
-    else{
-        unselectLink();
     }
     restartLinks();
 }
@@ -473,21 +483,22 @@ function drawLink(d){
 
 function clickSVG(d)
 {
+    if(d3.event.defaultPrevented) return;
     console.log('click the SVG');
-    if (clickOntoLinks) {
-        clickOntoLinks = false;
-    }
-    else {
-        if($(".inputText").css("visibility")==='visible'){
-            if(editLinkName){
-                updateLinkLabelName($(".inputText").val().trim());
-            }
-            hideEditedLink();
+    d3.event.preventDefault();
+
+    console.log('content:' + $(".inputText").val().trim());
+    if($(".inputText").css("visibility") === 'visible'){
+        if(editLinkName){
+            updateLinkLabelName($(".inputText").val().trim());
         }
+        hideEditedLink();
     }
 }
 function dblclickSVG(d) {
-    console.log("dblclickSVG-2");
+    if (d3.event.defaultPrevented) return;
+    console.log("dblclick the SVG");
+
     if (doubleClickNode){
         doubleClickNode = false;
         return;
@@ -898,6 +909,13 @@ var unselectNode = function(){
 
 var unselectLink = function(){
     if(selectedLink){
+        if($(".inputText").css("visibility") === 'visible'){
+            if(editLinkName){
+                updateLinkLabelName($(".inputText").val().trim());
+            }
+            hideEditedLink();
+        }
+
         selectedLink.classed("selected", false);
         selectedLink = null;
         selectedLinkObj = null;
@@ -1007,8 +1025,6 @@ var svgKeydown = function (){
     if(d3.event.ctrlKey || d3.event.altKey) return;
     if(!isEditable) return; // if the concept-map is not editable
     if (!selectedLinkObj && !selectedNodeObj) return;
-    //if ($(".inputText").css("visibility") === 'visible') return;
-    console.log(d3.event.keyCode);
 
     switch (d3.event.keyCode) {
         case 187: //+ to increase the frequency of the node
@@ -1169,7 +1185,6 @@ var cleanCache = function () {
     mouseup_node = null;
     dragNodeObj = null;
     radius = 30;   // base radius for circle
-    clickOntoLinks = false;
     translate = [0, 0];
     scale = 1;
 }
@@ -1228,7 +1243,6 @@ var setNote = function(result){
     selectedLink = null;
     selectedLinkObj = null;
     dragNodeObj = null;
-    clickOntoLinks = false;
     translate = [0, 0];
     scale = 1;
 
