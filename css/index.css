@@ -28,7 +28,7 @@ html, body {
     width:100%;
     height:720px;
     background-color:lightgray;
-    -ms-overflow-style: none;	 	 
+    -ms-overflow-style: none; 	 
 }
 #footer {
     background-color:#336699;

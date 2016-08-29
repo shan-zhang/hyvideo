@@ -99,6 +99,32 @@ var drawCanvas = function (canvasWidth,canvasHeight,canvasPositionX,canvasPositi
         .attr("stroke-width", "1px")
         .attr("fill-opacity",0.8);
 
+    svg.append('svg:defs').append('svg:marker')
+        .attr('id', 'pastPath-arrow')
+        .attr("viewBox", "0 -5 10 10")
+        .attr('refX', 6)
+        .attr('markerWidth', 4)
+        .attr('markerHeight', 4)
+        .attr('orient', 'auto')
+        .append('svg:path')
+        .attr('d', 'M0,-5L10,0L0,5')
+        .attr('fill', 'green')
+        .attr("stroke-width", "5px")
+        .attr("fill-opacity",0.9);
+
+    svg.append('svg:defs').append('svg:marker')
+        .attr('id', 'upComingPath-arrow')
+        .attr("viewBox", "0 -5 10 10")
+        .attr('refX', 6)
+        .attr('markerWidth', 4)
+        .attr('markerHeight', 4)
+        .attr('orient', 'auto')
+        .append('svg:path')
+        .attr('d', 'M0,-5L10,0L0,5')
+        .attr('fill', 'blue')
+        .attr("stroke-width", "5px")
+        .attr("fill-opacity",0.9);
+
     // line displayed when dragging new nodes
     drag_line = svg.append('svg:path')
       .attr('class', 'link dragline hidden')
@@ -203,6 +229,7 @@ var drawCanvas = function (canvasWidth,canvasHeight,canvasPositionX,canvasPositi
                     }
                 }
             }
+
             var pastNodes = [];
             var upcomingNodes = [];
             if(index == -1){
@@ -706,20 +733,22 @@ var drawConceptPath = function (){
         conceptPathPast = container.append("path")
                                    .attr("class","conceptPath")
                                    .attr("d",lineFunction(pastNodes))
-                                   .attr("stroke","blue")
-                                   .attr("stroke-width",2)
+                                   .attr("stroke","green")
+                                   .attr("stroke-width",5)
                                    .attr("stroke-dasharray", (10,5))
-                                   .attr("opacity", 0.5)
-                                   .attr("fill","none");
+                                   .attr("opacity", 0.6)
+                                   .attr("fill","none")
+                                   .style('marker-end', 'url(#pastPath-arrow)');;
 
         conceptPathUpcoming = container.append("path")
                                    .attr("class","conceptPath")
                                    .attr("d",lineFunction(upcomingNodes))
-                                   .attr("stroke","red")
-                                   .attr("stroke-width",2)
+                                   .attr("stroke","blue")
+                                   .attr("stroke-width",5)
                                    .attr("stroke-dasharray", (10,5))
-                                   .attr("opacity", 0.5)
-                                   .attr("fill","none");
+                                   .attr("opacity", 0.6)
+                                   .attr("fill","none")
+                                   .style('marker-end', 'url(#upComingPath-arrow)');
     }
     else{
         container.selectAll(".conceptPath").remove();
