@@ -14,8 +14,6 @@ var newAddedClickLink = false;
 var scaleMin = 0.2;
 var scaleMax = 3;
 var scale = 1;
-var doubleClickNode = false;
-var doubleClickLink = false;
 var editLinkName = false;
 
 //The below parameters are for the pilot study purpose
@@ -330,8 +328,6 @@ function dblclick(d) {//double click node
     
     if (d == selectedNodeObj)
         clearTimeStamp();
-    
-    doubleClickNode = true;
 
     d3.event.preventDefault();
 }
@@ -432,7 +428,6 @@ function clickLink(d) // one click link
 {   
     d3.event.preventDefault();
     console.log("clickLink");
-    doubleClickLink = true;
 
     if(selectedLink){//There is link being selected
         if(d.linkIndex != selectedLinkObj.linkIndex){
@@ -457,7 +452,10 @@ function clickLink(d) // one click link
     }
     restartLinks();
 }
-
+function dblclickLink(d){//double clink a link
+    d3.event.preventDefault();
+    console.log("dblclickLink");
+}
 function drawLink(d){
     var videoS = d.source.video;
     var videoT = d.target.video;
@@ -499,14 +497,6 @@ function dblclickSVG(d) {
     if (d3.event.defaultPrevented) return;
     console.log("dblclick the SVG");
 
-    if (doubleClickNode){
-        doubleClickNode = false;
-        return;
-    }
-    if (doubleClickLink) {
-        doubleClickLink = false;
-        return;
-    }
     if(addNewConcept){
         var addNewNode = true;
         nodes.forEach(function (nodeValue, nodeIndex) {
@@ -570,7 +560,8 @@ var restartLinks = function() {//redrawing Links
    
     var enterOverlappingLink = overlappingLink.enter().insert("path", ".node")
     .attr("class", "overlappingLink")
-    .on("click", clickLink);
+    .on("click", clickLink)
+    .on("dblclick",dblclickLink);
 
     if (newAddedClickLink) {
         if(selectedLink){
@@ -647,7 +638,6 @@ var restartNodes = function () {//redrawing Nodes
                 return "node";
             }
          })
-        //.attr("id", function (d) { return d.id; })
         .on("dblclick", dblclick)
         .on("click", oneclick)
         .on('mouseover',nodeMouseover)
