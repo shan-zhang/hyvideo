@@ -363,23 +363,25 @@
                     $('#'+cueItem.id).css('background-color','lightgray');
                     var pantoCenterNode = null;
                     nodes.forEach(function (nodeItem){
+                        if(nodeItem.createTime >= startTime && nodeItem.createTime <= endTime){
+                            if(pantoCenterNode){
+                                if(pantoCenterNode.createTime < nodeItem.createTime){
+                                    pantoCenterNode = nodeItem;
+                                }
+                            }
+                            else
+                                pantoCenterNode = nodeItem;
+                        }
+                        
                         if(nodeItem.isSubtitle){
-                            if(cueItem.getCueAsHTML().textContent.search(new RegExp(nodeItem.word, "i")) != -1){
+                            var punctuationless = (cueItem.getCueAsHTML().textContent.trim()).replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()@\+\?><\[\]\+]/g, '');
+                            var cleanString = punctuationless.replace(/\s{2,}/g, " ");
+                            if(cueItem.getCueAsHTML().textContent.search(new RegExp(nodeItem.word, "i")) != -1 || cleanString.search(new RegExp(nodeItem.word, "i")) != -1){
                                 //Highlight the nodes that are being discussed
                                 var selection = d3.selectAll('.node').filter(function(d){
                                     return (d == nodeItem);
                                 })
                                 .classed("highlighted", nodeItem.highlighted = true);
-
-                                if(nodeItem.createTime >= startTime && nodeItem.createTime <= endTime){
-                                    if(pantoCenterNode){
-                                        if(pantoCenterNode.createTime < nodeItem.createTime){
-                                            pantoCenterNode = nodeItem;
-                                        }
-                                    }
-                                    else
-                                        pantoCenterNode = nodeItem;
-                                }
                             }
                             else{
                                 //Unhighlighting the nodes that are not being discussed
@@ -404,7 +406,7 @@
                         this.show = true;
                     }
 
-                    tick();
+                    tick(startTime, endTime);
                 };
                 myCues[i].onexit = function(){
                     var cueItem = this;
@@ -437,11 +439,12 @@
             if(conceptPath){
                 $('#conceptPath').html('Concept-Path: On');
                 drawConceptPath();
-
+                svg.selectAll('.info').attr('opacity',0.8);
             }
             else{
                 $('#conceptPath').html('Concept-Path: off');
                 drawConceptPath();
+                svg.selectAll('.info').attr('opacity',0);
             }
         }
 

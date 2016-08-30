@@ -125,6 +125,45 @@ var drawCanvas = function (canvasWidth,canvasHeight,canvasPositionX,canvasPositi
         .attr("stroke-width", "5px")
         .attr("fill-opacity",1);
 
+
+    svg.append("text")
+        .attr('class','info')
+        .text('Past:')
+        .attr('x', '30px')
+        .attr('y', '10px')
+        .style('font-size', "15px")
+        .attr("text-anchor", "start")
+        .attr('dominant-baseline','hanging')
+        .attr('opacity','0');
+
+    svg.append("text")
+        .attr('class','info')
+        .text('Uncoming:')
+        .attr('x', '35px')
+        .attr('y', '30px')
+        .style('font-size', "15px")
+        .attr("text-anchor", "start")
+        .attr('dominant-baseline','hanging')
+        .attr('opacity','0');
+
+    svg.append("path")
+       .attr("class","info")
+       .attr("stroke","green")
+       .attr("stroke-width",5)
+       .attr("stroke-dasharray", (10,5))
+       .attr("opacity", 0)
+       .attr("fill","none")
+       .attr("d", "M 80, 15 L 100, 15");
+
+    svg.append("path")
+       .attr("class","info")
+       .attr("stroke","blue")
+       .attr("stroke-width",5)
+       .attr("stroke-dasharray", (10,5))
+       .attr("opacity", 0)
+       .attr("fill","none")
+       .attr("d", "M 80, 35 L 100, 35");
+
     // line displayed when dragging new nodes
     drag_line = svg.append('svg:path')
       .attr('class', 'link dragline hidden')
@@ -153,7 +192,7 @@ var drawCanvas = function (canvasWidth,canvasHeight,canvasPositionX,canvasPositi
     label = container.selectAll(".label");
     overlappingLink = container.selectAll(".overlappingLink");
 
-    tick = function() {
+    tick = function(startTime, endTime) {
         link.each(function () { this.parentNode.insertBefore(this, this); });
 
         link.attr('d', function (d) {
@@ -220,14 +259,27 @@ var drawCanvas = function (canvasWidth,canvasHeight,canvasPositionX,canvasPositi
                 else
                     return nodeA.word.localeCompare(nodeB.word);
             });
+
             var index = -1;
-            for(var i = 0; i < nodes.length; i++){
-                if(nodes[i].createTime <= currentTime){
-                    index = i;
-                    if( i == nodes.length-1 || nodes[i+1].createTime > currentTime){
-                        break;
+            if(!startTime && !endTime){
+                for(var i = 0; i < nodes.length; i++){
+                    if(nodes[i].createTime <= currentTime){
+                        index = i;
+                        if( i == nodes.length-1 || nodes[i+1].createTime > currentTime){
+                            break;
+                        }
                     }
-                }
+                } 
+            }
+            else{
+                for(var i = 0; i < nodes.length; i++){
+                    if(nodes[i].createTime <= endTime){
+                        index = i;
+                        if( i == nodes.length-1 || nodes[i+1].createTime > endTime){
+                            break;
+                        }
+                    }
+                } 
             }
 
             var pastNodes = [];
@@ -724,7 +776,7 @@ var drawConceptPath = function (){
                                    .attr("stroke-dasharray", (10,5))
                                    .attr("opacity", 0.3)
                                    .attr("fill","none")
-                                   .style('marker-end', 'url(#pastPath-arrow)');;
+                                   .style('marker-end', 'url(#pastPath-arrow)');
 
         conceptPathUpcoming = container.append("path")
                                    .attr("class","conceptPath")
@@ -780,7 +832,7 @@ var AddConcept = function(jsonData) { //Analyse the textarea/jsonData and update
             for(var i = 0; i < myCues.length; i++){
                 var punctuationless = (myCues[i].getCueAsHTML().textContent.trim()).replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()@\+\?><\[\]\+]/g, '');
                 var cleanString = punctuationless.replace(/\s{2,}/g, " ");
-                if(cleanString.search(new RegExp(graphValue.word, "i")) != -1){
+                if(cleanString.search(new RegExp(graphValue.word, "i")) != -1 || myCues[i].getCueAsHTML().textContent.search(new RegExp(graphValue.word, "i")) != -1){
                     videoTime.push({"startTime": myCues[i].startTime,"endTime":myCues[i].endTime});
                     graphValue.isSubtitle = true;
                 }
@@ -804,7 +856,7 @@ var AddConcept = function(jsonData) { //Analyse the textarea/jsonData and update
                 for(var i = 0; i < myCues.length; i++){
                     var punctuationless = (myCues[i].getCueAsHTML().textContent.trim()).replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()@\+\?><\[\]\+]/g, '');
                     var cleanString = punctuationless.replace(/\s{2,}/g, " ");
-                    if(cleanString.search(new RegExp(graphValue.word, "i")) != -1)
+                    if(cleanString.search(new RegExp(graphValue.word, "i")) != -1 || myCues[i].getCueAsHTML().textContent.search(new RegExp(graphValue.word, "i")) != -1)
                     {
                         if(diff >= Math.abs(myCues[i].startTime - graphValue.createTime)){
                             diff = Math.abs(myCues[i].startTime - graphValue.createTime);
