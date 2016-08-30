@@ -261,7 +261,7 @@ var drawCanvas = function (canvasWidth,canvasHeight,canvasPositionX,canvasPositi
             });
 
             var index = -1;
-            if(!startTime && !endTime){
+            if(!endTime){
                 for(var i = 0; i < nodes.length; i++){
                     if(nodes[i].createTime <= currentTime){
                         index = i;
@@ -347,10 +347,10 @@ function pantoCentre(selection, d, time){
 //Drag and Click operations
 function dragstart(d) //Start dragging node
 {
-    d3.event.sourceEvent.stopPropagation(); // silence other listeners
     console.log("dragstart");
     d3.select(this).classed("fixed", d.fixed = true);
-    div.style("opacity", 0); 
+    div.style("opacity", 0);
+    d3.event.sourceEvent.stopPropagation(); // silence other listeners
 }
 function dragging(d)//drag node
 {
@@ -415,15 +415,14 @@ function dragend(d)//end dragging node
     force.resume();
 }
 function dblclick(d) {//double click node
-    if (d3.event.defaultPrevented) return;
-    console.log("double click node-1");
+    console.log("double click node");
 
     d3.select(this).classed("fixed", d.fixed = false);
     
     if (d == selectedNodeObj)
         clearTimeStamp();
 
-    d3.event.preventDefault();
+    d3.event.stopPropagation();
 }
 function oneclick(d) {//one click node
     if (d3.event.defaultPrevented) return;
@@ -522,9 +521,7 @@ function oneclick(d) {//one click node
 }
 function clickLink(d) // one click link
 {   
-    d3.event.preventDefault();
     console.log("clickLink");
-
     if(selectedLink){//There is link being selected
         if(d.linkIndex != selectedLinkObj.linkIndex){
             unselectLink();
@@ -547,10 +544,47 @@ function clickLink(d) // one click link
         drawLink(d);
     }
     restartLinks();
+    d3.event.stopPropagation();
 }
 function dblclickLink(d){//double clink a link
-    d3.event.preventDefault();
     console.log("dblclickLink");
+    d3.event.stopPropagation();
+}
+function clickSVG(d)
+{
+    // if(d3.event.defaultPrevented) return;
+    console.log('click the SVG');
+    if($(".inputText").css("visibility") === 'visible'){
+        if(editLinkName){
+            updateLinkLabelName($(".inputText").val().trim());
+        }
+        hideEditedLink();
+    }
+}
+function dblclickSVG(d) {
+    console.log("dblclick the SVG");
+    if(addNewConcept){
+        var addNewNode = true;
+        nodes.forEach(function (nodeValue, nodeIndex) {
+            if (nodeValue.word == ""){
+                nodeValue.createTime = document.getElementById("video").currentTime;
+                addNewNode = false;
+            }
+        });
+        if (addNewNode)
+        {
+            nodes.push({ "word": "", "frequency": 1, "isSubtitle": false, "createTime": document.getElementById("video").currentTime,"video":[], "x": d3.mouse(container.node())[0], "y": d3.mouse(container.node())[1]});
+            restartNodes();
+            d3.selectAll('.node').filter(function(d){
+                if(d.word == ""){
+                    d.fixed = true;
+                    return true;
+                }                
+                else return false;
+            })
+            .classed("fixed", true);
+        }
+    }
 }
 function drawLink(d){
     var videoS = d.source.video;
@@ -572,39 +606,6 @@ function drawLink(d){
         setTimeout(function(){
             $("#clips").text("");
         }, 1500);
-    }
-}
-
-function clickSVG(d)
-{
-    if(d3.event.defaultPrevented) return;
-    console.log('click the SVG');
-    d3.event.preventDefault();
-
-    if($(".inputText").css("visibility") === 'visible'){
-        if(editLinkName){
-            updateLinkLabelName($(".inputText").val().trim());
-        }
-        hideEditedLink();
-    }
-}
-function dblclickSVG(d) {
-    if (d3.event.defaultPrevented) return;
-    console.log("dblclick the SVG");
-
-    if(addNewConcept){
-        var addNewNode = true;
-        nodes.forEach(function (nodeValue, nodeIndex) {
-            if (nodeValue.word == ""){
-                nodeValue.createTime = document.getElementById("video").currentTime;
-                addNewNode = false;
-            }
-        });
-        if (addNewNode)
-        {
-            nodes.push({ "word": "", "frequency": 1, "isSubtitle": false, "createTime": document.getElementById("video").currentTime,"video":[], "x": d3.event.x, "y": d3.event.y, "dx": d3.event.x, "dy": d3.event.y,});
-            restartNodes();
-        }
     }
 }
 //******************************************************************
@@ -1048,7 +1049,7 @@ var delNodeWithLink = function ()//delete seleced node and its associated links
     }
 
     selectedNode = null;
-    selecedNodeObj = null;
+    selectedNodeObj = null;
 
     restartNodes();
     restartLinks();

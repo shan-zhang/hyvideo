@@ -61,6 +61,11 @@ path.link.hidden {
     fill: darkgray;
 }
 
+.conceptPathed .circle {
+    fill: #99ccff;
+    opacity: 0.6;
+}
+
 .searched .circle{
     fill: yellow;
     fill-opacity:0.5;

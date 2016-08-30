@@ -371,24 +371,31 @@
                             }
                             else
                                 pantoCenterNode = nodeItem;
+
+                            d3.selectAll('.node').filter(function(d){
+                                return (d == nodeItem);
+                            })
+                            .classed("conceptPathed", nodeItem.conceptPathed = true)
+                            .classed("highlighted", nodeItem.highlighted = false);
                         }
-                        
-                        if(nodeItem.isSubtitle){
+                        else{
                             var punctuationless = (cueItem.getCueAsHTML().textContent.trim()).replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()@\+\?><\[\]\+]/g, '');
                             var cleanString = punctuationless.replace(/\s{2,}/g, " ");
                             if(cueItem.getCueAsHTML().textContent.search(new RegExp(nodeItem.word, "i")) != -1 || cleanString.search(new RegExp(nodeItem.word, "i")) != -1){
                                 //Highlight the nodes that are being discussed
-                                var selection = d3.selectAll('.node').filter(function(d){
+                                d3.selectAll('.node').filter(function(d){
                                     return (d == nodeItem);
                                 })
+                                .classed("conceptPathed", nodeItem.conceptPathed = false)
                                 .classed("highlighted", nodeItem.highlighted = true);
                             }
                             else{
                                 //Unhighlighting the nodes that are not being discussed
                                 d3.selectAll('.node').filter(function(d){
                                     return (d == nodeItem);
-                                }).classed("highlighted", nodeItem.highlighted = false);
-                                //removeHiddenNodes();
+                                })
+                                .classed("conceptPathed", nodeItem.conceptPathed = false)
+                                .classed("highlighted", nodeItem.highlighted = false);
                             }
                         }
                     });
