@@ -253,7 +253,7 @@
             var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
             var myCues = myTrack.cues;   // get list of cues 
             for (var i = 0; i < myCues.length; i++) {
-                if(createTime >= myCues[i].startTime && createTime <= myCues[i].endTime){
+                if(createTime >= myCues[i].startTime && createTime < myCues[i].endTime){
                     circle.showCue += myCues[i].getCueAsHTML().textContent + ' ';
                     break;
                 }
@@ -643,7 +643,7 @@
             circle.showCue = '';
             circle.createTime = createTime;
             for (var i = 0; i < myCues.length; i++) {
-                if(createTime >= myCues[i].startTime && createTime <= myCues[i].endTime){
+                if(createTime >= myCues[i].startTime && createTime < myCues[i].endTime){
                     circle.showCue += myCues[i].getCueAsHTML().textContent + ' ';
                     break;
                 }
