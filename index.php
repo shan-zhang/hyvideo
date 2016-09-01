@@ -278,6 +278,13 @@
         }
 
         function hideSearch(){
+            nodes.forEach(function (nodeItem){
+                if(nodeItem.searched){
+                    d3.selectAll('.node').filter(function(d){
+                        return (d == nodeItem);
+                    }).classed("searched", nodeItem.searched = false);
+                }
+            });
             document.getElementById('draggableSearch').style.visibility = 'hidden';
         }
 
