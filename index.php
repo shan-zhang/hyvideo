@@ -99,11 +99,11 @@
                 <a id='click' href="#">click</a>
                 <br />
                 <br />
+                <button id="mapAllconcepts" onclick="mapAllconcepts()">Auto-All Concepts</button>
                 <button id="centerConcept" onclick="clicktoCenter()">Auto-Center: off</button>
                 <button id="autoPlayByClick" onclick="autoPlayByClicking()">AutoPlay-by-clicking: off</button>
                 <button id="conceptPath" onclick="setConceptPath()">Concept-Path: off</button>
                 <button id="releaseNodes" onclick="releaseNodes()">Release Nodes</button>
-                <!-- <a id='showAllConcepts' href="#" style="visibility:hidden">Click here to download all concepts</a> -->
             </div>
         </div>
         <div id="rightPanel">
@@ -136,11 +136,12 @@
         paper.setup('leftSub');
         var circle = null;
         var quiz = null;
-        var mappingAllSubstitles = false;
+        var mappingAllSubtitles = true;
         var mappingSingleSubtitle = false;
         var clickNodetoCenter = false;
         var autoPlayByClick = false;
         var conceptPath = false;
+        var isPrintAllconceptNames = false;
         window.addEventListener("load", function() {
             setCanvas();
             greatNounList = <?php echo json_encode($file); ?>;
@@ -473,35 +474,20 @@
                 $('#autoPlayByClick').html('AutoPlay-by-clicking: off');
         }
 
-        function conceptsMapping(){
-            var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
-            var myCues = myTrack.cues;   // get list of cues 
-
-            if(mappingAllSubstitles){
+        function mapAllconcepts(){
+            if(mappingAllSubtitles){
+                var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
+                var myCues = myTrack.cues;   // get list of cues 
                 //The below code is to show concepts of all substitles in the video
                 var tmp = '';
                 for(var i = 0; i < myCues.length; i++){
                     tmp += myCues[i].getCueAsHTML().textContent + ' ';
                     localTextParsing(myCues[i].getCueAsHTML().textContent, myCues[i].startTime, myCues[i].endTime);
                 }
-                document.getElementById('showAllConcepts').style.visibility = 'visible';        
-            }
-            if(mappingSingleSubtitle)
-            {
-                //The below code is to show concepts of one-by-one substitle in the video
-                for (var i = 0; i < myCues.length; i++) {
-                    myCues[i].onenter  = function(){ 
-                        if(!this.show){
-                            //document.getElementById("leftSub").innerHTML += ('<span>' + this.getCueAsHTML().textContent + '</span> <br/>');
-                            //Technique 1: use the great noun list to match proper noun
-                            localTextParsing(this.getCueAsHTML().textContent, this.startTime, this.endTime);
-                        }
-                    };
-                    myCues[i].onexit = function(){  
-                        this.show = true;
-                    };
-                }
-            }
+
+                if(isPrintAllconceptNames)
+                    setTimeout(printAllConceptNames, 2000);
+            }            
         }
 
         function clickSubtitles(event){
@@ -656,10 +642,6 @@
         }
 
         $('#click').click(function(){ saveNoteToFile(); return false; });
-        $('#showAllConcepts').click(
-            function(){ 
-                printAllConceptNames();
-                return false; });
 
         function handleFileSelect(evt) {
             console.log(evt);
