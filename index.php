@@ -166,7 +166,26 @@
                     document.getElementById('draggableSearch').style.visibility = 'visible';
                     $("#searchText").focus();
                 }
+                if(e.which === 32 && !$(e.target).is('input') && !$(e.target).is('textarea')){
+                    if(document.getElementById("video").paused){
+                        document.getElementById("video").play();
+                    }
+                    else{
+                        document.getElementById("video").pause()
+                    }
+                    e.preventDefault();
+                }
             });
+        });
+
+        $("video").click(function(e){
+            if(document.getElementById("video").paused){
+                document.getElementById("video").play();
+            }
+            else{
+                document.getElementById("video").pause()
+            }
+            e.preventDefault();
         });
 
         $(".inputText").keyup(function (e) {
