@@ -1149,7 +1149,7 @@ var svgKeydown = function (){
                     $("#draggable").find("#endTime").text(Math.floor(endTime/60) + " min: "+ Math.floor((endTime - Math.floor(endTime/60) * 60)) + " sec");
                 }
 
-                if(selectedNodeObj.createTime){
+                if(selectedNodeObj.createTime != null){
                     $("#draggable").find("#createTime").attr('time',selectedNodeObj.createTime);
                     $("#draggable").find("#createTime").text(Math.floor(selectedNodeObj.createTime/60) + " min: "+ Math.floor((selectedNodeObj.createTime - Math.floor(selectedNodeObj.createTime/60) * 60)) + " sec");
                 }
