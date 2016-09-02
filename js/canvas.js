@@ -1,9 +1,8 @@
-﻿var width, height, force, node, nodes, link, links, label, drag, svg, tick, container, graph, zoom, overlappingLink, drag_line, div,lineFunction, conceptPathPast,conceptPathUpcoming;
+﻿var width, height, force, node, nodes, link, links, label, drag, svg, tick, container, graph, zoom, overlappingLink, drag_line, div,lineFunction, conceptPathPast,conceptPathUpcoming, cacheNodes;
 var selectedNode = null;
 var selectedNodeObj = null;
 var selectedLink = null;
 var selectedLinkObj = null;
-var dragNodeObj = null;
 var mousedown_node = null;
 var mouseup_node = null;
 var radius = 30;   // base radius for circle
@@ -1258,7 +1257,6 @@ var cleanCache = function () {
     selectedLinkObj = null;
     mousedown_node = null,
     mouseup_node = null;
-    dragNodeObj = null;
     radius = 30;   // base radius for circle
     translate = [0, 0];
     scale = 1;
@@ -1267,6 +1265,8 @@ var cleanCache = function () {
 //************************************************************************
 var releaseNodes = function (){
     clearTimeStamp();
+
+    cacheNodes = nodes;
     for(var i = 0; i < nodes.length; i++){
         var nodeItem = nodes[i];
         if(nodeItem.fixed){
@@ -1304,6 +1304,10 @@ var releaseNodes = function (){
     restartNodes();
 }
 
+var undoReleaseNodes = function (){
+    
+}
+
 var saveNote = function () {
     var savedString = {};
     savedString.node = nodes;
@@ -1317,7 +1321,6 @@ var setNote = function(result){
     selectedNodeObj = null;
     selectedLink = null;
     selectedLinkObj = null;
-    dragNodeObj = null;
     translate = [0, 0];
     scale = 1;
 
