@@ -142,6 +142,7 @@
         var autoPlayByClick = false;
         var conceptPath = false;
         var isPrintAllconceptNames = false;
+        var removelinks = true;
         window.addEventListener("load", function() {
             setCanvas();
             greatNounList = <?php echo json_encode($file); ?>;

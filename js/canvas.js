@@ -1,4 +1,4 @@
-﻿var width, height, force, node, nodes, link, links, label, drag, svg, tick, container, graph, zoom, overlappingLink, drag_line, div,lineFunction, conceptPathPast,conceptPathUpcoming, cacheNodes;
+﻿var width, height, force, node, nodes, link, links, label, drag, svg, tick, container, graph, zoom, overlappingLink, drag_line, div,lineFunction, conceptPathPast,conceptPathUpcoming;
 var selectedNode = null;
 var selectedNodeObj = null;
 var selectedLink = null;
@@ -1266,38 +1266,56 @@ var cleanCache = function () {
 var releaseNodes = function (){
     clearTimeStamp();
 
-    cacheNodes = nodes;
-    for(var i = 0; i < nodes.length; i++){
-        var nodeItem = nodes[i];
-        if(nodeItem.fixed){
-            d3.selectAll('.node').filter(function(d){
-                return (d == nodeItem);
-            }).classed("fixed", nodeItem.fixed = false);
-        }
-
-        var isolated = true;
-        links.forEach(function (linkItem){
-            if(linkItem.source == nodeItem || linkItem.target == nodeItem){
-                isolated = false;
-                return;
+    if(removelinks){
+        nodes.forEach(function(nodeItem){
+            if(nodeItem.fixed){
+                d3.selectAll('.node').filter(function(d){
+                    return (d == nodeItem);
+                }).classed("fixed", nodeItem.fixed = false);
             }
         });
 
-        if(isolated){
-            nodes.splice(i--,1);
-        }
-    }
+        links = [];
 
-    nodes.forEach(function(nodeItem){
-        if(!nodeItem.createTime){
-            if(nodeItem.video.length != 0){
-                nodeItem.createTime = nodeItem.video[0].startTime;
+        force
+        .nodes(nodes)
+        .links(links)
+        .linkDistance(function(d){ return 200 +  100 * log2((d.source.frequency + d.target.frequency)/2 + 1);})
+        .charge(function (d) { return -1200 * log2(d.frequency + 1); });
+    }
+    else{
+        for(var i = 0; i < nodes.length; i++){
+            var nodeItem = nodes[i];
+            if(nodeItem.fixed){
+                d3.selectAll('.node').filter(function(d){
+                    return (d == nodeItem);
+                }).classed("fixed", nodeItem.fixed = false);
             }
-            else{
-                nodeItem.createTime = document.getElementById("video").currentTime;
+
+            var isolated = true;
+            links.forEach(function (linkItem){
+                if(linkItem.source == nodeItem || linkItem.target == nodeItem){
+                    isolated = false;
+                    return;
+                }
+            });
+
+            if(isolated){
+                nodes.splice(i--,1);
             }
         }
-    });
+
+        nodes.forEach(function(nodeItem){
+            if(!nodeItem.createTime){
+                if(nodeItem.video.length != 0){
+                    nodeItem.createTime = nodeItem.video[0].startTime;
+                }
+                else{
+                    nodeItem.createTime = document.getElementById("video").currentTime;
+                }
+            }
+        });
+    }
 
     restartLabels();
     restartLinks();
