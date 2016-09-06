@@ -68,8 +68,10 @@
             <label>2-D Timeline</label>
             <canvas id='leftSub'></canvas>
             <button id="clear" onclick="clearTimeStamp()">Clear</button>
+            <button id="centerConcept" onclick="clicktoCenter()">Auto-Center: off</button>
+            <button id="conceptPath" onclick="setConceptPath()">Concept-Path: off</button>
             <!-- <button id="hideVideo" onclick="hideVideo()">Hide Video</button> -->
-            <button id="conceptsMapping" onclick="clickConceptMap()">Auto-Concepts: off</button>
+            <!-- <button id="conceptsMapping" onclick="clickConceptMap()">Auto-Concepts: off</button> -->
             <h3 id="clips"></h3>
             <!-- The code below is for quiz -->
             <!-- <button id="startQuiz" onclick="startQuiz(event)">Start Quiz!</button> -->
@@ -87,31 +89,26 @@
             <h3 id="closingQuiz" style="display:none">The quiz is over. Thanks for participating. <a href='download.php' onclick="downloadResult()">Download</a>the study result.</h3> -->
 
             <div id='footerButton'>
-                <label>Suggested Key Concepts:</label>
+<!--                 <label>Suggested Key Concepts:</label>
                 <br />
                 <br />
                 <div id='keyconcepts'></div>
                 <br />
-                <br />
+                <br /> -->
                 <label>Load Concept-Map:</label>
                 <input type='file' id='file' name='userFile' accept=".json">
                 <label>Download Concept-Map:</label>
                 <a id='click' href="#">click</a>
-                <br />
-                <br />
-                <button id="mapAllconcepts" onclick="mapAllconcepts()">Auto-All Concepts</button>
-                <button id="centerConcept" onclick="clicktoCenter()">Auto-Center: off</button>
-                <button id="autoPlayByClick" onclick="autoPlayByClicking()">AutoPlay-by-clicking: off</button>
-                <button id="conceptPath" onclick="setConceptPath()">Concept-Path: off</button>
-                <button id="releaseNodes" onclick="releaseNodes()">Release Nodes</button>
+                <!-- <button id="mapAllconcepts" onclick="mapAllconcepts()">Auto-All Concepts</button> -->
+                <!-- <button id="autoPlayByClick" onclick="autoPlayByClicking()">AutoPlay-by-clicking: off</button> -->
+                <!-- <button id="releaseNodes" onclick="releaseNodes()">Release Nodes</button> -->
             </div>
         </div>
         <div id="rightPanel">
-            <div id="subtitle"></div>
             <div id="draggableSearch">
                 Search: <input type="text" id='searchText'></input><button onclick="hideSearch()">x</button>
             </div>
-            <div id="rightPanelDown" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div id="rightPanelDown">
                 <input type="text" class="inputText"/>
             </div>
         </div>
@@ -152,10 +149,10 @@
             subtitlePlayer();
 
             //The code below is to extract key concepts from substitles using third-party APY
-            extractKeyConceptsFromSubtitles();
+            //extractKeyConceptsFromSubtitles();
 
-            $("#draggable").draggable();
-            $("#draggableSearch").draggable();
+            // $("#draggable").draggable();
+            // $("#draggableSearch").draggable();
 
             $(document).on("keydown", function (e) {
                 if (e.which === 8 && !$(e.target).is('input') && !$(e.target).is('textarea')) {// keycode 8 for backspace
@@ -231,71 +228,71 @@
             }
         });
 
-        function saveStartTime(){
-            var startTime = document.getElementById("video").currentTime;
-            $("#draggable").find("#startTime").attr('time', startTime);
-            $("#draggable").find("#startTime").text(Math.floor(startTime/60) + " min: "+ Math.floor((startTime - Math.floor(startTime/60) * 60)) + " sec");
-        }
+        // function saveStartTime(){
+        //     var startTime = document.getElementById("video").currentTime;
+        //     $("#draggable").find("#startTime").attr('time', startTime);
+        //     $("#draggable").find("#startTime").text(Math.floor(startTime/60) + " min: "+ Math.floor((startTime - Math.floor(startTime/60) * 60)) + " sec");
+        // }
 
-        function saveEndTime(){
-            var endTime = document.getElementById("video").currentTime;
-            $("#draggable").find("#endTime").attr('time', endTime);
-            $("#draggable").find("#endTime").text(Math.floor(endTime/60) + " min: "+ Math.floor((endTime - Math.floor(endTime/60) * 60)) + " sec");
-        }
+        // function saveEndTime(){
+        //     var endTime = document.getElementById("video").currentTime;
+        //     $("#draggable").find("#endTime").attr('time', endTime);
+        //     $("#draggable").find("#endTime").text(Math.floor(endTime/60) + " min: "+ Math.floor((endTime - Math.floor(endTime/60) * 60)) + " sec");
+        // }
 
-        function createTime(){
-            var createTime = document.getElementById("video").currentTime;
-            $("#draggable").find("#createTime").attr('time', createTime);
-            $("#draggable").find("#createTime").text(Math.floor(createTime/60) + " min: "+ Math.floor((createTime - Math.floor(createTime/60) * 60)) + " sec");
+        // function createTime(){
+        //     var createTime = document.getElementById("video").currentTime;
+        //     $("#draggable").find("#createTime").attr('time', createTime);
+        //     $("#draggable").find("#createTime").text(Math.floor(createTime/60) + " min: "+ Math.floor((createTime - Math.floor(createTime/60) * 60)) + " sec");
 
-            circle.position = new Point(circle.viewSize*createTime/document.getElementById("video").duration,circle.y);
-            circle.createTime = createTime;
-            circle.showCue = '';
-            var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
-            var myCues = myTrack.cues;   // get list of cues 
-            for (var i = 0; i < myCues.length; i++) {
-                if(createTime >= myCues[i].startTime && createTime < myCues[i].endTime){
-                    circle.showCue += myCues[i].getCueAsHTML().textContent + ' ';
-                    break;
-                }
-            }
-            paper.project.view.update();
-        }
+        //     circle.position = new Point(circle.viewSize*createTime/document.getElementById("video").duration,circle.y);
+        //     circle.createTime = createTime;
+        //     circle.showCue = '';
+        //     var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
+        //     var myCues = myTrack.cues;   // get list of cues 
+        //     for (var i = 0; i < myCues.length; i++) {
+        //         if(createTime >= myCues[i].startTime && createTime < myCues[i].endTime){
+        //             circle.showCue += myCues[i].getCueAsHTML().textContent + ' ';
+        //             break;
+        //         }
+        //     }
+        //     paper.project.view.update();
+        // }
 
-        function saveEdit(){
-            var startTime = $("#draggable").find("#startTime").attr('time');
-            var endTime = $("#draggable").find("#endTime").attr('time');
-            var createTime = $("#draggable").find("#createTime").attr('time');
-            var word = $("#draggable").find("input").val();
-            word = word.trim();
-            var description = $("#draggable").find("textarea").val();
-            description = description.trim();
-            var manualVideoTime = [];
-            if (selectedNodeObj && word != '') {
-                if(startTime != null && endTime != null){
-                    endTime = Math.max(startTime,endTime);
-                    startTime = Math.min(startTime,endTime);
-                    if(endTime){
-                        //If both startTime and endTime equal to 00:00, this video time stamp will not be marked.
-                        manualVideoTime.push({"startTime":startTime, "endTime":endTime});
-                    }
-                }
-                if(description != ''){
-                    selectedNodeObj.description = description;
-                }
+        // function saveEdit(){
+        //     var startTime = $("#draggable").find("#startTime").attr('time');
+        //     var endTime = $("#draggable").find("#endTime").attr('time');
+        //     var createTime = $("#draggable").find("#createTime").attr('time');
+        //     var word = $("#draggable").find("input").val();
+        //     word = word.trim();
+        //     var description = $("#draggable").find("textarea").val();
+        //     description = description.trim();
+        //     var manualVideoTime = [];
+        //     if (selectedNodeObj && word != '') {
+        //         if(startTime != null && endTime != null){
+        //             endTime = Math.max(startTime,endTime);
+        //             startTime = Math.min(startTime,endTime);
+        //             if(endTime){
+        //                 //If both startTime and endTime equal to 00:00, this video time stamp will not be marked.
+        //                 manualVideoTime.push({"startTime":startTime, "endTime":endTime});
+        //             }
+        //         }
+        //         if(description != ''){
+        //             selectedNodeObj.description = description;
+        //         }
 
-                selectedNodeObj.createTime = createTime;
-                updateConceptName(word,manualVideoTime);
-            }
-            else{
-                window.alert('Please do not leave the blank for the concept name');
-            }
+        //         selectedNodeObj.createTime = createTime;
+        //         updateConceptName(word,manualVideoTime);
+        //     }
+        //     else{
+        //         window.alert('Please do not leave the blank for the concept name');
+        //     }
 
-        }
+        // }
 
-        function discardEdit(){
-            document.getElementById('draggable').style.visibility = 'hidden';
-        }
+        // function discardEdit(){
+        //     document.getElementById('draggable').style.visibility = 'hidden';
+        // }
 
         function hideSearch(){
             nodes.forEach(function (nodeItem){
@@ -344,39 +341,6 @@
             }
         }
 
-        function allowDrop(event) {
-            event.preventDefault();
-        }
-
-        function drop(event) {
-            event.preventDefault();
-            var data = event.dataTransfer.getData("text");
-            if(data){            
-                var punctuationless = (data.trim()).replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()@\+\?><\[\]\+]/g, '');
-                var cleanData = punctuationless.replace(/\s{2,}/g, " ");
-                //var id = event.dataTransfer.getData("id");
-                if(cleanData != '' && cleanData.length <= 30){
-                    console.log(cleanData.length);
-                    //---The code below is to add draged text as text node to the canvas
-                    // var node = document.createElement("LI");                 // Create a <li> node
-                    // var textnode = document.createTextNode(data);   // Create a text node
-                    // node.appendChild(textnode); 
-                    // $(event.target).before(node);
-                    var localJson = [];
-                    localJson.push({"word": cleanData, "frequency": 1, 'video':[], "createTime":document.getElementById("video").currentTime});
-                    AddConcept(JSON.stringify(localJson));
-                }
-            }
-        }
-
-        function scrollToSubtitle(id){ // To-do: scrollTop has no supporting for negative values. If we want to put the first few subtitles into the center, we probably need to fill in empty lines before the first subtitle.
-            var scrollID = '#'+id;
-            var scrollSpeed = 400;
-            $('#subtitle').animate({ 
-                scrollTop: $('#subtitle').scrollTop() + ($(scrollID).position().top - $('#subtitle').position().top) - $('#subtitle').height()/2 + $(scrollID).height()/2
-            }, scrollSpeed);
-        }
-
         function subtitlePlayer(){
             var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
             var myCues = myTrack.cues;   // get list of cues 
@@ -387,7 +351,7 @@
                     var startTime = this.startTime;
                     var endTime = this.endTime;
                     var cueItem = this;
-                    scrollToSubtitle(cueItem.id);
+                    // scrollToSubtitle(cueItem.id);
                     $('#'+cueItem.id).css('background-color','lightgray');
                     var pantoCenterNode = null;
                     nodes.forEach(function (nodeItem){
@@ -447,16 +411,7 @@
                     var cueItem = this;
                     $('#'+cueItem.id).css('background-color','white');
                     tick();
-                };
-                var node = document.createElement("li");                 // Create a <li> node
-                node.setAttribute('id',i);
-                var textnode = document.createTextNode(myCues[i].getCueAsHTML().textContent);   // Create a text node
-                node.appendChild(textnode);                              // Append the text to <li>
-                node.onclick = clickSubtitles;
-                node.startTime = myCues[i].startTime;
-                node.endTime = myCues[i].endTime;
-                document.getElementById('subtitle').appendChild(node);
-                          
+                };        
             }
         }
 
@@ -515,14 +470,6 @@
                 if(isPrintAllconceptNames)
                     setTimeout(printAllConceptNames, 2000);
             }            
-        }
-
-        function clickSubtitles(event){
-            if(event.ctrlKey || event.altKey){
-                console.log(this.id);
-                document.getElementById("video").currentTime = this.startTime;
-                document.getElementById("video").play();
-            }
         }
 
         function clearTimeStamp(){
@@ -682,7 +629,7 @@
                     if(result.node){
                         setNote(result);
                         evt.srcElement.value = null;
-                        document.getElementById('conceptsMapping').style.visibility = 'hidden';
+                        //document.getElementById('conceptsMapping').style.visibility = 'hidden';
                     }
                     else{
                         alert('The input file format is incorrect!');

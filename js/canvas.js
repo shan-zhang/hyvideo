@@ -16,9 +16,8 @@ var scale = 1;
 var editLinkName = false;
 
 //The below parameters are for the pilot study purpose
-var isLinkingable = true; //false: can not link two concepts
-var addNewConcept = true; //false: can not add new empty concept by double-clicking
-var isEditable = true; //false: can not edit concept/link name.
+var addNewConcept = false; //false: can not add new empty concept by double-clicking
+var isEditable = false; //false: can not edit concept/link name; can not connect links;
 
 var log2 = function (val)
 {
@@ -137,7 +136,7 @@ var drawCanvas = function (canvasWidth,canvasHeight,canvasPositionX,canvasPositi
 
     svg.append("text")
         .attr('class','info')
-        .text('Uncoming:')
+        .text('Upcoming:')
         .attr('x', '35px')
         .attr('y', '30px')
         .style('font-size', "15px")
@@ -462,6 +461,7 @@ function oneclick(d) {//one click node
         }
     }
     else{//click node with pressing ctrl key to connect nodes
+        if(!isEditable) return;
 
         if(!mousedown_node){
             mousedown_node = d;
