@@ -137,7 +137,7 @@ var drawCanvas = function (canvasWidth,canvasHeight,canvasPositionX,canvasPositi
 
     svg.append("text")
         .attr('class','info')
-        .text('Uncoming:')
+        .text('Upcoming:')
         .attr('x', '35px')
         .attr('y', '30px')
         .style('font-size', "15px")
