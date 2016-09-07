@@ -1,136 +1,123 @@
 {	
-	"pre-practice":[
-		{
-			"title": "quiz 1",
-			"content": "This is the first quiz for pre-practicing session.",
-			"answer":true
-		},
-		{
-			"title": "quiz 2",
-			"content": "This is the second quiz for pre-practicing session.",
-			"answer":true
-		}
-	],
 	"post-practice":[
 		{
-			"title": "quiz 1",
-			"content": "This is the first quiz for post-practicing session.",
+			"title": "quiz 1 - True or false",
+			"content": "This is the first quiz for practicing session.",
 			"answer":true
 		},
 		{
-			"title": "quiz 2",
-			"content": "This is the second quiz for post-practicing session.",
-			"answer":true
-		}
-	],
-	"pre-video1":[
-		{
-			"title": "quiz 1",
-			"content": "All cells have DNA, cytoplasm, cell membrane, and ribosomes.",
-			"answer":false
-		},
-		{
-			"title": "quiz 2",
-			"content": "Prokaryotic cells can only be one-celled, unicellular organisms.",
+			"title": "quiz 2 - fill in the blank",
+			"content": "This is the ________ quiz for practicing session.",
 			"answer":true
 		},
 		{
-			"title": "quiz 3",
-			"content": "Chromosomes are created when the cell is ready to produce protein.",
-			"answer":false
-		},
-		{
-			"title": "quiz 4",
-			"content": "Vacuole are sacs like structure that resides in animal cell.",
-			"answer":false
-		},
-		{
-			"title": "quiz 5",
-			"content": "Cells in plants have cell walls.",
+			"title": "quiz 3 - multiple choice question",
+			"content": "This is the ________ quiz for practicing session. <br /><br /> A. first  <br /><br /> B. second <br /><br /> C. third",
 			"answer":true
 		}
 	],
 	"post-video1":[
 		{
-			"title": "quiz 1",
-			"content": "The body of the rat contains two main types of different cells, one with nucleus and one without.",
+			"title": "quiz 1 - fill in the blank",
+			"content": "A _______ is a directed gaph G representing all the roads, but with some additional information.",
+			"answer":"network"
+		},
+		{
+			"title": "quiz 2 - fill in the blank",
+			"content": "Each _______ is assigned a positive real number called its capacity.",
+			"answer":"edge"
+		},
+		{
+			"title": "quiz 3 - fill in the blank",
+			"content": "Additionally one or more vertexes labeled as a _______ , this is the place where the traffic is coming from.",
+			"answer":"source"
+		},
+		{
+			"title": "quiz 4 - multiple choice question",
+			"content": "Capacity mentioned in this video's example means: <br /><br /> A. Weight <br /><br /> B. how much traffic can be handled <br /><br /> C. how many data can be handled",
+			"answer":"B"
+		},
+		{
+			"title": "quiz 5 - multiple choice question",
+			"content": "Which of the followings is not included in the conditions needs to be satisfied when talking about flows through a network? <br /><br /> A. Rate Limitation.   <br /><br /> B. The flow needs to be at most the capacity of the edge. <br /><br /> C. The flow out of a intersection is the same as the flow into the intersection.",
+			"answer":"C"
+		},
+		{
+			"title": "quiz 6 - multiple choice question",
+			"content": "The flow (except for source and sink) into that vertex is _______ the total flow coming out of that vertex. <br /><br /> A. the same as	 <br /><br /> B. larger than <br /><br /> C.less than",
+			"answer":"A"
+		},
+		{
+			"title": "quiz 7 - True or false",
+			"content": "One or more vertex is labelled a sink,  which is sort of the edges of the graph where everything is going back to.",
+			"answer":true
+		},
+		{
+			"title": "quiz 8 - True or false",
+			"content": "Flow goes from sources to sink along vertexes each have a capacity.",
 			"answer":false
 		},
 		{
-			"title": "quiz 2",
-			"content": "Bacteria’s genetic materials can be found in its cytoplasm.",
-			"answer":true
+			"title": "quiz 9 - True or false",
+			"content": "In the problem mentioned in the last part of this video, three graphes (A, B and C) are given and the flows in graph A is the valid flow.",
+			"answer":false
 		},
 		{
-			"title": "quiz 3",
-			"content": "Ribosomes are made inside the nucleus before transporting out to the cytoplasm.",
-			"answer":true
-		},
-		{
-			"title": "quiz 4",
-			"content": "Golgi Apparatus can be seen as the factory for protein production.",
-			"answer":true
-		},
-		{
-			"title": "quiz 5",
-			"content": "Chloroplast is green because plants are green.",
+			"title": "quiz 10 - True or false",
+			"content": "In the problem mentioned in the last part of this video, three graphes (A, B and C) are given. Graph B is invalid because it doesn't conserve flow at the denoted vertex.",
 			"answer":false
 		}
 	],
-	"video2":[
-	],
-	"pre-video3":[
+	"post-video2":[
 		{
-			"title": "quiz 1",
-			"content": "Carbon dioxide, water, and energy is used to manufacture lactose and glucose.",
-			"answer":false
+			"title": "quiz 1 - fill in the blank",
+			"content": "We can survive only about _______ minutes without air.",
+			"answer":"three"
 		},
 		{
-			"title": "quiz 2",
-			"content": "Plants are green because they reflect yellow and green wavelengths of light.",
+			"title": "quiz 2 - fill in the blank",
+			"content": "A British physician by the name of ________ first proposed that humans need three macro nutrients will optimize our health.",
+			"answer": "William Prout"
+		},
+		{
+			"title": "quiz 3 - fill in the blank",
+			"content": "The focus on _______ rather than food has confused many people.",
+			"answer": "nutrients"
+		},
+		{
+			"title": "quiz 4 - True or false",
+			"content": "The variable in food would appear to be the nutrient.",
 			"answer":true
 		},
 		{
-			"title": "quiz 3",
-			"content": "Photosystem 1 and Photosystem 2 takes place in the stroma.",
+			"title": "quiz 5 - True or false",
+			"content": "A basic understanding of the nutrients cannot give us a helpful background for our discussions about food.",
 			"answer":false
 		},
 		{
-			"title": "quiz 4",
-			"content": "Carbon dioxide is an important input to the cellular respiratory pathway.",
+			"title": "quiz 6 - True or false",
+			"content": "Simple carbohydrates include the monosaccharides, or single sugar units like glucose and fructose.",
+			"answer":true
+		},
+		{
+			"title": "quiz 7 - True or false",
+			"content": "In contrast, carbohydrates and proteins provide only five calories per gram.",
 			"answer":false
 		},
 		{
-			"title": "quiz 5",
-			"content": "Calvin cycle has to run 6 times to produce one molecule of glucose.",
-			"answer":true
-		}
-	],
-	"post-video3":[
-		{
-			"title": "quiz 1",
-			"content": "Photons only exist in the visible light range of the electromagnetic spectrum.",
-			"answer":false
+			"title": "quiz 8 - multiple choice question",
+			"content": "That ____ is much more complicated, it's a system. <br /><br /> A. food <br /><br /> B. nutrients <br /><br /> C. animal",
+			"answer":"A"
 		},
 		{
-			"title": "quiz 2",
-			"content": "The important reactions in photosynthesis take place in different places in the chloroplast.",
-			"answer":true
+			"title": "quiz 9 - multiple choice question",
+			"content": "During the process of ________, carbohydrates are broken down and converted to glucose, which can then be metabolized by the body to produce usable energy in the form of ATP. <br /><br /> A. digestion  <br /><br /> B. running  <br /><br /> C. eating",
+			"answer":"A"
 		},
 		{
-			"title": "quiz 3",
-			"content": "Electrons are being excited by the photons in the photosystem and transported to other proteins to produce glucose.",
-			"answer":true
-		},
-		{
-			"title": "quiz 4",
-			"content": "The energy produced in the light production cycle is used to excite photosystem 1 to produce glucose.",
-			"answer":false
-		},
-		{
-			"title": "quiz 5",
-			"content": "Byproducts of the Calvin Cycle is involved in the production of the precursor molecule that produces important components in cellular transportation and plant structure.",
-			"answer":true
+			"title": "quiz 10 - multiple choice question",
+			"content": "________ are the most energy dense storage form, providing nine calories of energy for every gram, and alcohol provides seven calories per gram. <br /><br /> A. proteins  <br /><br /> B. fats  <br /><br /> C. fruits",
+			"answer":"B"
 		}
 	],
 }
