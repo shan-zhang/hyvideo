@@ -6,8 +6,8 @@
     //     echo $line;
     // }
 
-    $showVideo = "practice";
-    //$showVideo = "video1";
+    //$showVideo = "practice";
+    $showVideo = "video1";
     //$showVideo = "video2";
 
     $videoName = 'video/video1.mp4';
@@ -76,10 +76,10 @@
             <!-- The code below is for quiz -->
             <button id="startQuiz" onclick="startQuiz(event)">Start Quiz!</button>
             <br />
-            <br />
-            <form action="php/grade.php" method="post" id="myForm" style="display:none">
+            <form action="php/grade.php" method="post" id="myForm" style="display:none" autocomplete="off">
                   <label id='quizLabel'></label><br /><br />
                   <label id='quizContent'></label><br /><br />
+                  Answer: &nbsp; &nbsp;<input id='answer' type='text'></input>
                   <input type="submit" name="submit" value="submit">
             </form>
             <!-- <button id='radioOption' onclick="showRadio(event)" style="display:none">Ready!</button> -->
@@ -685,7 +685,9 @@
         $('#myForm').submit(function(e){
             e.preventDefault();
             var timePerQuiz = e.timeStamp - quizTime;
-            var data = "&quiz=" + (quizNum + 1) + "&time=" + timePerQuiz + "&quizType=" + quizType;
+            console.log($("#myForm").serialize());
+            var data = "answer=" + $('#answer').val() + "&quiz=" + (quizNum + 1) + "&time=" + timePerQuiz + "&quizType=" + quizType;
+            $('#answer').val('');
             quizTime = e.timeStamp;
             $.ajax({
                 url:$("#myForm").attr("action"),
