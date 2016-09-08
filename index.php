@@ -6,8 +6,10 @@
     //     echo $line;
     // }
 
-    //$showVideo = "practice";
-    $showVideo = "video1";
+    $ConceptPath = false;
+
+    $showVideo = "practice";
+    //$showVideo = "video1";
     //$showVideo = "video2";
 
     $videoName = 'video/video1.mp4';
@@ -68,8 +70,10 @@
             <label>2-D Timeline</label>
             <canvas id='leftSub'></canvas>
             <button id="clear" onclick="clearTimeStamp()">Clear</button>
+            <?php if($ConceptPath) {?>
             <button id="centerConcept" onclick="clicktoCenter()">Auto-Center: off</button>
             <button id="conceptPath" onclick="setConceptPath()">Concept-Path: off</button>
+            <?php } ?>
             <!-- <button id="hideVideo" onclick="hideVideo()">Hide Video</button> -->
             <!-- <button id="conceptsMapping" onclick="clickConceptMap()">Auto-Concepts: off</button> -->
             <h3 id="clips"></h3>
