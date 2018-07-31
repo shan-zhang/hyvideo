@@ -31,7 +31,7 @@
     </head>
 <body>
     <div id="header">
-        <stan style='font-size: 25px'>MapVideo - Navigation Mode</stan>
+        <stan style='font-size: 25px'>Concept-Video</stan>
     </div>
     <div id="section">
         <div id="leftPanel">
@@ -48,69 +48,28 @@
                 Concept Name:<input type='text'></input>
                 <br />
                 <br />
-                <div>
-                    <button onclick="saveStartTime()">Start time</button>&nbsp;&nbsp;<label id='startTime'></label>
-                </div>
-                <br />
-                <div>
-                    <button onclick="saveEndTime()">End time</button>&nbsp;&nbsp;<label id='endTime'></label>
-                </div>
-                <br />
-                <div>
-                    <button onclick="createTime()">Create time</button>&nbsp;&nbsp;<label id='createTime'></label>
-                </div>
-                <br />
                 Concept description:<textarea rows='4' cols='25'></textarea>
                 <br />
                 <br />
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button onclick='saveEdit()'>Save</button>&nbsp;&nbsp;<button onclick='discardEdit()'>Discard</button>
             </div>
-            <label>2-D Timeline</label>
+            <label>Timestamps</label>
             <canvas id='leftSub'></canvas>
             <button id="clear" onclick="clearTimeStamp()">Clear</button>
-            <!-- <button id="hideVideo" onclick="hideVideo()">Hide Video</button> -->
             <button id="conceptsMapping" onclick="clickConceptMap()">Auto-Concepts: off</button>
-            <h3 id="clips"></h3>
-            <!-- The code below is for quiz -->
-            <!-- <button id="startQuiz" onclick="startQuiz(event)">Start Quiz!</button> -->
-    <!--         <form action="php/grade.php" method="post" id="myForm" style="display:none">
-                  <label id='quizLabel'></label><br>
-                  <label id='quizContent'></label><br><br>
-                  <div id='quizRadio' style="display:none">
-                      <input type="radio" value="true" name="answer">True<br>
-                      <input type="radio" value="false" name="answer">False<br><br>
-                      <input type="submit" name="submit" value="submit">
-                  </div>
-            </form>
-            <button id='radioOption' onclick="showRadio(event)" style="display:none">Ready!</button>
-            <br/>
-            <h3 id="closingQuiz" style="display:none">The quiz is over. Thanks for participating. <a href='download.php' onclick="downloadResult()">Download</a>the study result.</h3> -->
-
-            <div id='footerButton'>
-                <label>Suggested Key Concepts:</label>
-                <br />
-                <br />
-                <div id='keyconcepts'></div>
-                <br />
-                <br />
-                <label>Load Concept-Map:</label>
-                <input type='file' id='file' name='userFile' accept=".json">
-                <label>Download Concept-Map:</label>
-                <a id='click' href="#">click</a>
-                <br />
-                <br />
-                <button id="mapAllconcepts" onclick="mapAllconcepts()">Auto-All Concepts</button>
-                <button id="centerConcept" onclick="clicktoCenter()">Auto-Center: off</button>
-                <button id="autoPlayByClick" onclick="autoPlayByClicking()">AutoPlay-by-clicking: off</button>
-                <button id="conceptPath" onclick="setConceptPath()">Concept-Path: off</button>
-                <button id="releaseNodes" onclick="releaseNodes()">Release Nodes</button>
-            </div>
-        </div>
-        <div id="rightPanel">
+            <p id="clips"></p>
             <div id="subtitle"></div>
             <div id="draggableSearch">
                 Search: <input type="text" id='searchText'></input><button onclick="hideSearch()">x</button>
             </div>
+            <div id="slider"></div>
+            <p>Show concepts with the frequency <span id="blabla">more than or equal to</span> <span id="largeconcept"></span>.</p>           
+        </div>
+
+        <div id="rightPanel">
+            <button id="mapAllconcepts" onclick="mapAllconcepts()">Show All Concepts</button>
+            <input type='file' id='file' name='userFile' accept=".json">
+            <a id='click' href="#">click</a>
             <div id="rightPanelDown" ondrop="drop(event)" ondragover="allowDrop(event)">
                 <input type="text" class="inputText"/>
             </div>
@@ -126,6 +85,10 @@
         };
     </script>
     <script>
+    /*
+$( function(){
+       
+        });   */ 
         // Check for the various File API support.
         if (window.File && window.FileReader && window.FileList && window.Blob) {
           // Great success! All the File APIs are supported.
@@ -134,7 +97,7 @@
         }
         paper.install(window);
         paper.setup('leftSub');
-        var circle = null;
+        var rect = null;
         var quiz = null;
         var mappingAllSubtitles = true;
         var mappingSingleSubtitle = false;
@@ -158,15 +121,18 @@
             $("#draggableSearch").draggable();
 
             $(document).on("keydown", function (e) {
+                //when press backspace, don't go to other page
                 if (e.which === 8 && !$(e.target).is('input') && !$(e.target).is('textarea')) {// keycode 8 for backspace
                     e.preventDefault();
                 }
+                //press ctrl+f to search for a concept
                 if(e.which === 70 && e.ctrlKey){
                     e.preventDefault();
                     $("#searchText").val('');
                     document.getElementById('draggableSearch').style.visibility = 'visible';
                     $("#searchText").focus();
                 }
+                //press space to pause and replay the video
                 if(e.which === 32 && !$(e.target).is('input') && !$(e.target).is('textarea')){
                     if(document.getElementById("video").paused){
                         document.getElementById("video").play();
@@ -190,7 +156,7 @@
         });
 
         $(".inputText").keyup(function (e) {
-            if (e.keyCode == 13) {
+            if (e.keyCode == 13) {//keyboard:enter
                 // Do something
                 var inputText = $(".inputText").val();
                 inputText = inputText.trim();
@@ -200,6 +166,34 @@
                 else { console.log("No update while type enter in inputText."); }
             }
         });
+/* how to store some elements value in an array?!
+        var keyArray = d3.selectAll('.node')
+                        .data(function(d){
+                            return d.frequency;
+                        });
+        Mini = Math.min(keyArray)
+*/      
+
+        $( "#slider" ).slider(
+                {
+                    min: 1,
+                    max: 20,
+                    value: 1,
+                    step: 1,
+                    slide: function( event, ui ) {
+                        var val = ui.value;
+                        $("#largeconcept").html( val );
+                        d3.selectAll('.node')
+                        .style("visibility", function(d) {
+                            if(d.frequency >=val){ return "visible";}
+                            else { return "hidden";}
+                        })
+                    }
+                  
+                }
+            );
+        $("#largeconcept").html( $('#slider').slider('value'));
+        
 
         $("#searchText").keyup(function (e) {
              $("#rightPanelDown").removeHighlight();
@@ -231,37 +225,7 @@
             }
         });
 
-        function saveStartTime(){
-            var startTime = document.getElementById("video").currentTime;
-            $("#draggable").find("#startTime").attr('time', startTime);
-            $("#draggable").find("#startTime").text(Math.floor(startTime/60) + " min: "+ Math.floor((startTime - Math.floor(startTime/60) * 60)) + " sec");
-        }
-
-        function saveEndTime(){
-            var endTime = document.getElementById("video").currentTime;
-            $("#draggable").find("#endTime").attr('time', endTime);
-            $("#draggable").find("#endTime").text(Math.floor(endTime/60) + " min: "+ Math.floor((endTime - Math.floor(endTime/60) * 60)) + " sec");
-        }
-
-        function createTime(){
-            var createTime = document.getElementById("video").currentTime;
-            $("#draggable").find("#createTime").attr('time', createTime);
-            $("#draggable").find("#createTime").text(Math.floor(createTime/60) + " min: "+ Math.floor((createTime - Math.floor(createTime/60) * 60)) + " sec");
-
-            circle.position = new Point(circle.viewSize*createTime/document.getElementById("video").duration,circle.y);
-            circle.createTime = createTime;
-            circle.showCue = '';
-            var myTrack = document.getElementsByTagName("track")[0].track; // get text track from track element
-            var myCues = myTrack.cues;   // get list of cues 
-            for (var i = 0; i < myCues.length; i++) {
-                if(createTime >= myCues[i].startTime && createTime < myCues[i].endTime){
-                    circle.showCue += myCues[i].getCueAsHTML().textContent + ' ';
-                    break;
-                }
-            }
-            paper.project.view.update();
-        }
-
+        
         function saveEdit(){
             var startTime = $("#draggable").find("#startTime").attr('time');
             var endTime = $("#draggable").find("#endTime").attr('time');
@@ -291,6 +255,18 @@
                 window.alert('Please do not leave the blank for the concept name');
             }
 
+        }
+        
+        function colors(){
+            var duration = document.getElementById("video").duration;
+            var colorScale = d3.scale.linear()
+                            .domain([0, duration])
+                            .range(["rgb(255,255,255)", "rgb(255,165,0)"]);
+
+            nodes.forEach(function (nodeItem){                
+                d3.selectAll(".node")
+                    .attr("fill", function(d){return colorScale(d.createTime);})
+            })
         }
 
         function discardEdit(){
@@ -326,7 +302,7 @@
             //The below code is to call external API for concept tagging, and the maximum call limit per day is 1000.
             sendCuestoConceptTagging(tmp);
         }
-
+/*
         function hideVideo(){
             var video = document.getElementById("video");
             if(video.style.visibility == '' || video.style.visibility == 'visible'){
@@ -343,7 +319,7 @@
                 }
             }
         }
-
+*/
         function allowDrop(event) {
             event.preventDefault();
         }
@@ -514,15 +490,14 @@
 
                 if(isPrintAllconceptNames)
                     setTimeout(printAllConceptNames, 2000);
-            }            
+            }          
         }
-
+        //before, click+ctrl to navigate through the subtitle, now, just click*
         function clickSubtitles(event){
-            if(event.ctrlKey || event.altKey){
-                console.log(this.id);
-                document.getElementById("video").currentTime = this.startTime;
-                document.getElementById("video").play();
-            }
+            //if(event.ctrlKey || event.altKey)
+            console.log(this.id);
+            document.getElementById("video").currentTime = this.startTime;
+            document.getElementById("video").play();
         }
 
         function clearTimeStamp(){
@@ -592,7 +567,7 @@
             paper.project.view.update();
             console.log("Drawing Link in video is over");
         }
-
+//The function below is link to the video. If we 
         function drawTimeline(word, timeline, createTime){
             console.log("draw concepts on the Timeline");
             resetTimeline();
@@ -604,7 +579,7 @@
             timeline.forEach(function(timeStamp){
                 var rect = new paper.Path.Rectangle(viewSize*timeStamp.startTime/duration,0,viewSize*(timeStamp.endTime - timeStamp.startTime)/duration,200);
                 rect.style = {
-                    fillColor: 'red'
+                    fillColor: 'rgba(247, 106, 106)'
                 };
                 rect.startTime = timeStamp.startTime;
                 rect.word = word;
@@ -638,7 +613,7 @@
             circle.viewSize = viewSize;
             circle.y = 10;
             circle.style = {
-                fillColor: 'blue'
+                fillColor: 'yellow'
             };
             circle.word = word;
             circle.showCue = '';
@@ -667,6 +642,7 @@
             };
             paper.project.view.update();
         }
+
 
         $('#click').click(function(){ saveNoteToFile(); return false; });
 
@@ -750,7 +726,7 @@
                 $("#startQuiz").css("display","inline");
             }
         }
-
+    
         $('#myForm').submit(function(e){
             e.preventDefault();
             var timePerQuiz = e.timeStamp - quizTime;
